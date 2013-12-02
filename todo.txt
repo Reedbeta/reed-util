@@ -1,0 +1,37 @@
+basic utilities
+- dim() - DONE
+- cassert() - DONE
+- exit(error message) - DONE
+- uint type - DONE
+- min, max, clamp, saturate - DONE
+- lerp - DONE
+- logging?
+
+math
+- vectors - DONE
+- matrices - mostly done
+- affine math
+- simd math
+- half-float from OpenEXR
+
+rng
+- wang hash - DONE
+- xorshift - DONE
+
+
+
+math planning
+- templated on base type and size
+- typedefs for common types/sizes e.g. float3
+- maker functions, not constructors
+- free functions, not member functions
+
+affine math planning
+- vector3/point3 based on low-level float3
+- affine xfm based on low-level float3x3
+- projective xfm
+- grassmann algebra?
+
+simd math planning
+- 4-wide SoA layout
+- functions to transform between SoA/AoS layouts
