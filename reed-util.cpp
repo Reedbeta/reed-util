@@ -210,8 +210,11 @@ void testMatrices()
 	bar5 * foo5;
 	bar5 *= foo5;
 	transpose(foo5);
+	pow(foo5, 5);
 	inverse(foo5);
 	determinant(foo5);
+	trace(foo5);
+	outerproduct(bar5, bar5);
 	isfinite(foo5);
 	any(foo5 < 47.0f);
 	all(foo5 > 47.0f);
@@ -233,4 +236,5 @@ void testMatrices()
 	bar3 = bar4 * foo4x3;
 	matrix<float, 3, 4> foo3x4 = transpose(foo4x3);
 	(void) foo3x4;
+	foo4x3 = outerproduct(bar4, bar3);
 }

@@ -259,16 +259,18 @@ namespace reed
 #undef DEFINE_INPLACE_OPERATORS
 #undef DEFINE_RELATIONAL_OPERATORS
 
+
+
 	// Other math functions
 
 	template <typename T, uint n>
 	T dot(vector<T, n> const & a, vector<T, n> const & b)
-		{
-			T result(0);
-			for (uint i = 0; i < n; ++i)
-				result += a[i] * b[i];
-			return result;
-		}
+	{
+		T result(0);
+		for (uint i = 0; i < n; ++i)
+			result += a[i] * b[i];
+		return result;
+	}
 
 	template <typename T, uint n>
 	T lengthSquared(vector<T, n> const & a)
@@ -284,53 +286,53 @@ namespace reed
 
 	template <typename T, uint n>
 	vector<bool, n> isfinite(vector<T, n> const & a)
-		{
-			vector<bool, n> result;
-			for (uint i = 0; i < n; ++i)
-				result[i] = isfinite(a[i]);
-			return result;
-		}
+	{
+		vector<bool, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = isfinite(a[i]);
+		return result;
+	}
 
 	template <typename T>
 	vector<T, 3> cross(vector<T, 3> const & a, vector<T, 3> const & b)
+	{
+		vector<T, 3> result =
 		{
-			vector<T, 3> result =
-			{
-				a.y*b.z - a.z*b.y,
-				a.z*b.x - a.x*b.z,
-				a.x*b.y - a.y*b.x,
-			};
-			return result;
-		}
+			a.y*b.z - a.z*b.y,
+			a.z*b.x - a.x*b.z,
+			a.x*b.y - a.y*b.x,
+		};
+		return result;
+	}
 
 	// Utilities for bool vectors
 
 	template <uint n>
 	bool any(vector<bool, n> const & a)
-		{
-			bool result = false;
-			for (uint i = 0; i < n; ++i)
-				result = result || a[i];
-			return result;
-		}
+	{
+		bool result = false;
+		for (uint i = 0; i < n; ++i)
+			result = result || a[i];
+		return result;
+	}
 
 	template <uint n>
 	bool all(vector<bool, n> const & a)
-		{
-			bool result = true;
-			for (uint i = 0; i < n; ++i)
-				result = result && a[i];
-			return result;
-		}
+	{
+		bool result = true;
+		for (uint i = 0; i < n; ++i)
+			result = result && a[i];
+		return result;
+	}
 
 	template <typename T, uint n>
 	vector<T, n> select(vector<bool, n> const & cond, vector<T, n> const & a, vector<T, n> const & b)
-		{
-			vector<T, n> result;
-			for (uint i = 0; i < n; ++i)
-				result[i] = cond[i] ? a[i] : b[i];
-			return result;
-		}
+	{
+		vector<T, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = cond[i] ? a[i] : b[i];
+		return result;
+	}
 
 	template <typename T, uint n>
 	vector<T, n> min(vector<T, n> const & a, vector<T, n> const & b)

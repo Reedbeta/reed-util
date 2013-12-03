@@ -1,5 +1,5 @@
 basic utilities
-- dim() - DONE
+- dim() and dim_field() - DONE
 - cassert() - DONE
 - exit(error message) - DONE
 - uint type - DONE
@@ -9,10 +9,15 @@ basic utilities
 
 math
 - vectors - DONE
-- matrices - mostly done
+- matrices
+	- basics - DONE
+	- diagonalization and decomposition
+- rectangles and bounding boxes
 - affine math
 - simd math
 - half-float from OpenEXR
+- quats and rotation stuff
+- color space conversion
 
 rng
 - wang hash - DONE
@@ -25,10 +30,13 @@ math planning
 - typedefs for common types/sizes e.g. float3
 - maker functions, not constructors
 - free functions, not member functions
+- mat exponentiation (integer powers only)
+- mat diagonalization/decomposition?
 
 affine math planning
 - vector3/point3 based on low-level float3
 - affine xfm based on low-level float3x3
+- transform generation
 - projective xfm
 - grassmann algebra?
 

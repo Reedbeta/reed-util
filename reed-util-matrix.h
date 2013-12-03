@@ -2,6 +2,7 @@
 
 // Nathan Reed's matrix math library - Copyright (C) 2013
 
+#include <algorithm>
 #include <cmath>
 
 namespace reed
@@ -12,6 +13,9 @@ namespace reed
 	template <typename T, uint rows, uint cols>
 	struct matrix
 	{
+		cassert(rows > 1);
+		cassert(cols > 1);
+
 		T m_data[rows*cols];
 
 		// Conversions to C arrays of fixed size
@@ -38,7 +42,7 @@ namespace reed
 			}
 
 		// Generic identity maker function
-		static matrix<T, rows, cols> makeIdentity()
+		static matrix<T, rows, cols> identity()
 			{
 				matrix<T, rows, cols> result;
 				for (uint i = 0; i < rows*cols; ++i)
@@ -250,14 +254,7 @@ namespace reed
 	template <typename T, uint rows, uint cols>
 	matrix<T, rows, cols> & operator *= (matrix<T, rows, cols> & a, matrix<T, cols, cols> const & b)
 	{
-		for (uint i = 0; i < rows; ++i)
-		{
-			auto row = vector<T, cols>::make(T(0));
-			for (uint j = 0; j < cols; ++j)
-				for (uint k = 0; k < cols; ++k)
-					row[j] += a[i][k] * b[k][j];
-			a[i] = row;
-		}
+		a = a*b;
 		return a;
 	}
 
@@ -290,135 +287,220 @@ namespace reed
 		return a;
 	}
 
+
+
 	// Other math functions
 
 	template <typename T, uint rows, uint cols>
 	matrix<T, cols, rows> transpose(matrix<T, rows, cols> const & a)
-		{
-			matrix<T, cols, rows> result;
-			for (uint i = 0; i < rows; ++i)
-				for (uint j = 0; j < cols; ++j)
-					result[j][i] = a[i][j];
-			return result;
-		}
+	{
+		matrix<T, cols, rows> result;
+		for (uint i = 0; i < rows; ++i)
+			for (uint j = 0; j < cols; ++j)
+				result[j][i] = a[i][j];
+		return result;
+	}
 
 	template <typename T, uint n>
-	T determinant(matrix<T, n, n> const & a)
+	matrix<T, n, n> pow(matrix<T, n, n> const & a, uint b)
+	{
+		if (b == 0)
+			return matrix<T, n, n>::identity();
+		if (b == 1)
+			return a;
+		matrix<T, n, n> oddpart = matrix<T, n, n>::identity(), evenpart = a;
+		while (b > 1)
 		{
-			// !!!UNDONE
-			return a[0][0];
-		}
+			if (b % 2 == 1)
+				oddpart *= evenpart;
 
-	// Determinant specialization for 2x2
-	template <typename T>
-	T determinant(matrix<T, 2, 2> const & a)
-		{
-			return (a[0][0]*a[1][1] - a[0][1]*a[1][0]);
+			evenpart *= evenpart;
+			b /= 2;
 		}
+		return oddpart * evenpart;
+	}
 
 	template <typename T, uint n>
 	matrix<T, n, n> inverse(matrix<T, n, n> const & m)
+	{
+		// Calculate inverse using Gaussian elimination
+
+		matrix<T, n, n> a = m;
+		auto b = matrix<T, n, n>::identity();
+
+		// Loop through columns
+		for (uint j = 0; j < n; ++j)
 		{
-			matrix<T, n, n> a = m;
-			auto b = matrix<T, n, n>::makeIdentity();
+			// Select pivot element: maximum magnitude in this column at or below main diagonal
+			uint pivot = j;
+			for (uint i = j+1; i < n; ++i)
+				if (abs(a[i][j]) > abs(a[pivot][j]))
+					pivot = i;
+			if (abs(a[pivot][j]) < epsilon)
+				return matrix<T, n, n>::make(T(NaN));
 
-			// Loop through columns
-			for (uint j = 0; j < n; ++j)
+			// Interchange rows to put pivot element on the diagonal,
+			// if it is not already there
+			if (pivot != j)
 			{
-				// Select pivot element: maximum magnitude in this column at or below main diagonal
-				uint pivot = j;
-				for (uint i = j+1; i < n; ++i)
-					if (abs(a[i][j]) > abs(a[pivot][j]))
-						pivot = i;
-				if (abs(a[pivot][j]) < epsilon)
-					return matrix<T, n, n>::make(T(NaN));
+				std::swap(a[j], a[pivot]);
+				std::swap(b[j], b[pivot]);
+			}
 
-				// Interchange rows to put pivot element on the diagonal,
-				// if it is not already there
-				if (pivot != j)
-				{
-					auto temp = a[j];
-					a[j] = a[pivot];
-					a[pivot] = temp;
-					temp = b[j];
-					b[j] = b[pivot];
-					b[pivot] = temp;
-				}
+			// Divide the whole row by the pivot element
+			if (a[j][j] != T(1))								// Skip if already equal to 1
+			{
+				T scale = a[j][j];
+				a[j] /= scale;
+				b[j] /= scale;
+				// Now the pivot element has become 1
+			}
 
-				// Divide the whole row by the pivot element
-				if (a[j][j] != T(1))								// Skip if already equal to 1
+			// Subtract this row from others to make the rest of column j zero
+			for (uint i = 0; i < n; ++i)
+			{
+				if ((i != j) && (abs(a[i][j]) > epsilon))		// skip rows already zero
 				{
-					T temp = a[j][j];
-					a[j] /= temp;
-					b[j] /= temp;
-					// Now the pivot element has become 1
-				}
-
-				// Subtract this row from others to make the rest of column j zero
-				for (uint i = 0; i < n; ++i)
-				{
-					if ((i != j) && (abs(a[i][j]) > epsilon))		// skip rows already zero
-					{
-						T scale = -a[i][j];
-						a[i] += a[j] * scale;
-						b[i] += b[j] * scale;
-					}
+					T scale = -a[i][j];
+					a[i] += a[j] * scale;
+					b[i] += b[j] * scale;
 				}
 			}
-	
-			// When these operations have been completed, a should have been transformed to the identity matrix
-			// and b should have been transformed into the inverse of the original a.
-			return b;
 		}
+	
+		// At this point, a should have been transformed to the identity matrix,
+		// and b should have been transformed into the inverse of the original a.
+		return b;
+	}
 
 	// Inverse specialization for 2x2
 	template <typename T>
 	matrix<T, 2, 2> inverse(matrix<T, 2, 2> const & a)
-		{
-			matrix<T, 2, 2> result = { a[1][1], -a[0][1], -a[1][0], a[0][0] };
-			return result / determinant(a);
-		}
+	{
+		matrix<T, 2, 2> result = { a[1][1], -a[0][1], -a[1][0], a[0][0] };
+		return result / determinant(a);
+	}
 
-	// !!!UNDONE: inverse & determinant specializations for 3x3? worth it?
-	// !!!UNDONE: eigen-decompose?
+	// !!!UNDONE: specialization for 3x3? worth it?
+
+	template <typename T, uint n>
+	T determinant(matrix<T, n, n> const & m)
+	{
+		// Calculate determinant using Gaussian elimination
+
+		matrix<T, n, n> a = m;
+		T result(1);
+
+		// Loop through columns
+		for (uint j = 0; j < n; ++j)
+		{
+			// Select pivot element: maximum magnitude in this column at or below main diagonal
+			uint pivot = j;
+			for (uint i = j+1; i < n; ++i)
+				if (abs(a[i][j]) > abs(a[pivot][j]))
+					pivot = i;
+			if (abs(a[pivot][j]) < epsilon)
+				return T(0);
+
+			// Interchange rows to put pivot element on the diagonal,
+			// if it is not already there
+			if (pivot != j)
+			{
+				std::swap(a[j], a[pivot]);
+				result *= T(-1);
+			}
+
+			// Divide the whole row by the pivot element
+			if (a[j][j] != T(1))								// Skip if already equal to 1
+			{
+				T scale = a[j][j];
+				a[j] /= scale;
+				result *= scale;
+				// Now the pivot element has become 1
+			}
+
+			// Subtract this row from others to make the rest of column j zero
+			for (uint i = 0; i < n; ++i)
+			{
+				if ((i != j) && (abs(a[i][j]) > epsilon))		// skip rows already zero
+				{
+					T scale = -a[i][j];
+					a[i] += a[j] * scale;
+				}
+			}
+		}
+	
+		// At this point, a should have been transformed to the identity matrix,
+		// and we've accumulated the original a's determinant in result.
+		return result;
+	}
+
+	// Determinant specialization for 2x2
+	template <typename T>
+	T determinant(matrix<T, 2, 2> const & a)
+	{
+		return (a[0][0]*a[1][1] - a[0][1]*a[1][0]);
+	}
+
+	// !!!UNDONE: specialization for 3x3? worth it?
+
+	template <typename T, uint n>
+	T trace(matrix<T, n, n> const & a)
+	{
+		T result(0);
+		for (uint i = 0; i < n; ++i)
+			result += a[i][i];
+		return result;
+	}
+
+	// !!!UNDONE: diagonalization and decomposition?
+
+	template <typename T, uint rows, uint cols>
+	matrix<T, rows, cols> outerproduct(vector<T, rows> const & a, vector<T, cols> const & b)
+	{
+		matrix<T, rows, cols> result;
+		for (uint i = 0; i < rows; ++i)
+			result[i] = a[i] * b;
+		return result;
+	}
 
 	template <typename T, uint rows, uint cols>
 	matrix<bool, rows, cols> isfinite(matrix<T, rows, cols> const & a)
-		{
-			matrix<bool, rows, cols> result;
-			for (uint i = 0; i < rows*cols; ++i)
-				result.m_data[i] = isfinite(a.m_data[i]);
-			return result;
-		}
+	{
+		matrix<bool, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = isfinite(a.m_data[i]);
+		return result;
+	}
 
 	// Utilities for bool matrices
 
 	template <uint rows, uint cols>
 	bool any(matrix<bool, rows, cols> const & a)
-		{
-			bool result = false;
-			for (uint i = 0; i < rows*cols; ++i)
-				result = result || a.m_data[i];
-			return result;
-		}
+	{
+		bool result = false;
+		for (uint i = 0; i < rows*cols; ++i)
+			result = result || a.m_data[i];
+		return result;
+	}
 
 	template <uint rows, uint cols>
 	bool all(matrix<bool, rows, cols> const & a)
-		{
-			bool result = true;
-			for (uint i = 0; i < rows*cols; ++i)
-				result = result && a.m_data[i];
-			return result;
-		}
+	{
+		bool result = true;
+		for (uint i = 0; i < rows*cols; ++i)
+			result = result && a.m_data[i];
+		return result;
+	}
 
 	template <typename T, uint rows, uint cols>
 	matrix<T, rows, cols> select(matrix<bool, rows, cols> const & cond, matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b)
-		{
-			matrix<T, rows, cols> result;
-			for (uint i = 0; i < rows*cols; ++i)
-				result.m_data[i] = cond.m_data[i] ? a.m_data[i] : b.m_data[i];
-			return result;
-		}
+	{
+		matrix<T, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = cond.m_data[i] ? a.m_data[i] : b.m_data[i];
+		return result;
+	}
 
 	template <typename T, uint rows, uint cols>
 	matrix<T, rows, cols> min(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b)
