@@ -305,6 +305,30 @@ namespace reed
 		return result;
 	}
 
+	template <typename T>
+	vector<T, 2> orthogonal(vector<T, 2> const & a)
+	{
+		vector<T, 2> result = { -a.y, a.x };
+		return result;
+	}
+
+	template <typename T>
+	vector<T, 3> orthogonal(vector<T, 3> const & a)
+	{
+		// Implementation due to Sam Hocevar - see blog post:
+		// http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts
+		if (abs(a.x) > abs(a.z))
+		{
+			vector<T, 3> result = { -a.y, a.x, T(0) };
+			return result;
+		}
+		else
+		{
+			vector<T, 3> result = { T(0), -a.z, a.y };
+			return result;
+		}
+	}
+
 	// Utilities for bool vectors
 
 	template <uint n>

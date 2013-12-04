@@ -151,12 +151,14 @@ void testVectors()
 	foo4[2];
 	passPointer(foo3);
 	cross(foo3, foo3);
+	orthogonal(foo3);
 
 	float2 foo2 = { 1, 2 };
 	foo2.y;
 	foo2.v;
 	foo4[1];
 	passPointer(foo2);
+	orthogonal(foo2);
 
 	float bazArray[] = { 1, 2, 3, 4 };
 	std::vector<float> bazVector(&bazArray[0], &bazArray[dim(bazArray)]);
