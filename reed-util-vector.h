@@ -56,9 +56,9 @@ namespace reed
 	struct vector<T, 2>
 	{
 		union {
+			T m_data[2];
 			struct { T x, y; };
 			struct { T u, v; };
-			T m_data[2];
 		};
 		DEFINE_CONVERSIONS(T, 2);
 	};
@@ -67,36 +67,30 @@ namespace reed
 	struct vector<T, 3>
 	{
 		union {
+			T m_data[3];
 			struct { T x, y, z; };
 			struct { T r, g, b; };
 			struct { T u, v; };
-			T m_data[3];
+			vector<T, 2> xy;
+			vector<T, 2> uv;
 		};
 		DEFINE_CONVERSIONS(T, 3);
-		vector<T, 2> & xy() { return reinterpret_cast<vector<T, 2> &>(*this); }
-		const vector<T, 2> & xy() const { return reinterpret_cast<const vector<T, 2> &>(*this); }
-		vector<T, 2> & uv() { return xy(); }
-		const vector<T, 2> & uv() const { return xy(); }
 	};
 
 	template <typename T>
 	struct vector<T, 4>
 	{
 		union {
+			T m_data[4];
 			struct { T x, y, z, w; };
 			struct { T r, g, b, a; };
 			struct { T u, v; };
-			T m_data[4];
+			vector<T, 2> xy;
+			vector<T, 2> uv;
+			vector<T, 3> xyz;
+			vector<T, 3> rgb;
 		};
 		DEFINE_CONVERSIONS(T, 4);
-		vector<T, 2> & xy() { return reinterpret_cast<vector<T, 2> &>(*this); }
-		const vector<T, 2> & xy() const { return reinterpret_cast<const vector<T, 2> &>(*this); }
-		vector<T, 2> & uv() { return xy(); }
-		const vector<T, 2> & uv() const { return xy(); }
-		vector<T, 3> & xyz() { return reinterpret_cast<vector<T, 3> &>(*this); }
-		const vector<T, 3> & xyz() const { return reinterpret_cast<const vector<T, 3> &>(*this); }
-		vector<T, 3> & rgb() { return xyz(); }
-		const vector<T, 3> & rgb() const { return xyz(); }
 	};
 
 #pragma warning(pop)
