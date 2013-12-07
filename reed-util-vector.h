@@ -361,6 +361,28 @@ namespace reed
 		{ return select(a < b, b, a); }
 
 	template <typename T, uint n>
+	vector<T, n> abs(vector<T, n> const & a)
+		{ return select(a < T(0), -a, a); }
+
+	template <typename T, uint n>
 	vector<T, n> saturate(vector<T, n> const & value)
 		{ return clamp(value, vector<T, n>::make(T(0)), vector<T, n>::make(T(1))); }
+
+	template <typename T, uint n>
+	T minComponent(vector<T, n> const & a)
+	{
+		T result = a[0];
+		for (uint i = 1; i < n; ++i)
+			result = min(result, a[i]);
+		return result;
+	}
+
+	template <typename T, uint n>
+	T maxComponent(vector<T, n> const & a)
+	{
+		T result = a[0];
+		for (uint i = 1; i < n; ++i)
+			result = max(result, a[i]);
+		return result;
+	}
 }

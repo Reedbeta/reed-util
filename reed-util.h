@@ -26,15 +26,17 @@ namespace reed
 	extern const float infty;
 	extern const float NaN;
 
-	// Generic min/max/clamp/saturate
+	// Generic min/max/abs/clamp/saturate
 	template <typename T>
 	T min(T a, T b) { return (a < b) ? a : b; }
 	template <typename T>
 	T max(T a, T b) { return (a < b) ? b : a; }
 	template <typename T>
+	T abs(T a) { return (a < T(0)) ? -a : a; }
+	template <typename T>
 	T clamp(T value, T lower, T upper) { return min(max(value, lower), upper); }
 	template <typename T>
-	T saturate(T value) { return clamp(value, T(0.0f), T(1.0f)); }
+	T saturate(T value) { return clamp(value, T(0), T(1)); }
 
 	// Generic lerp
 	template <typename T>

@@ -136,8 +136,11 @@ void testVectors()
 	select(foo5 < 47.0f, foo5, foo5);
 	min(foo5, foo5);
 	max(foo5, foo5);
+	abs(foo5);
 	clamp(foo5, foo5, foo5);
 	saturate(foo5);
+	minComponent(foo5);
+	maxComponent(foo5);
 
 	float4 foo4 = { 1, 2, 3, 4};
 	foo4.w;
@@ -225,8 +228,11 @@ void testMatrices()
 	select(foo5 < 47.0f, foo5, foo5);
 	min(foo5, foo5);
 	max(foo5, foo5);
+	abs(foo5);
 	clamp(foo5, foo5, foo5);
 	saturate(foo5);
+	minComponent(foo5);
+	maxComponent(foo5);
 
 	float bazArray[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 	std::vector<float> bazVector(&bazArray[0], &bazArray[dim(bazArray)]);
