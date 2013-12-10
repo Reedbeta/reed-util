@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="reed-util-matrix.h" />
-    <ClInclude Include="reed-util-vector.h" />
-    <ClInclude Include="reed-util-rng.h" />
-    <ClInclude Include="reed-util.h" />
+    <ClInclude Include="util-matrix.h" />
+    <ClInclude Include="util-vector.h" />
+    <ClInclude Include="util-rng.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="reed-util.cpp" />
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />

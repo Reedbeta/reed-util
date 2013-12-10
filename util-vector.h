@@ -1,10 +1,7 @@
 #pragma once
-
-// Nathan Reed's vector math library - Copyright (C) 2013
-
 #include <cmath>
 
-namespace reed
+namespace util
 {
 	// Macro to define conversion and subscript operators
 #define DEFINE_CONVERSIONS(T, n) \

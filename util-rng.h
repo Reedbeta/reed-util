@@ -1,8 +1,6 @@
 #pragma once
 
-// Nathan Reed's random number library - Copyright (C) 2013
-
-namespace reed
+namespace util
 {
 	struct RNG
 	{

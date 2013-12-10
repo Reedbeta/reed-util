@@ -1,4 +1,4 @@
-#include "reed-util.h"
+#include "util.h"
 
 #include <cstdarg>
 #include <cstdio>
@@ -6,7 +6,7 @@
 #include <ctime>
 #include <limits>
 
-namespace reed
+namespace util
 {
 	extern const float infty = std::numeric_limits<float>::infinity();
 	extern const float NaN = std::numeric_limits<float>::quiet_NaN();
@@ -87,7 +87,7 @@ void passPointer(const float * p)
 
 void testVectors()
 {
-	using namespace reed;
+	using namespace util;
 
 	vector<float, 5> foo5 = { 1, 2, 3, 4, 5 };
 	foo5.m_data[4];
@@ -175,7 +175,7 @@ void testVectors()
 
 void testMatrices()
 {
-	using namespace reed;
+	using namespace util;
 
 	matrix<float, 5, 5> foo5 = { 1, 2, 3, 4, 5 };
 	vector<float, 5> bar5;

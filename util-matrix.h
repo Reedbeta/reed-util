@@ -1,11 +1,8 @@
 #pragma once
-
-// Nathan Reed's matrix math library - Copyright (C) 2013
-
 #include <algorithm>
 #include <cmath>
 
-namespace reed
+namespace util
 {
 	// Generic matrix struct, providing (row-major) storage,
 	// conversion and subscript operators

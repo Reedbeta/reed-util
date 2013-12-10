@@ -1,7 +1,4 @@
 #pragma once
-
-// Nathan Reed's utilities library - Copyright (C) 2013
-
 #include <cmath>
 #include <float.h>
 
@@ -13,7 +10,7 @@ template <typename T, int N> char(&dim_helper(T(&)[N]))[N];
 // Compile-time assert
 #define cassert(x) static_assert(x, #x)
 
-namespace reed
+namespace util
 {
 	// "uint" is a lot shorter than "unsigned int"
 	typedef unsigned int uint;
@@ -52,8 +49,8 @@ namespace reed
 }
 
 // Random number library
-#include "reed-util-rng.h"
+#include "util-rng.h"
 
 // Vector/matrix math library
-#include "reed-util-vector.h"
-#include "reed-util-matrix.h"
+#include "util-vector.h"
+#include "util-matrix.h"
