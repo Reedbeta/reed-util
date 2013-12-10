@@ -5,7 +5,9 @@ basic utilities
 - uint type - DONE
 - min, max, clamp, saturate - DONE
 - lerp - DONE
-- logging?
+- logging
+- custom (controllable) asserts and debug-breaks
+- intersection tests
 
 math
 - vectors - DONE
