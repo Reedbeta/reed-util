@@ -69,7 +69,7 @@ void calcWorldToCamera_FPU(float yaw, float pitch, const float cameraPos[3], flo
 	outWorldToCamera[3][3] = 1.0f;
 }
 
-void calcWorldToCamera_SSE(float yaw, float pitch, const __m128 & cameraPos, __m128 outWorldToCamera[4])
+void calcWorldToCamera_SSE_aos(float yaw, float pitch, const __m128 & cameraPos, __m128 outWorldToCamera[4])
 {
 	float sinYaw = sin(yaw);
 	float cosYaw = cos(yaw);

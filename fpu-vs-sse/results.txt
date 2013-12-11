@@ -1,0 +1,11 @@
+Results (release x64):
+calcWorldToCamera_FPU 10M times: 396.8 ms
+calcWorldToCamera_SSE_aos 10M times: 384.4 ms
+transformAABBs_FPU, 1K AABBs, 10K times: 687.0 ms
+transformAABBs_SSE_aos, 1K AABBs, 10K times: 157.1 ms
+transformAABBs_SSE_soa, 1K AABBs, 10K times: 99.7 ms
+
+calcWorldToCamera SSE_aos speedup: 1.03x
+transformAABBs SSE_aos speedup: 4.37x
+transformAABBs SSE_soa speedup: 6.89x
+transformAABBs SSE_aos speedup (relative to SSE_aos): 1.56x
