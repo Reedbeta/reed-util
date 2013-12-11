@@ -1,8 +1,12 @@
 // FPU vs SSE speed test
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+
+using std::min;
+using std::max;
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -43,8 +47,47 @@ public:
 	}
 };
 
+// Quick simple RNG based on Xorhash
+struct RNG
+{
+	unsigned int m_state;
+
+	void seed(unsigned int seed)
+	{
+		// Thomas Wang's integer hash, as reported by Bob Jenkins
+		seed = (seed ^ 61) ^ (seed >> 16);
+		seed *= 9;
+		seed = seed ^ (seed >> 4);
+		seed *= 0x27d4eb2d;
+		seed = seed ^ (seed >> 15);
+		m_state = seed;
+	}
+
+	unsigned int randUint()
+	{
+		// Xorshift algorithm from George Marsaglia's paper
+		m_state ^= (m_state << 13);
+		m_state ^= (m_state >> 17);
+		m_state ^= (m_state << 5);
+		return m_state;
+	}
+
+	float randFloat()
+	{
+		return float(randUint()) * (1.0f / 4294967296.0f);
+	}
+
+	float randFloat(float min, float max)
+	{
+		return min + (min - max)*randFloat();
+	}
+};
+
 int main()
 {
+	float absEpsilon = 1e-5f;
+	float relEpsilon = 1e-5f;
+
 	{
 		float yaw = 0.74f;
 		float pitch = 0.47f;
@@ -73,7 +116,17 @@ int main()
 				calcWorldToCamera_SSE(yaw, pitch, cameraPos_SSE, worldToCamera_SSE);
 		}
 
-		assert(memcmp(worldToCamera, worldToCamera_SSE, sizeof(float)*4*4) == 0);
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				if (fabs(worldToCamera[i][j] - worldToCamera_SSE[i].m128_f32[j]) >
+						max(absEpsilon, relEpsilon * fabs(worldToCamera[i][j])))
+				{
+					printf("Warning: significant mismatch in component [%d][%d]\n", i, j);
+				}
+			}
+		}
 	}
 
 	{
@@ -104,14 +157,26 @@ int main()
 		__m128 outZMaxs[n/4];
 		AABBs_soa outAABBs_soa = { outXMins, outYMins, outZMins, outXMaxs, outYMaxs, outZMaxs };
 
-		// Fill both sets of inputs with some data
+		// Fill both sets of inputs with some randomly generated data
+		RNG rng;
+		rng.seed(47);
 		for (int i = 0; i < n; ++i)
 		{
-			// !!!UNDONE
+			inAABBs[i].mins[0] = inXMins[i/4].m128_f32[i%4] = rng.randFloat(-10, 10);
+			inAABBs[i].mins[1] = inYMins[i/4].m128_f32[i%4] = rng.randFloat(-10, 10);
+			inAABBs[i].mins[2] = inZMins[i/4].m128_f32[i%4] = rng.randFloat(-10, 10);
+			inAABBs[i].maxs[0] = inXMaxs[i/4].m128_f32[i%4] = inAABBs[i].mins[0] + rng.randFloat(1, 10);
+			inAABBs[i].maxs[1] = inYMaxs[i/4].m128_f32[i%4] = inAABBs[i].mins[1] + rng.randFloat(1, 10);
+			inAABBs[i].maxs[2] = inZMaxs[i/4].m128_f32[i%4] = inAABBs[i].mins[2] + rng.randFloat(1, 10);
+			float translate[] = { rng.randFloat(-10, 10), rng.randFloat(-10, 10), rng.randFloat(-10, 10) };
+			calcWorldToCamera_FPU(rng.randFloat(0, 2.0f*3.14159f), rng.randFloat(-3.0f, 3.0f), translate, mats[i]);
+			for (int j = 0; j < 4; ++j)
+				for (int k = 0; k < 4; ++k)
+					mats_SSE[j][k][i/4].m128_f32[i%4] = mats[i][j][k];
 		}
 
 #ifdef _DEBUG
-		int trials = 1000;
+		int trials = 100;
 #else
 		int trials = 10000;
 #endif
@@ -128,6 +193,19 @@ int main()
 			CTimer timer;
 			for (int i = 0; i < trials; ++i)
 				transformAABBs_SSE(n, inAABBs_soa, mats_SSE_soa, outAABBs_soa);
+		}
+
+		for (int i = 0; i < n; ++i)
+		{
+			if (fabs(outAABBs[i].mins[0] - outXMins[i/4].m128_f32[i%4]) > max(absEpsilon, relEpsilon * fabs(outAABBs[i].mins[0])) ||
+				fabs(outAABBs[i].mins[1] - outYMins[i/4].m128_f32[i%4]) > max(absEpsilon, relEpsilon * fabs(outAABBs[i].mins[1])) ||
+				fabs(outAABBs[i].mins[2] - outZMins[i/4].m128_f32[i%4]) > max(absEpsilon, relEpsilon * fabs(outAABBs[i].mins[2])) ||
+				fabs(outAABBs[i].maxs[0] - outXMaxs[i/4].m128_f32[i%4]) > max(absEpsilon, relEpsilon * fabs(outAABBs[i].maxs[0])) ||
+				fabs(outAABBs[i].maxs[1] - outYMaxs[i/4].m128_f32[i%4]) > max(absEpsilon, relEpsilon * fabs(outAABBs[i].maxs[1])) ||
+				fabs(outAABBs[i].maxs[2] - outZMaxs[i/4].m128_f32[i%4]) > max(absEpsilon, relEpsilon * fabs(outAABBs[i].maxs[2])))
+			{
+				printf("Warning: significant mismatch in bounding box %d\n", i);
+			}
 		}
 	}
 
