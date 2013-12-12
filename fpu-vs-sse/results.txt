@@ -9,6 +9,17 @@ transformAABBs_SSE_aos speedup (relative to SSE_aos): 10.47x
 
 
 
+Results for transformAABBs (no shuffling, release Win32)
+transformAABBs_FPU, 1K AABBs, 10K times: 698.8 ms
+transformAABBs_SSE_aos, 1K AABBs, 10K times: 1050.7 ms
+transformAABBs_SSE_soa, 1K AABBs, 10K times: 142.3 ms
+
+transformAABBs_SSE_aos speedup: 0.67x
+transformAABBs_SSE_soa speedup: 4.91x
+transformAABBs_SSE_aos speedup (relative to SSE_aos): 7.38x
+
+
+
 Results (release x64):
 calcWorldToCamera_FPU 10M times: 396.8 ms
 calcWorldToCamera_SSE_aos 10M times: 384.4 ms
