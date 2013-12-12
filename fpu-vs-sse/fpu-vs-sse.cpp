@@ -233,3 +233,9 @@ int main()
 
 	return 0;
 }
+
+
+
+void forceToMemory(const void *)
+{
+}

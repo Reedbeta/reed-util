@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <limits>
+#include <xmmintrin.h>
 
 namespace util
 {
@@ -83,6 +84,11 @@ namespace util
 void passPointer(const float * p)
 {
 	(void)p;
+}
+
+__m128 operator+ (__m128 a, __m128 b)
+{
+	return _mm_add_ps(a, b);
 }
 
 void testVectors()
@@ -169,6 +175,10 @@ void testVectors()
 	std::vector<float> bazVector(&bazArray[0], &bazArray[dim(bazArray)]);
 	makefloat4(bazArray);
 	makefloat4(bazVector);
+
+	vector<__m128, 4> simdVector;
+	simdVector + simdVector;
+	simdVector + _mm_set_ps(47, 47, 47, 47);
 }
 
 
