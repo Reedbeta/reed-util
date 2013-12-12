@@ -80,22 +80,39 @@ void transformAABBs_FPU(int n, const AABB * inBBs, const float mats[][4][4], AAB
 struct AABB_aos { __m128 mins, maxs; };
 void transformAABBs_SSE_aos(int n, const AABB_aos * inBBs, const __m128 mats[][4], AABB_aos * outBBs)
 {
-	static const unsigned int cornerShuffles[] =
-	{
-		_MM_SHUFFLE(1,0,1,0),
-		_MM_SHUFFLE(1,0,1,2),
-		_MM_SHUFFLE(1,0,3,0),
-		_MM_SHUFFLE(1,0,3,2),
-		_MM_SHUFFLE(1,2,1,0),
-		_MM_SHUFFLE(1,2,1,2),
-		_MM_SHUFFLE(1,2,3,0),
-		_MM_SHUFFLE(1,2,3,2),
-	};
-
 	for (int i = 0; i < n; ++i)
 	{
 		__m128 newMins = { FLT_MAX, FLT_MAX, FLT_MAX };
 		__m128 newMaxs = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+		// Note: constructing the corners can be done more efficiently with shuffles,
+		// but in a typical vector math lib, this is what you're likely to get
+		for (int j = 0; j < 8; ++j)
+		{
+			__m128 corner =
+			{
+				((j & 1) != 0) ? inBBs[i].maxs.m128_f32[0] : inBBs[i].mins.m128_f32[0],
+				((j & 2) != 0) ? inBBs[i].maxs.m128_f32[1] : inBBs[i].mins.m128_f32[1],
+				((j & 4) != 0) ? inBBs[i].maxs.m128_f32[2] : inBBs[i].mins.m128_f32[2],
+			};
+			// Multiply by matrix
+			__m128 cornerX = _mm_shuffle_ps(corner, corner, _MM_SHUFFLE(0,0,0,0));
+			__m128 cornerY = _mm_shuffle_ps(corner, corner, _MM_SHUFFLE(1,1,1,1));
+			__m128 cornerZ = _mm_shuffle_ps(corner, corner, _MM_SHUFFLE(2,2,2,2));
+			__m128 cornerTransformed = _mm_setzero_ps();
+			cornerTransformed = _mm_add_ps(cornerTransformed, _mm_mul_ps(cornerX, mats[i][0]));
+			cornerTransformed = _mm_add_ps(cornerTransformed, _mm_mul_ps(cornerY, mats[i][1]));
+			cornerTransformed = _mm_add_ps(cornerTransformed, _mm_mul_ps(cornerZ, mats[i][2]));
+			cornerTransformed = _mm_add_ps(cornerTransformed, mats[i][3]);
+			newMins = _mm_min_ps(newMins, cornerTransformed);
+			newMaxs = _mm_max_ps(newMaxs, cornerTransformed);
+		}
+		outBBs[i].mins = newMins;
+		outBBs[i].maxs = newMaxs;
+
+		// Here's an implementation with shuffles, for reference,
+		// which is a great deal faster than the non-shuffle version
+		// (but not as fast as SOA).
+/*
 		// shuffle (xyzw, XYZW) to (xyXY, zwZW)
 		__m128 xyXY = _mm_shuffle_ps(inBBs[i].mins, inBBs[i].maxs, _MM_SHUFFLE(1,0,1,0));
 		__m128 zwZW = _mm_shuffle_ps(inBBs[i].mins, inBBs[i].maxs, _MM_SHUFFLE(3,2,3,2));
@@ -111,23 +128,7 @@ void transformAABBs_SSE_aos(int n, const AABB_aos * inBBs, const __m128 mats[][4
 			_mm_shuffle_ps(xyXY, zwZW, _MM_SHUFFLE(1,2,3,0)),
 			_mm_shuffle_ps(xyXY, zwZW, _MM_SHUFFLE(1,2,3,2)),
 		};
-		for (int j = 0; j < 8; ++j)
-		{
-			// Extract components
-			__m128 cornerX = _mm_shuffle_ps(corner[j], corner[j], _MM_SHUFFLE(0,0,0,0));
-			__m128 cornerY = _mm_shuffle_ps(corner[j], corner[j], _MM_SHUFFLE(1,1,1,1));
-			__m128 cornerZ = _mm_shuffle_ps(corner[j], corner[j], _MM_SHUFFLE(2,2,2,2));
-			// Multiply by matrix
-			__m128 cornerTransformed = _mm_setzero_ps();
-			cornerTransformed = _mm_add_ps(cornerTransformed, _mm_mul_ps(cornerX, mats[i][0]));
-			cornerTransformed = _mm_add_ps(cornerTransformed, _mm_mul_ps(cornerY, mats[i][1]));
-			cornerTransformed = _mm_add_ps(cornerTransformed, _mm_mul_ps(cornerZ, mats[i][2]));
-			cornerTransformed = _mm_add_ps(cornerTransformed, mats[i][3]);
-			newMins = _mm_min_ps(newMins, cornerTransformed);
-			newMaxs = _mm_max_ps(newMaxs, cornerTransformed);
-		}
-		outBBs[i].mins = newMins;
-		outBBs[i].maxs = newMaxs;
+*/
 	}
 }
 
