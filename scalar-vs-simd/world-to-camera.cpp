@@ -31,7 +31,7 @@
 	}
 */
 
-void calcWorldToCamera_FPU(float yaw, float pitch, const float cameraPos[3], float outWorldToCamera[4][4])
+void calcWorldToCamera_scalar(float yaw, float pitch, const float cameraPos[3], float outWorldToCamera[4][4])
 {
 	float sinYaw = sin(yaw);
 	float cosYaw = cos(yaw);

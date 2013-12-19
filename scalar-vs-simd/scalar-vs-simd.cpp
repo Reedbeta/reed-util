@@ -1,4 +1,4 @@
-// FPU vs SSE speed test
+// scalar vs SSE speed test
 
 #include <algorithm>
 #include <cassert>
@@ -15,11 +15,11 @@ using std::max;
 
 
 
-void calcWorldToCamera_FPU(float yaw, float pitch, const float cameraPos[3], float outWorldToCamera[4][4]);
+void calcWorldToCamera_scalar(float yaw, float pitch, const float cameraPos[3], float outWorldToCamera[4][4]);
 void calcWorldToCamera_SSE_aos(float yaw, float pitch, const __m128 & cameraPos, __m128 outWorldToCamera[4]);
 
 struct AABB { float mins[3]; float maxs[3]; };
-void transformAABBs_FPU(int n, const AABB * inBBs, const float mat[][4][4], AABB * outBBs);
+void transformAABBs_scalar(int n, const AABB * inBBs, const float mat[][4][4], AABB * outBBs);
 
 struct AABB_aos { __m128 mins, maxs; };
 void transformAABBs_SSE_aos(int n, const AABB_aos * inBBs, const __m128 mats[][4], AABB_aos * outBBs);
@@ -103,11 +103,11 @@ int main()
 		int trials = 10000000;
 #endif
 
-		printf("calcWorldToCamera_FPU %dM times: ", trials/1000000);
+		printf("calcWorldToCamera_scalar %dM times: ", trials/1000000);
 		{
 			CTimer timer;
 			for (int i = 0; i < trials; ++i)
-				calcWorldToCamera_FPU(yaw, pitch, cameraPos, worldToCamera);
+				calcWorldToCamera_scalar(yaw, pitch, cameraPos, worldToCamera);
 		}
 
 		printf("calcWorldToCamera_SSE_aos %dM times: ", trials/1000000);
@@ -175,7 +175,7 @@ int main()
 			inAABBs[i].maxs[2] = inAABBs_aos[i].maxs.m128_f32[2] = inZMaxs[i/4].m128_f32[i%4] = inAABBs[i].mins[2] + rng.randFloat(1, 10);
 
 			float translate[] = { rng.randFloat(-10, 10), rng.randFloat(-10, 10), rng.randFloat(-10, 10) };
-			calcWorldToCamera_FPU(rng.randFloat(0, 2.0f*3.14159f), rng.randFloat(-3.0f, 3.0f), translate, mats[i]);
+			calcWorldToCamera_scalar(rng.randFloat(0, 2.0f*3.14159f), rng.randFloat(-3.0f, 3.0f), translate, mats[i]);
 			for (int j = 0; j < 4; ++j)
 				for (int k = 0; k < 4; ++k)
 					matComps_soa[j][k][i/4].m128_f32[i%4] = mats_aos[i][j].m128_f32[k] = mats[i][j][k];
@@ -187,11 +187,11 @@ int main()
 		int trials = 10000;
 #endif
 
-		printf("transformAABBs_FPU, %dK AABBs, %dK times: ", n/1000, trials/1000);
+		printf("transformAABBs_scalar, %dK AABBs, %dK times: ", n/1000, trials/1000);
 		{
 			CTimer timer;
 			for (int i = 0; i < trials; ++i)
-				transformAABBs_FPU(n, inAABBs, mats, outAABBs);
+				transformAABBs_scalar(n, inAABBs, mats, outAABBs);
 		}
 
 		printf("transformAABBs_SSE_aos, %dK AABBs, %dK times: ", n/1000, trials/1000);

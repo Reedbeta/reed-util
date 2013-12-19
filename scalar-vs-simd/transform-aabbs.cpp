@@ -39,7 +39,7 @@ using std::max;
 */
 
 struct AABB { float mins[3]; float maxs[3]; };
-void transformAABBs_FPU(int n, const AABB * inBBs, const float mats[][4][4], AABB * outBBs)
+void transformAABBs_scalar(int n, const AABB * inBBs, const float mats[][4][4], AABB * outBBs)
 {
 	for (int i = 0; i < n; ++i)
 	{

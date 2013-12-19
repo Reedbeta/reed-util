@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CEC47DA7-16E1-444A-943C-4352D9C4C3BA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>fpuvssse</RootNamespace>
+    <RootNamespace>scalarvssimd</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -159,9 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ctor-test.cpp" />
     <ClCompile Include="transform-aabbs.cpp" />
-    <ClCompile Include="fpu-vs-sse.cpp" />
+    <ClCompile Include="scalar-vs-simd.cpp" />
     <ClCompile Include="world-to-camera.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
