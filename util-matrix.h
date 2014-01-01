@@ -75,8 +75,6 @@ namespace util
 				{ type##2x2 m = { col0.x, col1.x, col0.y, col1.y }; return m; } \
 			type##2x2 make##type##2x2(type a) \
 				{ type##2x2 m = { a, a, a, a }; return m; } \
-			type##2x2 make##type##2x2Identity() \
-				{ type##2x2 m = { 1, 0, 0, 1 }; return m; } \
 			template <typename Arg> \
 			type##2x2 make##type##2x2(Arg a) \
 				{ return type##2x2::make(a); } \
@@ -88,8 +86,6 @@ namespace util
 				{ type##3x3 m = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z }; return m; } \
 			type##3x3 make##type##3x3(type a) \
 				{ type##3x3 m = { a, a, a, a, a, a, a, a, a }; return m; } \
-			type##3x3 make##type##3x3Identity() \
-				{ type##3x3 m = { 1, 0, 0, 0, 1, 0, 0, 0, 1 }; return m; } \
 			template <typename Arg> \
 			type##3x3 make##type##3x3(Arg a) \
 				{ return type##3x3::make(a); } \
@@ -101,8 +97,6 @@ namespace util
 				{ type##4x4 m = { col0.x, col1.x, col2.x, col3.x, col0.y, col1.y, col2.y, col3.y, col0.z, col1.z, col2.z, col3.z, col0.w, col1.w, col2.w, col3.w }; return m; } \
 			type##4x4 make##type##4x4Identity(type a) \
 				{ type##4x4 m = { a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a }; return m; } \
-			type##4x4 make##type##4x4Identity() \
-				{ type##4x4 m = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }; return m; } \
 			template <typename Arg> \
 			type##4x4 make##type##4x4(Arg a) \
 				{ return type##4x4::make(a); }
