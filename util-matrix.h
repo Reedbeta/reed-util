@@ -31,31 +31,31 @@ namespace util
 		
 		// Generic maker function, broadcasting a scalar
 		static matrix<T, rows, cols> make(T a)
-			{
-				matrix<T, rows, cols> result;
-				for (uint i = 0; i < rows*cols; ++i)
-					result.m_data[i] = a;
-				return result;
-			}
+		{
+			matrix<T, rows, cols> result;
+			for (uint i = 0; i < rows*cols; ++i)
+				result.m_data[i] = a;
+			return result;
+		}
 
 		// Generic identity maker function
 		static matrix<T, rows, cols> identity()
-			{
-				matrix<T, rows, cols> result;
-				for (uint i = 0; i < rows*cols; ++i)
-					result.m_data[i] = (i % (cols+1) == 0) ? T(1) : T(0);
-				return result;
-			}
+		{
+			cassert(rows == cols);
+			auto result = matrix<T, rows, cols>::make(T(0));
+			for (uint i = 0; i < rows; ++i)
+				result[rows][rows] = T(1);
+			return result;
+		}
 
-		// Generic maker function, taking any subscriptable type
-		template <typename Arg>
-		static matrix<T, rows, cols> make(Arg a)
-			{
-				matrix<T, rows, cols> result;
-				for (uint i = 0; i < rows*cols; ++i)
-					result.m_data[i] = T(a[i]);
-				return result;
-			}
+		// Generic maker function, taking an array
+		static matrix<T, rows, cols> make(const T * a)
+		{
+			matrix<T, rows, cols> result;
+			for (uint i = 0; i < rows*cols; ++i)
+				result.m_data[i] = T(a[i]);
+			return result;
+		}
 	};
 
 
@@ -67,38 +67,38 @@ namespace util
 			typedef matrix<type, 2, 2> type##2x2; \
 			typedef matrix<type, 3, 3> type##3x3; \
 			typedef matrix<type, 4, 4> type##4x4; \
+			typedef matrix<type, 2, 2> const & type##2x2arg; \
+			typedef matrix<type, 3, 3> const & type##3x3arg; \
+			typedef matrix<type, 4, 4> const & type##4x4arg; \
 			type##2x2 make##type##2x2(type m0, type m1, type m2, type m3) \
 				{ type##2x2 m = { m0, m1, m2, m3 }; return m; } \
-			type##2x2 make##type##2x2(type##2 row0, type##2 row1) \
+			type##2x2 make##type##2x2(type##2arg row0, type##2arg row1) \
 				{ type##2x2 m = { row0.x, row0.y, row1.x, row1.y }; return m; } \
-			type##2x2 make##type##2x2Cols(type##2 col0, type##2 col1) \
+			type##2x2 make##type##2x2Cols(type##2arg col0, type##2arg col1) \
 				{ type##2x2 m = { col0.x, col1.x, col0.y, col1.y }; return m; } \
 			type##2x2 make##type##2x2(type a) \
 				{ type##2x2 m = { a, a, a, a }; return m; } \
-			template <typename Arg> \
-			type##2x2 make##type##2x2(Arg a) \
+			type##2x2 make##type##2x2(const type * a) \
 				{ return type##2x2::make(a); } \
 			type##3x3 make##type##3x3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8) \
 				{ type##3x3 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8 }; return m; } \
-			type##3x3 make##type##3x3(type##3 row0, type##3 row1, type##3 row2) \
+			type##3x3 make##type##3x3(type##3arg row0, type##3arg row1, type##3arg row2) \
 				{ type##3x3 m = { row0.x, row0.y, row0.z, row1.x, row1.y, row1.z, row2.x, row2.y, row2.z }; return m; } \
-			type##3x3 make##type##3x3Cols(type##3 col0, type##3 col1, type##3 col2) \
+			type##3x3 make##type##3x3Cols(type##3arg col0, type##3arg col1, type##3arg col2) \
 				{ type##3x3 m = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z }; return m; } \
 			type##3x3 make##type##3x3(type a) \
 				{ type##3x3 m = { a, a, a, a, a, a, a, a, a }; return m; } \
-			template <typename Arg> \
-			type##3x3 make##type##3x3(Arg a) \
+			type##3x3 make##type##3x3(const type * a) \
 				{ return type##3x3::make(a); } \
 			type##4x4 make##type##4x4(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type m9, type m10, type m11, type m12, type m13, type m14, type m15) \
 				{ type##4x4 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 }; return m; } \
-			type##4x4 make##type##4x4(type##4 row0, type##4 row1, type##4 row2, type##4 row3) \
+			type##4x4 make##type##4x4(type##4arg row0, type##4arg row1, type##4arg row2, type##4arg row3) \
 				{ type##4x4 m = { row0.x, row0.y, row0.z, row0.w, row1.x, row1.y, row1.z, row1.w, row2.x, row2.y, row2.z, row2.w, row3.x, row3.y, row3.z, row3.w }; return m; } \
-			type##4x4 make##type##4x4Cols(type##4 col0, type##4 col1, type##4 col2, type##4 col3) \
+			type##4x4 make##type##4x4Cols(type##4arg col0, type##4arg col1, type##4arg col2, type##4arg col3) \
 				{ type##4x4 m = { col0.x, col1.x, col2.x, col3.x, col0.y, col1.y, col2.y, col3.y, col0.z, col1.z, col2.z, col3.z, col0.w, col1.w, col2.w, col3.w }; return m; } \
 			type##4x4 make##type##4x4Identity(type a) \
 				{ type##4x4 m = { a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a }; return m; } \
-			template <typename Arg> \
-			type##4x4 make##type##4x4(Arg a) \
+			type##4x4 make##type##4x4(const type * a) \
 				{ return type##4x4::make(a); }
 
 	DEFINE_CONCRETE_MATRICES(float);
@@ -123,7 +123,7 @@ namespace util
 			}
 
 #define DEFINE_BINARY_SCALAR_OPERATORS(op) \
-			/* Scalar-vector op */ \
+			/* Scalar-matrix op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<T, rows, cols> operator op (T a, matrix<T, rows, cols> const & b) \
 			{ \
@@ -132,7 +132,7 @@ namespace util
 					result.m_data[i] = a op b.m_data[i]; \
 				return result; \
 			} \
-			/* Vector-scalar op */ \
+			/* Matrix-scalar op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<T, rows, cols> operator op (matrix<T, rows, cols> const & a, T b) \
 			{ \
@@ -143,7 +143,7 @@ namespace util
 			}
 
 #define DEFINE_BINARY_OPERATORS(op) \
-			/* Vector-vector op */ \
+			/* Matrix-matrix op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<T, rows, cols> operator op (matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b) \
 			{ \
@@ -155,7 +155,7 @@ namespace util
 			DEFINE_BINARY_SCALAR_OPERATORS(op)
 
 #define DEFINE_INPLACE_SCALAR_OPERATOR(op) \
-			/* Vector-scalar op */ \
+			/* Matrix-scalar op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<T, rows, cols> & operator op (matrix<T, rows, cols> & a, T b) \
 			{ \
@@ -165,7 +165,7 @@ namespace util
 			}
 
 #define DEFINE_INPLACE_OPERATORS(op) \
-			/* Vector-vector op */ \
+			/* Matrix-matrix op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<T, rows, cols> & operator op (matrix<T, rows, cols> & a, matrix<T, rows, cols> const & b) \
 			{ \
@@ -176,7 +176,7 @@ namespace util
 			DEFINE_INPLACE_SCALAR_OPERATOR(op)
 
 #define DEFINE_RELATIONAL_OPERATORS(op) \
-			/* Vector-vector op */ \
+			/* Matrix-matrix op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<bool, rows, cols> operator op (matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b) \
 			{ \
@@ -185,7 +185,7 @@ namespace util
 					result.m_data[i] = a.m_data[i] op b.m_data[i]; \
 				return result; \
 			} \
-			/* Scalar-vector op */ \
+			/* Scalar-matrix op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<bool, rows, cols> operator op (T a, matrix<T, rows, cols> const & b) \
 			{ \
@@ -194,7 +194,7 @@ namespace util
 					result.m_data[i] = a op b.m_data[i]; \
 				return result; \
 			} \
-			/* Vector-scalar op */ \
+			/* Matrix-scalar op */ \
 			template <typename T, uint rows, uint cols> \
 			matrix<bool, rows, cols> operator op (matrix<T, rows, cols> const & a, T b) \
 			{ \
@@ -299,7 +299,7 @@ namespace util
 			return matrix<T, n, n>::identity();
 		if (b == 1)
 			return a;
-		matrix<T, n, n> oddpart = matrix<T, n, n>::identity(), evenpart = a;
+		auto oddpart = matrix<T, n, n>::identity(), evenpart = a;
 		while (b > 1)
 		{
 			if (b % 2 == 1)
@@ -446,8 +446,26 @@ namespace util
 
 	// !!!UNDONE: diagonalization and decomposition?
 
+	template <typename T, uint n>
+	matrix<T, n, n> diagonal(T a)
+	{
+		auto result = matrix<T, n, n>::make(T(0));
+		for (uint i = 0; i < n; ++i)
+			result[i][i] = a;
+		return result;
+	}
+
+	template <typename T, uint n>
+	matrix<T, n, n> diagonal(vector<T, n> const & a)
+	{
+		auto result = matrix<T, n, n>::make(T(0));
+		for (uint i = 0; i < n; ++i)
+			result[i][i] = a[i];
+		return result;
+	}
+
 	template <typename T, uint rows, uint cols>
-	matrix<T, rows, cols> outerproduct(vector<T, rows> const & a, vector<T, cols> const & b)
+	matrix<T, rows, cols> outerProduct(vector<T, rows> const & a, vector<T, cols> const & b)
 	{
 		matrix<T, rows, cols> result;
 		for (uint i = 0; i < rows; ++i)
@@ -463,6 +481,8 @@ namespace util
 			result.m_data[i] = isfinite(a.m_data[i]);
 		return result;
 	}
+
+
 
 	// Utilities for bool matrices
 
@@ -526,4 +546,18 @@ namespace util
 			result = max(result, a.m_data[i]);
 		return result;
 	}
+
+
+
+	// Generate standard projection matrices (row-vector math; right-handed view space).
+	// "D3D style" means z in [0, 1] after projection; "OGL style" means z in [-1, 1].
+
+	float4x4 orthoProjD3DStyle(float left, float right, float bottom, float top, float near, float far);
+	float4x4 orthoProjOGLStyle(float left, float right, float bottom, float top, float near, float far);
+
+	float4x4 perspProjD3DStyle(float left, float right, float bottom, float top, float near, float far);
+	float4x4 perspProjOGLStyle(float left, float right, float bottom, float top, float near, float far);
+
+	float4x4 perspProjD3DStyle(float verticalFOV, float aspect, float near, float far);
+	float4x4 perspProjOGLStyle(float verticalFOV, float aspect, float near, float far);
 }

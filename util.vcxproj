@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util-affine.h" />
     <ClInclude Include="util-matrix.h" />
     <ClInclude Include="util-vector.h" />
     <ClInclude Include="util-rng.h" />

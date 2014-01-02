@@ -8,6 +8,7 @@ basic utilities
 - logging
 - custom (controllable) asserts and debug-breaks
 - intersection tests
+- comparisons with epsilon
 
 math
 - vectors - DONE
@@ -15,32 +16,19 @@ math
 	- basics - DONE
 	- diagonalization and decomposition
 - rectangles and bounding boxes
-- affine math
+- affine math - DONE
 - simd math
 - half-float from OpenEXR
 - quats and rotation stuff
 - color space conversion
+- projective math?
+- grassmann algebra?
 
 rng
 - wang hash - DONE
 - xorshift - DONE
 
 
-
-math planning
-- templated on base type and size
-- typedefs for common types/sizes e.g. float3
-- maker functions, not constructors
-- free functions, not member functions
-- mat exponentiation (integer powers only)
-- mat diagonalization/decomposition?
-
-affine math planning
-- vector3/point3 based on low-level float3
-- affine xfm based on low-level float3x3
-- transform generation
-- projective xfm
-- grassmann algebra?
 
 simd math planning
 - 4-wide SoA layout

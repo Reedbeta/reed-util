@@ -39,6 +39,10 @@ namespace util
 	template <typename T>
 	T lerp(T a, T b, float u) { return a + (b - a) * u; }
 
+	// Generic square
+	template <typename T>
+	T square(T a) { return a*a; }
+
 	// Test for finiteness
 	bool isfinite(float f);
 	inline bool isfinite(double d)
@@ -51,6 +55,7 @@ namespace util
 // Random number library
 #include "util-rng.h"
 
-// Vector/matrix math library
+// Math libraries
 #include "util-vector.h"
 #include "util-matrix.h"
+#include "util-affine.h"

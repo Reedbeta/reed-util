@@ -19,21 +19,20 @@ namespace util
 				{ return m_data[i]; } \
 			/* Generic maker function, broadcasting a scalar */ \
 			static vector<T, n> make(T a) \
-				{ \
-					vector<T, n> result; \
-					for (uint i = 0; i < n; ++i) \
-						result[i] = a; \
-					return result; \
-				} \
-			/* Generic maker function, taking any subscriptable type */ \
-			template <typename Arg> \
-			static vector<T, n> make(Arg a) \
-				{ \
-					vector<T, n> result; \
-					for (uint i = 0; i < n; ++i) \
-						result[i] = T(a[i]); \
-					return result; \
-				}
+			{ \
+				vector<T, n> result; \
+				for (uint i = 0; i < n; ++i) \
+					result[i] = a; \
+				return result; \
+			} \
+			/* Generic maker function, taking an array */ \
+			static vector<T, n> make(const T * a) \
+			{ \
+				vector<T, n> result; \
+				for (uint i = 0; i < n; ++i) \
+					result[i] = T(a[i]); \
+				return result; \
+			}
 
 	// Generic vector struct, providing storage, using partial
 	// specialization to get names (xyzw) for n <= 4
@@ -102,32 +101,32 @@ namespace util
 			typedef vector<type, 2> type##2; \
 			typedef vector<type, 3> type##3; \
 			typedef vector<type, 4> type##4; \
+			typedef vector<type, 2> const & type##2arg; \
+			typedef vector<type, 3> const & type##3arg; \
+			typedef vector<type, 4> const & type##4arg; \
 			type##2 make##type##2(type x, type y) \
 				{ type##2 v = { x, y }; return v; } \
 			type##2 make##type##2(type a) \
 				{ type##2 v = { a, a }; return v; } \
-			template <typename Arg> \
-			type##2 make##type##2(Arg a) \
+			type##2 make##type##2(const type * a) \
 				{ return type##2::make(a); } \
 			type##3 make##type##3(type x, type y, type z) \
 				{ type##3 v = { x, y, z }; return v; } \
-			type##3 make##type##3(const type##2 & xy, type z) \
+			type##3 make##type##3(type##2arg xy, type z) \
 				{ type##3 v = { xy.x, xy.y, z }; return v; } \
 			type##3 make##type##3(type a) \
 				{ type##3 v = { a, a, a }; return v; } \
-			template <typename Arg> \
-			type##3 make##type##3(Arg a) \
+			type##3 make##type##3(const type * a) \
 				{ return type##3::make(a); } \
 			type##4 make##type##4(type x, type y, type z, type w) \
 				{ type##4 v = { x, y, z, w }; return v; } \
-			type##4 make##type##4(const type##2 & xy, type z, type w) \
+			type##4 make##type##4(type##2arg xy, type z, type w) \
 				{ type##4 v = { xy.x, xy.y, z, w }; return v; } \
-			type##4 make##type##4(const type##3 & xyz, type w) \
+			type##4 make##type##4(type##3arg xyz, type w) \
 				{ type##4 v = { xyz.x, xyz.y, xyz.z, w }; return v; } \
 			type##4 make##type##4(type a) \
 				{ type##4 v = { a, a, a, a }; return v; } \
-			template <typename Arg> \
-			type##4 make##type##4(Arg a) \
+			type##4 make##type##4(const type * a) \
 				{ return type##4::make(a); }
 
 	DEFINE_CONCRETE_VECTORS(float);
@@ -319,6 +318,8 @@ namespace util
 			return result;
 		}
 	}
+
+
 
 	// Utilities for bool vectors
 
