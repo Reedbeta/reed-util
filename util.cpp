@@ -2,10 +2,8 @@
 
 #include <cstdarg>
 #include <cstdio>
-#include <cstdlib>
 #include <ctime>
 #include <limits>
-#include <xmmintrin.h>
 
 namespace util
 {
@@ -235,11 +233,6 @@ void passPointer(const float * p)
 	(void)p;
 }
 
-__m128 operator+ (__m128 a, __m128 b)
-{
-	return _mm_add_ps(a, b);
-}
-
 void testVectors()
 {
 	using namespace util;
@@ -325,6 +318,9 @@ void testVectors()
 	float bazArray[] = { 1, 2, 3, 4 };
 	makefloat4(bazArray);
 
+	__m128 simdA, simdB;
+	simdA + simdB;
+	simdA += simdB;
 	vector<__m128, 4> simdVector;
 	simdVector + simdVector;
 	simdVector + _mm_set_ps(47, 47, 47, 47);

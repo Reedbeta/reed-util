@@ -1,5 +1,4 @@
 #pragma once
-#include <algorithm>
 #include <cmath>
 
 namespace util
@@ -229,6 +228,8 @@ namespace util
 #undef DEFINE_INPLACE_OPERATORS
 #undef DEFINE_RELATIONAL_OPERATORS
 
+	// !!!UNDONE: logical ops for bool mats
+
 	// Matrix multiplication
 
 	template <typename T, uint rows, uint inner, uint cols>
@@ -334,8 +335,8 @@ namespace util
 			// if it is not already there
 			if (pivot != j)
 			{
-				std::swap(a[j], a[pivot]);
-				std::swap(b[j], b[pivot]);
+				swap(a[j], a[pivot]);
+				swap(b[j], b[pivot]);
 			}
 
 			// Divide the whole row by the pivot element
@@ -397,7 +398,7 @@ namespace util
 			// if it is not already there
 			if (pivot != j)
 			{
-				std::swap(a[j], a[pivot]);
+				swap(a[j], a[pivot]);
 				result *= T(-1);
 			}
 

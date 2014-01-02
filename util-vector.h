@@ -249,6 +249,8 @@ namespace util
 #undef DEFINE_INPLACE_OPERATORS
 #undef DEFINE_RELATIONAL_OPERATORS
 
+	// !!!UNDONE: logical ops for bool vectors
+
 
 
 	// Other math functions

@@ -23,6 +23,10 @@ namespace util
 	extern const float infty;
 	extern const float NaN;
 
+	// Generic swap
+	template <typename T>
+	void swap(T & a, T & b) { T c = a; a = b; b = c; }
+
 	// Generic min/max/abs/clamp/saturate
 	template <typename T>
 	T min(T a, T b) { return (a < b) ? a : b; }
@@ -59,3 +63,4 @@ namespace util
 #include "util-vector.h"
 #include "util-matrix.h"
 #include "util-affine.h"
+#include "util-simd.h"
