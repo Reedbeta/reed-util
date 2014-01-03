@@ -62,6 +62,57 @@ namespace util
 		return _mm_div_ps(a, _mm_set_ps(b, b, b, b));
 	}
 
+	inline __m128 operator & (__m128 a, __m128 b)
+	{
+		return _mm_and_ps(a, b);
+	}
+	inline __m128 operator & (float a, __m128 b)
+	{
+		return _mm_and_ps(_mm_set_ps(a, a, a, a), b);
+	}
+	inline __m128 operator & (__m128 a, float b)
+	{
+		return _mm_and_ps(a, _mm_set_ps(b, b, b, b));
+	}
+
+	inline __m128 operator | (__m128 a, __m128 b)
+	{
+		return _mm_or_ps(a, b);
+	}
+	inline __m128 operator | (float a, __m128 b)
+	{
+		return _mm_or_ps(_mm_set_ps(a, a, a, a), b);
+	}
+	inline __m128 operator | (__m128 a, float b)
+	{
+		return _mm_or_ps(a, _mm_set_ps(b, b, b, b));
+	}
+
+	inline __m128 operator ^ (__m128 a, __m128 b)
+	{
+		return _mm_xor_ps(a, b);
+	}
+	inline __m128 operator ^ (float a, __m128 b)
+	{
+		return _mm_xor_ps(_mm_set_ps(a, a, a, a), b);
+	}
+	inline __m128 operator ^ (__m128 a, float b)
+	{
+		return _mm_xor_ps(a, _mm_set_ps(b, b, b, b));
+	}
+
+	inline __m128 operator ! (__m128 a)
+	{
+		// Note: there's no bitwise-not, so we have to use "andnot" (= ~a & b) with b = true.
+		return _mm_andnot_ps(a, _mm_castsi128_ps(_mm_set_epi32(~0, ~0, ~0, ~0)));
+	}
+
+	inline __m128 operator ~ (__m128 a)
+	{
+		// Note: there's no bitwise-not, so we have to use "andnot" (= ~a & b) with b = true.
+		return _mm_andnot_ps(a, _mm_castsi128_ps(_mm_set_epi32(~0, ~0, ~0, ~0)));
+	}
+
 	inline __m128 & operator += (__m128 & a, __m128 b)
 	{
 		a = a + b;
@@ -103,6 +154,39 @@ namespace util
 	inline __m128 & operator /= (__m128 & a, float b)
 	{
 		a = a / b;
+		return a;
+	}
+
+	inline __m128 & operator &= (__m128 & a, __m128 b)
+	{
+		a = a & b;
+		return a;
+	}
+	inline __m128 & operator &= (__m128 & a, float b)
+	{
+		a = a & b;
+		return a;
+	}
+
+	inline __m128 & operator |= (__m128 & a, __m128 b)
+	{
+		a = a | b;
+		return a;
+	}
+	inline __m128 & operator |= (__m128 & a, float b)
+	{
+		a = a | b;
+		return a;
+	}
+
+	inline __m128 & operator ^= (__m128 & a, __m128 b)
+	{
+		a = a ^ b;
+		return a;
+	}
+	inline __m128 & operator ^= (__m128 & a, float b)
+	{
+		a = a ^ b;
 		return a;
 	}
 
@@ -256,6 +340,57 @@ namespace util
 	}
 #endif
 
+	inline __m128i operator & (__m128i a, __m128i b)
+	{
+		return _mm_and_si128(a, b);
+	}
+	inline __m128i operator & (int a, __m128i b)
+	{
+		return _mm_and_si128(_mm_set_epi32(a, a, a, a), b);
+	}
+	inline __m128i operator & (__m128i a, int b)
+	{
+		return _mm_and_si128(a, _mm_set_epi32(b, b, b, b));
+	}
+
+	inline __m128i operator | (__m128i a, __m128i b)
+	{
+		return _mm_or_si128(a, b);
+	}
+	inline __m128i operator | (int a, __m128i b)
+	{
+		return _mm_or_si128(_mm_set_epi32(a, a, a, a), b);
+	}
+	inline __m128i operator | (__m128i a, int b)
+	{
+		return _mm_or_si128(a, _mm_set_epi32(b, b, b, b));
+	}
+
+	inline __m128i operator ^ (__m128i a, __m128i b)
+	{
+		return _mm_xor_si128(a, b);
+	}
+	inline __m128i operator ^ (int a, __m128i b)
+	{
+		return _mm_xor_si128(_mm_set_epi32(a, a, a, a), b);
+	}
+	inline __m128i operator ^ (__m128i a, int b)
+	{
+		return _mm_xor_si128(a, _mm_set_epi32(b, b, b, b));
+	}
+
+	inline __m128i operator ! (__m128i a)
+	{
+		// Note: there's no bitwise-not, so we have to use "andnot" (= ~a & b) with b = true.
+		return _mm_andnot_si128(a, _mm_set_epi32(~0, ~0, ~0, ~0));
+	}
+
+	inline __m128i operator ~ (__m128i a)
+	{
+		// Note: there's no bitwise-not, so we have to use "andnot" (= ~a & b) with b = true.
+		return _mm_andnot_si128(a, _mm_set_epi32(~0, ~0, ~0, ~0));
+	}
+
 	inline __m128i & operator += (__m128i & a, __m128i b)
 	{
 		a = a + b;
@@ -302,6 +437,39 @@ namespace util
 		return a;
 	}
 #endif
+
+	inline __m128i & operator &= (__m128i & a, __m128i b)
+	{
+		a = a & b;
+		return a;
+	}
+	inline __m128i & operator &= (__m128i & a, int b)
+	{
+		a = a & b;
+		return a;
+	}
+
+	inline __m128i & operator |= (__m128i & a, __m128i b)
+	{
+		a = a | b;
+		return a;
+	}
+	inline __m128i & operator |= (__m128i & a, int b)
+	{
+		a = a | b;
+		return a;
+	}
+
+	inline __m128i & operator ^= (__m128i & a, __m128i b)
+	{
+		a = a ^ b;
+		return a;
+	}
+	inline __m128i & operator ^= (__m128i & a, int b)
+	{
+		a = a ^ b;
+		return a;
+	}
 
 	inline __m128i operator == (__m128i a, __m128i b)
 	{
@@ -387,6 +555,90 @@ namespace util
 		return a >= _mm_set_epi32(b, b, b, b);
 	}
 
-	// !!!UNDONE: logical/bitwise ops
-	// !!!UNDONE: unsigned int support?
+
+	
+	// Convert memory layouts to and from SIMD-friendly (AOSOA) layout
+
+	// convertToSIMD takes a layout like this:
+	//   xyz...xyz...xyz...xyz...
+	// and makes it look like this:
+	//   xxxxyyyyzzzz...xxxxyyyyzzzz...
+	// In other words it converts an array of float3 to an array of float3_simd.
+	// Components (xyz) are assumed to be 32 bits each (float or int).
+    // Both input and output layouts can have an arbitrary stride, but the
+	// components of one vector are assumed to be tightly packed.
+	// numComponents is the count of components per vector (e.g. 3 for xyz, 4 for xyzw).
+	// numVectors is the count of vectors (each xyz or xyzw).  If not a multiple of 4,
+	// the last item in the output array will be only partially filled.
+
+	void convertToSIMD(
+			uint numComponents,
+			uint numVectors,
+			const void * pInput,
+			uint inputStrideBytes,
+			void * pOutput,
+			uint outputStrideBytes);
+
+	// convertFromSIMD does the inverse of convertToSIMD.
+
+	void convertFromSIMD(
+			uint numComponents,
+			uint numVectors,
+			const void * pInput,
+			uint inputStrideBytes,
+			void * pOutput,
+			uint outputStrideBytes);
+
+
+
+	// Concrete SIMD vectors, matrices, points, and affines,
+	// for the most common types and dimensions
+
+#define DEFINE_CONCRETE_VECTORS(type, name) \
+			typedef vector<type, 2> name##2_simd; \
+			typedef vector<type, 3> name##3_simd; \
+			typedef vector<type, 4> name##4_simd; \
+			typedef vector<type, 2> const & name##2_simd__arg; \
+			typedef vector<type, 3> const & name##3_simd__arg; \
+			typedef vector<type, 4> const & name##4_simd__arg;
+
+	DEFINE_CONCRETE_VECTORS(__m128, float);
+	DEFINE_CONCRETE_VECTORS(__m128i, int);
+
+#undef DEFINE_CONCRETE_VECTORS
+
+#define DEFINE_CONCRETE_MATRICES(type, name) \
+			typedef matrix<type, 2, 2> name##2x2_simd; \
+			typedef matrix<type, 3, 3> name##3x3_simd; \
+			typedef matrix<type, 4, 4> name##4x4_simd; \
+			typedef matrix<type, 2, 2> const & name##2x2_simd__arg; \
+			typedef matrix<type, 3, 3> const & name##3x3_simd__arg; \
+			typedef matrix<type, 4, 4> const & name##4x4_simd__arg;
+
+	DEFINE_CONCRETE_MATRICES(__m128, float);
+	DEFINE_CONCRETE_MATRICES(__m128i, int);
+
+#undef DEFINE_CONCRETE_MATRICES
+
+#define DEFINE_CONCRETE_POINTS(type, name) \
+			typedef point<type, 2> name##2_simd; \
+			typedef point<type, 3> name##3_simd; \
+			typedef point<type, 2> const & name##2_simd__arg; \
+			typedef point<type, 3> const & name##3_simd__arg;
+
+	DEFINE_CONCRETE_POINTS(__m128, point);
+	DEFINE_CONCRETE_POINTS(__m128i, ipoint);
+
+#undef DEFINE_CONCRETE_POINTS
+
+#define DEFINE_CONCRETE_AFFINES(type, name) \
+			typedef affine<type, 2> name##2_simd; \
+			typedef affine<type, 3> name##3_simd; \
+			typedef affine<type, 2> const & name##2_simd__arg; \
+			typedef affine<type, 3> const & name##3_simd__arg;
+
+	DEFINE_CONCRETE_AFFINES(__m128, affine);
+	DEFINE_CONCRETE_AFFINES(__m128i, iaffine);
+
+#undef DEFINE_CONCRETE_AFFINES
 }

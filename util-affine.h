@@ -99,8 +99,8 @@ namespace util
 #define DEFINE_CONCRETE_POINTS(type, name) \
 			typedef point<type, 2> name##2; \
 			typedef point<type, 3> name##3; \
-			typedef point<type, 2> const & name##2arg; \
-			typedef point<type, 3> const & name##3arg; \
+			typedef point<type, 2> const & name##2_arg; \
+			typedef point<type, 3> const & name##3_arg; \
 			name##2 make##name##2(type x, type y) \
 				{ name##2 v = { x, y }; return v; } \
 			name##2 make##name##2(type a) \
@@ -109,7 +109,7 @@ namespace util
 				{ return name##2::make(a); } \
 			name##3 make##name##3(type x, type y, type z) \
 				{ name##3 v = { x, y, z }; return v; } \
-			name##3 make##name##3(name##2arg xy, type z) \
+			name##3 make##name##3(name##2_arg xy, type z) \
 				{ name##3 v = { xy.x, xy.y, z }; return v; } \
 			name##3 make##name##3(type a) \
 				{ name##3 v = { a, a, a }; return v; } \
@@ -360,23 +360,23 @@ namespace util
 #define DEFINE_CONCRETE_AFFINES(type, name) \
 			typedef affine<type, 2> name##2; \
 			typedef affine<type, 3> name##3; \
-			typedef affine<type, 2> const & name##2arg; \
-			typedef affine<type, 3> const & name##3arg; \
+			typedef affine<type, 2> const & name##2_arg; \
+			typedef affine<type, 3> const & name##3_arg; \
 			name##2 make##name##2(type m0, type m1, type m2, type m3, type tx, type ty) \
 				{ name##2 a = { m0, m1, m2, m3, tx, ty }; return a; } \
-			name##2 make##name##2(type##2arg row0, type##2arg row1, type##2arg translation) \
+			name##2 make##name##2(type##2_arg row0, type##2_arg row1, type##2_arg translation) \
 				{ name##2 a = { row0.x, row0.y, row1.x, row1.y, translation.x, translation.y }; return a; } \
-			name##2 make##name##2Cols(type##2arg col0, type##2arg col1, type##2arg translation) \
+			name##2 make##name##2Cols(type##2_arg col0, type##2_arg col1, type##2_arg translation) \
 				{ name##2 a = { col0.x, col1.x, col0.y, col1.y, translation.x, translation.y }; return a; } \
-			name##2 make##name##2(type##2x2arg linear, type##2arg translation) \
+			name##2 make##name##2(type##2x2_arg linear, type##2_arg translation) \
 				{ name##2 a = { linear, translation }; return a; } \
 			name##3 make##name##3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type tx, type ty, type tz) \
 				{ name##3 a = { m0, m1, m2, m3, m4, m5, m6, m7, m8, tx, ty, tz }; return a; } \
-			name##3 make##name##3(type##3arg row0, type##3arg row1, type##3arg row2, type##3arg translation) \
+			name##3 make##name##3(type##3_arg row0, type##3_arg row1, type##3_arg row2, type##3_arg translation) \
 				{ name##3 a = { row0.x, row0.y, row0.z, row1.x, row1.y, row1.z, row2.x, row2.y, row2.z, translation.x, translation.y, translation.z }; return a; } \
-			name##3 make##name##3Cols(type##3arg col0, type##3arg col1, type##3arg col2, type##3arg translation) \
+			name##3 make##name##3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2, type##3_arg translation) \
 				{ name##3 a = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z, translation.x, translation.y, translation.z }; return a; } \
-			name##3 make##name##3(type##3x3arg linear, type##3arg translation) \
+			name##3 make##name##3(type##3x3_arg linear, type##3_arg translation) \
 				{ name##3 a = { linear, translation }; return a; }
 
 	DEFINE_CONCRETE_AFFINES(float, affine);
@@ -533,15 +533,15 @@ namespace util
 	}
 
 	affine2 rotation(float radians);
-	affine3 rotation(float3arg axis, float radians);
+	affine3 rotation(float3_arg axis, float radians);
 
-	affine2 lookat(float2arg look);
+	affine2 lookat(float2_arg look);
 
 	// lookatX: rotate so X axis faces 'look' and Z axis faces 'up', if specified.
 	// lookatZ: rotate so -Z axis faces 'look' and Y axis faces 'up', if specified.
 
-	affine3 lookatX(float3arg look);
-	affine3 lookatX(float3arg look, float3arg up);
-	affine3 lookatZ(float3arg look);
-	affine3 lookatZ(float3arg look, float3arg up);
+	affine3 lookatX(float3_arg look);
+	affine3 lookatX(float3_arg look, float3_arg up);
+	affine3 lookatZ(float3_arg look);
+	affine3 lookatZ(float3_arg look, float3_arg up);
 }

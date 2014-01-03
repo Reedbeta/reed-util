@@ -66,14 +66,14 @@ namespace util
 			typedef matrix<type, 2, 2> type##2x2; \
 			typedef matrix<type, 3, 3> type##3x3; \
 			typedef matrix<type, 4, 4> type##4x4; \
-			typedef matrix<type, 2, 2> const & type##2x2arg; \
-			typedef matrix<type, 3, 3> const & type##3x3arg; \
-			typedef matrix<type, 4, 4> const & type##4x4arg; \
+			typedef matrix<type, 2, 2> const & type##2x2_arg; \
+			typedef matrix<type, 3, 3> const & type##3x3_arg; \
+			typedef matrix<type, 4, 4> const & type##4x4_arg; \
 			type##2x2 make##type##2x2(type m0, type m1, type m2, type m3) \
 				{ type##2x2 m = { m0, m1, m2, m3 }; return m; } \
-			type##2x2 make##type##2x2(type##2arg row0, type##2arg row1) \
+			type##2x2 make##type##2x2(type##2_arg row0, type##2_arg row1) \
 				{ type##2x2 m = { row0.x, row0.y, row1.x, row1.y }; return m; } \
-			type##2x2 make##type##2x2Cols(type##2arg col0, type##2arg col1) \
+			type##2x2 make##type##2x2Cols(type##2_arg col0, type##2_arg col1) \
 				{ type##2x2 m = { col0.x, col1.x, col0.y, col1.y }; return m; } \
 			type##2x2 make##type##2x2(type a) \
 				{ type##2x2 m = { a, a, a, a }; return m; } \
@@ -81,9 +81,9 @@ namespace util
 				{ return type##2x2::make(a); } \
 			type##3x3 make##type##3x3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8) \
 				{ type##3x3 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8 }; return m; } \
-			type##3x3 make##type##3x3(type##3arg row0, type##3arg row1, type##3arg row2) \
+			type##3x3 make##type##3x3(type##3_arg row0, type##3_arg row1, type##3_arg row2) \
 				{ type##3x3 m = { row0.x, row0.y, row0.z, row1.x, row1.y, row1.z, row2.x, row2.y, row2.z }; return m; } \
-			type##3x3 make##type##3x3Cols(type##3arg col0, type##3arg col1, type##3arg col2) \
+			type##3x3 make##type##3x3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2) \
 				{ type##3x3 m = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z }; return m; } \
 			type##3x3 make##type##3x3(type a) \
 				{ type##3x3 m = { a, a, a, a, a, a, a, a, a }; return m; } \
@@ -91,9 +91,9 @@ namespace util
 				{ return type##3x3::make(a); } \
 			type##4x4 make##type##4x4(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type m9, type m10, type m11, type m12, type m13, type m14, type m15) \
 				{ type##4x4 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 }; return m; } \
-			type##4x4 make##type##4x4(type##4arg row0, type##4arg row1, type##4arg row2, type##4arg row3) \
+			type##4x4 make##type##4x4(type##4_arg row0, type##4_arg row1, type##4_arg row2, type##4_arg row3) \
 				{ type##4x4 m = { row0.x, row0.y, row0.z, row0.w, row1.x, row1.y, row1.z, row1.w, row2.x, row2.y, row2.z, row2.w, row3.x, row3.y, row3.z, row3.w }; return m; } \
-			type##4x4 make##type##4x4Cols(type##4arg col0, type##4arg col1, type##4arg col2, type##4arg col3) \
+			type##4x4 make##type##4x4Cols(type##4_arg col0, type##4_arg col1, type##4_arg col2, type##4_arg col3) \
 				{ type##4x4 m = { col0.x, col1.x, col2.x, col3.x, col0.y, col1.y, col2.y, col3.y, col0.z, col1.z, col2.z, col3.z, col0.w, col1.w, col2.w, col3.w }; return m; } \
 			type##4x4 make##type##4x4Identity(type a) \
 				{ type##4x4 m = { a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a }; return m; } \
@@ -208,11 +208,19 @@ namespace util
 	DEFINE_UNARY_OPERATOR(-);
 	DEFINE_BINARY_SCALAR_OPERATORS(*);
 	DEFINE_BINARY_SCALAR_OPERATORS(/);
+	DEFINE_BINARY_OPERATORS(&);
+	DEFINE_BINARY_OPERATORS(|);
+	DEFINE_BINARY_OPERATORS(^);
+	DEFINE_UNARY_OPERATOR(!);
+	DEFINE_UNARY_OPERATOR(~);
 
 	DEFINE_INPLACE_OPERATORS(+=);
 	DEFINE_INPLACE_OPERATORS(-=);
 	DEFINE_INPLACE_SCALAR_OPERATOR(*=);
 	DEFINE_INPLACE_SCALAR_OPERATOR(/=);
+	DEFINE_INPLACE_OPERATORS(&=);
+	DEFINE_INPLACE_OPERATORS(|=);
+	DEFINE_INPLACE_OPERATORS(^=);
 
 	DEFINE_RELATIONAL_OPERATORS(==);
 	DEFINE_RELATIONAL_OPERATORS(!=);
@@ -227,8 +235,6 @@ namespace util
 #undef DEFINE_INPLACE_SCALAR_OPERATOR
 #undef DEFINE_INPLACE_OPERATORS
 #undef DEFINE_RELATIONAL_OPERATORS
-
-	// !!!UNDONE: logical ops for bool mats
 
 	// Matrix multiplication
 

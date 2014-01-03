@@ -1,5 +1,6 @@
 #include "util.h"
 
+#include <cassert>
 #include <cstdarg>
 #include <cstdio>
 #include <ctime>
@@ -167,7 +168,7 @@ namespace util
 					0, 0);
 	}
 
-	affine3 rotation(float3arg axis, float radians)
+	affine3 rotation(float3_arg axis, float radians)
 	{
 		// Note: assumes axis is normalized
 		float sinTheta = sinf(radians);
@@ -187,37 +188,123 @@ namespace util
 		return makeaffine3(mat, makefloat3(0.0f));
 	}
 
-	affine2 lookat(float2arg look)
+	affine2 lookat(float2_arg look)
 	{
 		return makeaffine2(look, orthogonal(look), makefloat2(0.0f));
 	}
 
-	affine3 lookatX(float3arg look)
+	affine3 lookatX(float3_arg look)
 	{
 		float3 left = orthogonal(look);
 		float3 up = cross(look, left);
 		return makeaffine3(look, left, up, makefloat3(0.0f));
 	}
 
-	affine3 lookatX(float3arg look, float3arg up)
+	affine3 lookatX(float3_arg look, float3_arg up)
 	{
 		float3 left = cross(up, look);
 		float3 trueUp = cross(look, left);
 		return makeaffine3(look, left, trueUp, makefloat3(0.0f));
 	}
 
-	affine3 lookatZ(float3arg look)
+	affine3 lookatZ(float3_arg look)
 	{
 		float3 left = orthogonal(look);
 		float3 up = cross(look, left);
 		return makeaffine3(-left, up, -look, makefloat3(0.0f));
 	}
 
-	affine3 lookatZ(float3arg look, float3arg up)
+	affine3 lookatZ(float3_arg look, float3_arg up)
 	{
 		float3 left = cross(up, look);
 		float3 trueUp = cross(look, left);
 		return makeaffine3(-left, trueUp, -look, makefloat3(0.0f));
+	}
+
+
+
+	// Convert memory layouts to and from SIMD-friendly (AOSOA) layout
+
+	void convertToSIMD(
+			uint numComponents,
+			uint numVectors,
+			const void * pInput,
+			uint inputStrideBytes,
+			void * pOutput,
+			uint outputStrideBytes)
+	{
+		static const int simdWidth = 4;
+
+		assert(numComponents > 0);
+		assert(pInput);
+		assert(inputStrideBytes >= sizeof(float) * numComponents);
+		assert(pOutput);
+		assert((size_t)pOutput % (simdWidth * sizeof(float)) == 0);
+		assert(outputStrideBytes >= simdWidth * sizeof(float) * numComponents);
+
+		// Do the part that's a multiple of simdWidth
+		for (; numVectors >= simdWidth; numVectors -= simdWidth)
+		{
+			for (uint i = 0; i < simdWidth; ++i)
+			{
+				for (uint j = 0; j < numComponents; ++j)
+					((float *)pOutput)[simdWidth*j + i] = ((float *)pInput)[j];
+
+				pInput = advanceBytes(pInput, inputStrideBytes);
+			}
+
+			pOutput = advanceBytes(pOutput, outputStrideBytes);
+		}
+
+		// Do any part left over
+		for (uint i = 0; i < numVectors; ++i)
+		{
+			for (uint j = 0; j < numComponents; ++j)
+				((float *)pOutput)[simdWidth*j + i] = ((float *)pInput)[j];
+
+			pInput = advanceBytes(pInput, inputStrideBytes);
+		}
+	}
+
+	void convertFromSIMD(
+			uint numComponents,
+			uint numVectors,
+			const void * pInput,
+			uint inputStrideBytes,
+			void * pOutput,
+			uint outputStrideBytes)
+	{
+		static const int simdWidth = 4;
+
+		assert(numComponents > 0);
+		assert(pInput);
+		assert((size_t)pInput % (simdWidth * sizeof(float)) == 0);
+		assert(inputStrideBytes >= simdWidth * sizeof(float) * numComponents);
+		assert(pOutput);
+		assert(outputStrideBytes >= sizeof(float) * numComponents);
+
+		// Do the part that's a multiple of simdWidth
+		for (; numVectors >= simdWidth; numVectors -= simdWidth)
+		{
+			for (uint i = 0; i < simdWidth; ++i)
+			{
+				for (uint j = 0; j < numComponents; ++j)
+					((float *)pOutput)[j] = ((float *)pInput)[simdWidth*j + i];
+
+				pOutput = advanceBytes(pOutput, outputStrideBytes);
+			}
+
+			pInput = advanceBytes(pInput, inputStrideBytes);
+		}
+
+		// Do any part left over
+		for (uint i = 0; i < numVectors; ++i)
+		{
+			for (uint j = 0; j < numComponents; ++j)
+				((float *)pOutput)[j] = ((float *)pInput)[simdWidth*j + i];
+
+			pOutput = advanceBytes(pOutput, outputStrideBytes);
+		}
 	}
 }
 
@@ -292,6 +379,16 @@ void testVectors()
 	foo5 = lerp(foo5, foo5, 0.5f);
 	foo5 = square(foo5);
 
+	vector<int, 5> ifoo5 = { 1, 2, 3, 4, 5 };
+	ifoo5 & ifoo5;
+	ifoo5 | ifoo5;
+	ifoo5 ^ ifoo5;
+	!ifoo5;
+	~ifoo5;
+	ifoo5 &= ifoo5;
+	ifoo5 |= ifoo5;
+	ifoo5 ^= ifoo5;
+
 	float4 foo4 = { 1, 2, 3, 4};
 	foo4.w;
 	foo4.a;
@@ -318,7 +415,7 @@ void testVectors()
 	float bazArray[] = { 1, 2, 3, 4 };
 	makefloat4(bazArray);
 
-	__m128 simdA, simdB;
+	__m128 simdA = {}, simdB = {};
 	simdA + simdB;
 	simdA += simdB;
 	vector<__m128, 4> simdVector;
@@ -392,6 +489,16 @@ void testMatrices()
 	maxComponent(foo5);
 	foo5 = lerp(foo5, foo5, 0.5f);
 	foo5 = square(foo5);
+
+	matrix<int, 5, 5> ifoo5 = { 1, 2, 3, 4, 5 };
+	ifoo5 & ifoo5;
+	ifoo5 | ifoo5;
+	ifoo5 ^ ifoo5;
+	!ifoo5;
+	~ifoo5;
+	ifoo5 &= ifoo5;
+	ifoo5 |= ifoo5;
+	ifoo5 ^= ifoo5;
 
 	float bazArray[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 	makefloat4x4(bazArray);

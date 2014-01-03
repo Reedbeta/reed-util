@@ -15,6 +15,19 @@ namespace util
 	// "uint" is a lot shorter than "unsigned int"
 	typedef unsigned int uint;
 
+	// "byte" is a lot shorter than "unsigned char"
+	typedef unsigned char byte;
+
+	// More short names for integer types
+	typedef char				i8;
+	typedef	short				i16;
+	typedef int					i32;
+	typedef __int64				i64;
+	typedef unsigned char		u8;
+	typedef unsigned short		u16;
+	typedef unsigned int		u32;
+	typedef unsigned __int64	u64;
+
 	// Delicious pi
 	const float pi = 3.141592654f;
 
@@ -54,6 +67,11 @@ namespace util
 
 	// Print error message and exit
 	void __declspec(noreturn) exit(const char * fmt, ...);
+
+	// Advance a pointer by a given number of bytes
+	template <typename T>
+	inline T * advanceBytes(T * ptr, uint bytes)
+		{ return (T *)((byte *)ptr + bytes); }
 }
 
 // Random number library
