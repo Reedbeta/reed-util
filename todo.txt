@@ -17,7 +17,7 @@ math
 	- diagonalization and decomposition
 - rectangles and bounding boxes
 - affine math - DONE
-- simd math
+- simd math - DONE
 - half-float from OpenEXR
 - quats and rotation stuff
 - color space conversion
@@ -27,9 +27,3 @@ math
 rng
 - wang hash - DONE
 - xorshift - DONE
-
-
-
-simd math planning
-- 4-wide SoA layout
-- functions to transform between SoA/AoS layouts
