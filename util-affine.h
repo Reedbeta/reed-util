@@ -269,6 +269,33 @@ namespace util
 	}
 
 	template <typename T, uint n>
+	vector<bool, n> isnear(point<T, n> const & a, point<T, n> const & b, float epsilon = util::epsilon)
+	{
+		vector<bool, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = isnear(a[i], b[i], epsilon);
+		return result;
+	}
+
+	template <typename T, uint n>
+	vector<bool, n> isnear(point<T, n> const & a, T b, float epsilon = util::epsilon)
+	{
+		vector<bool, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = isnear(a[i], b, epsilon);
+		return result;
+	}
+
+	template <typename T, uint n>
+	vector<bool, n> isnear(T a, point<T, n> const & b, float epsilon = util::epsilon)
+	{
+		vector<bool, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = isnear(a, b[i], epsilon);
+		return result;
+	}
+
+	template <typename T, uint n>
 	vector<bool, n> isfinite(point<T, n> const & a)
 	{
 		vector<bool, n> result;
@@ -497,6 +524,15 @@ namespace util
 			mInverted * -a.m_translation
 		};
 		return result;
+	}
+
+	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
+	// returns a single result rather than a componentwise result
+	template <typename T, uint n>
+	bool isnear(affine<T, n> const & a, affine<T, n> const & b, float epsilon = util::epsilon)
+	{
+		return all(isnear(a.m_linear, b.m_linear, epsilon)) &&
+			   all(isnear(a.m_translation, b.m_translation, epsilon));
 	}
 
 	// !!! this doesn't match the behavior of isfinite() for vectors and matrices -

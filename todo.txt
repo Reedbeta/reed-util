@@ -8,7 +8,7 @@ basic utilities
 - logging
 - custom (controllable) asserts and debug-breaks
 - intersection tests
-- comparisons with epsilon
+- comparisons with epsilon - DONE
 
 math
 - vectors - DONE

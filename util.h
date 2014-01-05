@@ -60,10 +60,17 @@ namespace util
 	template <typename T>
 	T square(T a) { return a*a; }
 
+	// Equality test with epsilon
+	inline bool isnear(float a, float b, float epsilon = util::epsilon)
+		{ return (abs(b - a) < epsilon); }
+
 	// Test for finiteness
-	bool isfinite(float f);
-	inline bool isfinite(double d)
-		{ return (_finite(d) != 0); }
+	inline bool isfinite(float f)
+	{
+		union { uint i; float f; } u;
+		u.f = f;
+		return ((u.i & 0x7f800000) != 0x7f800000);
+	}
 
 	// Print error message and exit
 	void __declspec(noreturn) exit(const char * fmt, ...);

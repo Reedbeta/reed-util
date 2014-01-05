@@ -283,6 +283,33 @@ namespace util
 		{ return a / length(a); }
 
 	template <typename T, uint n>
+	vector<bool, n> isnear(vector<T, n> const & a, vector<T, n> const & b, float epsilon = util::epsilon)
+	{
+		vector<bool, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = isnear(a[i], b[i], epsilon);
+		return result;
+	}
+
+	template <typename T, uint n>
+	vector<bool, n> isnear(vector<T, n> const & a, T b, float epsilon = util::epsilon)
+	{
+		vector<bool, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = isnear(a[i], b, epsilon);
+		return result;
+	}
+
+	template <typename T, uint n>
+	vector<bool, n> isnear(T a, vector<T, n> const & b, float epsilon = util::epsilon)
+	{
+		vector<bool, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = isnear(a, b[i], epsilon);
+		return result;
+	}
+
+	template <typename T, uint n>
 	vector<bool, n> isfinite(vector<T, n> const & a)
 	{
 		vector<bool, n> result;

@@ -481,6 +481,33 @@ namespace util
 	}
 
 	template <typename T, uint rows, uint cols>
+	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b, float epsilon = util::epsilon)
+	{
+		matrix<bool, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = isnear(a.m_data[i], b.m_data[i], epsilon);
+		return result;
+	}
+
+	template <typename T, uint rows, uint cols>
+	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, T b, float epsilon = util::epsilon)
+	{
+		matrix<bool, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = isnear(a.m_data[i], b, epsilon);
+		return result;
+	}
+
+	template <typename T, uint rows, uint cols>
+	matrix<bool, rows, cols> isnear(T a, matrix<T, rows, cols> const & b, float epsilon = util::epsilon)
+	{
+		matrix<bool, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = isnear(a, b.m_data[i], epsilon);
+		return result;
+	}
+
+	template <typename T, uint rows, uint cols>
 	matrix<bool, rows, cols> isfinite(matrix<T, rows, cols> const & a)
 	{
 		matrix<bool, rows, cols> result;

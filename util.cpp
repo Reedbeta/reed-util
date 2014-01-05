@@ -11,13 +11,6 @@ namespace util
 	extern const float infty = std::numeric_limits<float>::infinity();
 	extern const float NaN = std::numeric_limits<float>::quiet_NaN();
 
-	bool isfinite(float f)
-	{
-		union { uint i; float f; } u;
-		u.f = f;
-		return ((u.i & 0x7f800000) != 0x7f800000);
-	}
-
 	void __declspec(noreturn) exit(const char * fmt, ...)
 	{
 		va_list args;
@@ -365,6 +358,9 @@ void testVectors()
 	lengthSquared(foo5);
 	length(foo5);
 	foo5 = normalize(foo5);
+	isnear(foo5, foo5);
+	isnear(foo5, 47.0f);
+	isnear(47.0f, foo5);
 	isfinite(foo5);
 	any(foo5 < 47.0f);
 	all(foo5 > 47.0f);
@@ -476,6 +472,9 @@ void testMatrices()
 	foo5 = diagonal<float, 5>(47.0f);
 	foo5 = diagonal(bar5);
 	foo5 = outerProduct(bar5, bar5);
+	isnear(foo5, foo5);
+	isnear(foo5, 47.0f);
+	isnear(47.0f, foo5);
 	isfinite(foo5);
 	any(foo5 < 47.0f);
 	all(foo5 > 47.0f);
@@ -543,6 +542,9 @@ void testAffine()
 	foo5 >= 47.0f;
 	dot(foo5, bar5);
 	dot(bar5, foo5);
+	isnear(foo5, foo5);
+	isnear(foo5, 47.0f);
+	isnear(47.0f, foo5);
 	isfinite(foo5);
 	any(foo5 < 47.0f);
 	all(foo5 > 47.0f);
@@ -581,6 +583,7 @@ void testAffine()
 	aff5 = transpose(aff5);
 	aff5 = pow(aff5, 5);
 	aff5 = inverse(aff5);
+	isnear(aff5, aff5);
 	isfinite(aff5);
 	aff5 = square(aff5);
 	aff5 = translation(bar5);
