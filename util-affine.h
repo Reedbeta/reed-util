@@ -369,12 +369,16 @@ namespace util
 		// Convert to a matrix one bigger acting on homogeneous coordinates (row-vector math)
 		matrix<T, n+1, n+1> toMatrix() const
 		{
-			auto result = matrix<T, n+1, n+1>::identity();
+			matrix<T, n+1, n+1> result;
 			for (uint i = 0; i < n; ++i)
+			{
 				for (uint j = 0; j < n; ++j)
 					result[i][j] = m_linear[i][j];
+				result[i][n] = T(0);
+			}
 			for (uint j = 0; j < n; ++j)
 				result[n][j] = m_translation[j];
+			result[n][n] = T(1);
 			return result;
 		}
 	};
@@ -416,8 +420,8 @@ namespace util
 	// Overloaded math operators
 
 	// Relational operators
-	// !!! these doesn't match the behavior of relational ops for vectors and matrices -
-	// return a single results rather than a componentwise results
+	// !!! these don't match the behavior of relational ops for vectors and matrices -
+	// return single results rather than componentwise results
 
 	template <typename T, uint n>
 	bool operator == (affine<T, n> const & a, affine<T, n> const & b)

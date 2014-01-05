@@ -304,7 +304,8 @@ namespace util
 
 
 // Vector/matrix unit testing crap
-// !!!UNDONE: move somewhere else?
+// (actually only tests compilation, not results...)
+// !!!UNDONE: proper tests
 
 #include <vector>
 
@@ -589,4 +590,35 @@ void testAffine()
 	aff5 = translation(bar5);
 	aff5 = scaling<float, 5>(47.0f);
 	aff5 = scaling(bar5);
+	aff5.toMatrix();
+}
+
+
+
+void testBox()
+{
+	using namespace util;
+
+	makeboxEmpty<float, 5>();
+	static const point<float, 5> points[] =
+	{
+		{ 1, 2, 3, 4, 5 }, { 6, 7, 8, 9, 10 }, { 11, 12, 13, 14, 15 },
+	};
+	makebox(points[0], points[1]);
+	makebox(dim(points), points);
+
+	box<float, 5> foo5 = { 1, 2, 3, 4, 5 };
+	vector<float, 5> bar5 = { 1, 2, 3, 4, 5 };
+	point<float, 5> baz5 = { 1, 2, 3, 4, 5 };
+	affine<float, 5> aff5 = { 1, 2, 3, 4, 5 };
+	foo5 == foo5;
+	foo5 != foo5;
+	foo5 = boxUnion(foo5, foo5);
+	foo5 = boxIntersection(foo5, foo5);
+	foo5 = boxTranslate(foo5, bar5);
+	foo5 = boxGrow(foo5, bar5);
+	foo5 = boxTransform(foo5, aff5);
+	baz5 = boxClamp(baz5, foo5);
+	isnear(foo5, foo5);
+	isfinite(foo5);
 }

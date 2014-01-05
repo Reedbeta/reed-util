@@ -89,3 +89,4 @@ namespace util
 #include "util-matrix.h"
 #include "util-affine.h"
 #include "util-simd.h"
+#include "util-box.h"

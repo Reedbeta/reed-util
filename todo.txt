@@ -12,15 +12,18 @@ basic utilities
 
 math
 - vectors - DONE
+	- move generic makers out of static methods
 - matrices
 	- basics - DONE
-	- diagonalization and decomposition
+	- diagonalization and decomposition?
 - rectangles and bounding boxes
 - affine math - DONE
 - simd math - DONE
 - half-float from OpenEXR
 - quats and rotation stuff
 - color space conversion
+	- linear/sRGB
+	- YCoCg? HSV? LAB? LogLUV?
 - projective math?
 - grassmann algebra?
 
