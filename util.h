@@ -90,3 +90,4 @@ namespace util
 #include "util-affine.h"
 #include "util-simd.h"
 #include "util-box.h"
+#include "half/half.h"

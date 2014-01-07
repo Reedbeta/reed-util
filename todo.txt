@@ -19,7 +19,7 @@ math
 - rectangles and bounding boxes - DONE
 - affine math - DONE
 - simd math - DONE
-- half-float from OpenEXR
+- half-float from OpenEXR - DONE
 - quats and rotation stuff
 - color space conversion
 	- linear/sRGB
