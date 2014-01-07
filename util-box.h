@@ -25,6 +25,9 @@ namespace util
 		bool intersects(box<T, n> const & a) const
 			{ return !isempty() && !a.isempty() && all(a.m_mins <= m_maxs) && all(m_mins <= a.m_maxs); }
 
+		point<T, n> clamp(point<T, n> const & a) const
+			{ return util::clamp(a, m_mins, m_maxs); }
+
 		point<T, n> center() const
 			{ return m_mins + (m_maxs - m_mins) / T(2); }
 
@@ -46,6 +49,28 @@ namespace util
 		{
 			for (uint i = 0, nc = numCorners(); i < nc; ++i)
 				cornersOut[i] = getCorner(i);
+		}
+
+		void getExtentsAlongAxis(vector<T, n> const & a, T & outMin, T & outMax) const
+		{
+			T dotCenter = dot(center(), a);
+			T dotDiagonal = dot(diagonal(), abs(a));
+			outMin = dotCenter - dotDiagonal;
+			outMax = dotCenter + dotDiagonal;
+		}
+
+		T dotMin(vector<T, n> const & a) const
+		{
+			T dotMin, dotMax;
+			getExtentsAlongAxis(a, dotMin, dotMax);
+			return dotMin;
+		}
+
+		T dotMax(vector<T, n> const & a) const
+		{
+			T dotMin, dotMax;
+			getExtentsAlongAxis(a, dotMin, dotMax);
+			return dotMax;
 		}
 	};
 
@@ -187,9 +212,27 @@ namespace util
 	}
 
 	template <typename T, uint n>
-	point<T, n> boxClamp(point<T, n> const & a, box<T, n> const & b)
+	T distance(box<T, n> const & a, point<T, n> const & b)
 	{
-		return clamp(a, b.m_mins, b.m_maxs);
+		return distance(a.clamp(b), b);
+	}
+
+	template <typename T, uint n>
+	T distance(point<T, n> const & a, box<T, n> const & b)
+	{
+		return distance(a, b.clamp(a));
+	}
+
+	template <typename T, uint n>
+	T distanceSquared(box<T, n> const & a, point<T, n> const & b)
+	{
+		return distanceSquared(a.clamp(b), b);
+	}
+
+	template <typename T, uint n>
+	T distanceSquared(point<T, n> const & a, box<T, n> const & b)
+	{
+		return distanceSquared(a, b.clamp(a));
 	}
 
 	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
@@ -208,6 +251,4 @@ namespace util
 	{
 		return all(isfinite(a.m_mins)) && all(isfinite(a.m_maxs));
 	}
-
-	// !!!UNDONE: box min/max dot versus vector, extent along vector
 }

@@ -16,7 +16,7 @@ math
 - matrices
 	- basics - DONE
 	- diagonalization and decomposition?
-- rectangles and bounding boxes
+- rectangles and bounding boxes - DONE
 - affine math - DONE
 - simd math - DONE
 - half-float from OpenEXR

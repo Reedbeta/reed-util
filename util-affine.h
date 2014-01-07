@@ -251,6 +251,18 @@ namespace util
 	// Other math functions
 
 	template <typename T, uint n>
+	T distance(point<T, n> const & a, point<T, n> const & b)
+	{
+		return length(b - a);
+	}
+
+	template <typename T, uint n>
+	T distanceSquared(point<T, n> const & a, point<T, n> const & b)
+	{
+		return lengthSquared(b - a);
+	}
+
+	template <typename T, uint n>
 	T dot(point<T, n> const & a, vector<T, n> const & b)
 	{
 		T result(0);
