@@ -586,6 +586,7 @@ namespace util
 
 	affine2 rotation(float radians);
 	affine3 rotation(float3_arg axis, float radians);
+	affine3 rotation(float3_arg euler);
 
 	affine2 lookat(float2_arg look);
 

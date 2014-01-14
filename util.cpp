@@ -181,6 +181,31 @@ namespace util
 		return makeaffine3(mat, makefloat3(0.0f));
 	}
 
+	affine3 rotation(float3_arg euler)
+	{
+		float sinX = sinf(euler.x);
+		float cosX = cosf(euler.x);
+		float sinY = sinf(euler.y);
+		float cosY = cosf(euler.y);
+		float sinZ = sinf(euler.z);
+		float cosZ = cosf(euler.z);
+
+		float3x3 matX = makefloat3x3(
+							1,  0,    0,
+							0,  cosX, sinX,
+							0, -sinX, cosX);
+		float3x3 matY = makefloat3x3(
+							cosY, 0, -sinY,
+							0,    1,  0,
+							sinY, 0,  cosY);
+		float3x3 matZ = makefloat3x3(
+							 cosZ, sinZ, 0,
+							-sinZ, cosZ, 0,
+							 0,    0,    1);
+
+		return makeaffine3(matX * matY * matZ, makefloat3(0.0f));
+	}
+
 	affine2 lookat(float2_arg look)
 	{
 		return makeaffine2(look, orthogonal(look), makefloat2(0.0f));
@@ -212,6 +237,36 @@ namespace util
 		float3 left = cross(up, look);
 		float3 trueUp = cross(look, left);
 		return makeaffine3(-left, trueUp, -look, makefloat3(0.0f));
+	}
+
+
+
+	// Quaternion implementations
+
+	quat rotationQuat(float3_arg axis, float radians)
+	{
+		// Note: assumes axis is normalized
+		float sinHalfTheta = sinf(0.5f * radians);
+		float cosHalfTheta = cosf(0.5f * radians);
+
+		return makequat(cosHalfTheta, axis * sinHalfTheta);
+	}
+
+	quat rotationQuat(float3_arg euler)
+	{
+		float sinHalfX = sinf(0.5f * euler.x);
+		float cosHalfX = cosf(0.5f * euler.x);
+		float sinHalfY = sinf(0.5f * euler.y);
+		float cosHalfY = cosf(0.5f * euler.y);
+		float sinHalfZ = sinf(0.5f * euler.z);
+		float cosHalfZ = cosf(0.5f * euler.z);
+
+		quat quatX = makequat(cosHalfX, sinHalfX, 0, 0);
+		quat quatY = makequat(cosHalfY, 0, sinHalfY, 0);
+		quat quatZ = makequat(cosHalfZ, 0, 0, sinHalfZ);
+
+		// Note: multiplication order for quats is like column-vector convention
+		return quatZ * quatY * quatX;
 	}
 
 
@@ -642,4 +697,17 @@ void testBox()
 	distanceSquared(baz5, foo5);
 	isnear(foo5, foo5);
 	isfinite(foo5);
+}
+
+
+
+void testQuat()
+{
+	using namespace util;
+
+	float3 foo = { 1, 2, 3 };
+	point3 bar = { 1, 2, 3 };
+	quat q = { 1, 2, 3, 4 };
+	foo = applyQuat(q, foo);
+	bar = applyQuat(q, bar);
 }

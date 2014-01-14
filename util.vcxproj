@@ -23,6 +23,7 @@
     <ClInclude Include="util-affine.h" />
     <ClInclude Include="util-box.h" />
     <ClInclude Include="util-matrix.h" />
+    <ClInclude Include="util-quat.h" />
     <ClInclude Include="util-simd.h" />
     <ClInclude Include="util-vector.h" />
     <ClInclude Include="util-rng.h" />

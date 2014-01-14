@@ -13,6 +13,7 @@ basic utilities
 math
 - vectors - DONE
 	- move generic makers out of static methods
+		- but clamp??
 - matrices
 	- basics - DONE
 	- diagonalization and decomposition?
@@ -20,7 +21,7 @@ math
 - affine math - DONE
 - simd math - DONE
 - half-float from OpenEXR - DONE
-- quats and rotation stuff
+- quats and rotation stuff - DONE
 - color space conversion
 	- linear/sRGB
 	- YCoCg? HSV? LAB? LogLUV?
