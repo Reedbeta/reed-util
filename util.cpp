@@ -269,6 +269,12 @@ namespace util
 		return quatZ * quatY * quatX;
 	}
 
+	quat slerp(quat_arg a, quat_arg b, float u)
+	{
+		float theta = acosf(dot(a, b));
+		return (a * sinf((1.0f - u) * theta) + b * sinf(u * theta)) / sinf(theta);
+	}
+
 
 
 	// Convert memory layouts to and from SIMD-friendly (AOSOA) layout
@@ -710,4 +716,13 @@ void testQuat()
 	quat q = { 1, 2, 3, 4 };
 	foo = applyQuat(q, foo);
 	bar = applyQuat(q, bar);
+	q = min(q, q);
+	q = max(q, q);
+	q = abs(q);
+	q = clamp(q, q, q);
+	q = saturate(q);
+	minComponent(q);
+	maxComponent(q);
+	q = lerp(q, q, 0.5f);
+	q = square(q);
 }

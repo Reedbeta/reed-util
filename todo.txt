@@ -7,6 +7,8 @@ basic utilities
 - lerp - DONE
 - logging
 - custom (controllable) asserts and debug-breaks
+- custom memory allocators with logging, leak detection, etc.
+- threading-related stuff?  Or does std::async provide enough support?
 - intersection tests
 - comparisons with epsilon - DONE
 

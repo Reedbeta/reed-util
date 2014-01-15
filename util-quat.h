@@ -334,4 +334,5 @@ namespace util
 
 	quat rotationQuat(float3_arg axis, float radians);
 	quat rotationQuat(float3_arg euler);
+	quat slerp(quat_arg a, quat_arg b, float u);
 }
