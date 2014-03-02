@@ -24,9 +24,7 @@ math
 - simd math - DONE
 - half-float from OpenEXR - DONE
 - quats and rotation stuff - DONE
-- color space conversion
-	- linear/sRGB
-	- YCoCg? HSV? LAB? LogLUV?
+- color space conversion - DONE
 - projective math?
 - grassmann algebra?
 
