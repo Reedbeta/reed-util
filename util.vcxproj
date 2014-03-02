@@ -22,6 +22,7 @@
     <ClInclude Include="half\half.h" />
     <ClInclude Include="util-affine.h" />
     <ClInclude Include="util-box.h" />
+    <ClInclude Include="util-color.h" />
     <ClInclude Include="util-matrix.h" />
     <ClInclude Include="util-quat.h" />
     <ClInclude Include="util-simd.h" />

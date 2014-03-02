@@ -287,6 +287,15 @@ namespace util
 		{ return a / length(a); }
 
 	template <typename T, uint n>
+	vector<T, n> pow(vector<T, n> const & a, float p)
+	{
+		vector<T, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = ::pow(a[i], p);
+		return result;
+	}
+
+	template <typename T, uint n>
 	vector<bool, n> isnear(vector<T, n> const & a, vector<T, n> const & b, float epsilon = util::epsilon)
 	{
 		vector<bool, n> result;

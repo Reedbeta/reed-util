@@ -29,10 +29,10 @@ namespace util
 	typedef unsigned __int64	u64;
 
 	// Delicious pi
-	const float pi = 3.141592654f;
+	static const float pi = 3.141592654f;
 
 	// Convenient float constants
-	const float epsilon = 1e-6f;		// A reasonable general-purpose epsilon
+	static const float epsilon = 1e-6f;		// A reasonable general-purpose epsilon
 	extern const float infty;
 	extern const float NaN;
 
@@ -72,12 +72,32 @@ namespace util
 		return ((u.i & 0x7f800000) != 0x7f800000);
 	}
 
+	// Rounding to nearest integer
+	inline int round(float f)
+		{ return int(floor(f + 0.5f)); }
+
+	// Modulus with always positive remainders (assuming positive divisor)
+	inline int modPositive(int dividend, int divisor)
+	{
+		int result = dividend % divisor;
+		if (result < 0)
+			result += divisor;
+		return result;
+	}
+	inline float modPositive(float dividend, float divisor)
+	{
+		float result = fmod(dividend, divisor);
+		if (result < 0)
+			result += divisor;
+		return result;
+	}
+
 	// Print error message and exit
 	void __declspec(noreturn) exit(const char * fmt, ...);
 
 	// Advance a pointer by a given number of bytes
 	template <typename T>
-	inline T * advanceBytes(T * ptr, uint bytes)
+	inline T * advanceBytes(T * ptr, int bytes)
 		{ return (T *)((byte *)ptr + bytes); }
 }
 
@@ -90,5 +110,6 @@ namespace util
 #include "util-affine.h"
 #include "util-simd.h"
 #include "util-box.h"
+#include "util-color.h"
 #include "util-quat.h"
 #include "half/half.h"
