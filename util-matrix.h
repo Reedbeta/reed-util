@@ -28,34 +28,35 @@ namespace util
 		const vector<T, cols> & operator [] (int i) const
 			{ return reinterpret_cast<const vector<T, cols> &>(m_data[i*cols]); }
 		
-		// Generic maker function, broadcasting a scalar
-		static matrix<T, rows, cols> make(T a)
-		{
-			matrix<T, rows, cols> result;
-			for (uint i = 0; i < rows*cols; ++i)
-				result.m_data[i] = a;
-			return result;
-		}
-
-		// Generic identity maker function
 		static matrix<T, rows, cols> identity()
 		{
 			cassert(rows == cols);
-			auto result = matrix<T, rows, cols>::make(T(0));
+			auto result = makematrix<T, rows, cols>(0);
 			for (uint i = 0; i < rows; ++i)
 				result[rows][rows] = T(1);
 			return result;
 		}
-
-		// Generic maker function, taking an array
-		static matrix<T, rows, cols> make(const T * a)
-		{
-			matrix<T, rows, cols> result;
-			for (uint i = 0; i < rows*cols; ++i)
-				result.m_data[i] = T(a[i]);
-			return result;
-		}
 	};
+
+	// Generic maker functions
+
+	template <typename T, uint rows, uint cols>
+	matrix<T, rows, cols> makematrix(T a)
+	{
+		matrix<T, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = a;
+		return result;
+	}
+
+	template <typename T, uint rows, uint cols>
+	matrix<T, rows, cols> makematrix(const T * a)
+	{
+		matrix<T, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = T(a[i]);
+		return result;
+	}
 
 
 
@@ -78,7 +79,7 @@ namespace util
 			type##2x2 make##type##2x2(type a) \
 				{ type##2x2 m = { a, a, a, a }; return m; } \
 			type##2x2 make##type##2x2(const type * a) \
-				{ return type##2x2::make(a); } \
+				{ type##2x2 m = { a[0], a[1], a[2], a[3] }; return m; } \
 			type##3x3 make##type##3x3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8) \
 				{ type##3x3 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8 }; return m; } \
 			type##3x3 make##type##3x3(type##3_arg row0, type##3_arg row1, type##3_arg row2) \
@@ -88,7 +89,7 @@ namespace util
 			type##3x3 make##type##3x3(type a) \
 				{ type##3x3 m = { a, a, a, a, a, a, a, a, a }; return m; } \
 			type##3x3 make##type##3x3(const type * a) \
-				{ return type##3x3::make(a); } \
+				{ type##3x3 m = { a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8] }; return m; } \
 			type##4x4 make##type##4x4(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type m9, type m10, type m11, type m12, type m13, type m14, type m15) \
 				{ type##4x4 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 }; return m; } \
 			type##4x4 make##type##4x4(type##4_arg row0, type##4_arg row1, type##4_arg row2, type##4_arg row3) \
@@ -98,7 +99,7 @@ namespace util
 			type##4x4 make##type##4x4Identity(type a) \
 				{ type##4x4 m = { a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a }; return m; } \
 			type##4x4 make##type##4x4(const type * a) \
-				{ return type##4x4::make(a); }
+				{ type##4x4 m = { a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15] }; return m; }
 
 	DEFINE_CONCRETE_MATRICES(float);
 	DEFINE_CONCRETE_MATRICES(int);
@@ -241,7 +242,7 @@ namespace util
 	template <typename T, uint rows, uint inner, uint cols>
 	matrix<T, rows, cols> operator * (matrix<T, rows, inner> const & a, matrix<T, inner, cols> const & b)
 	{
-		auto result = matrix<T, rows, cols>::make(T(0));
+		auto result = makematrix<T, rows, cols>(0);
 		for (uint i = 0; i < rows; ++i)
 			for (uint j = 0; j < cols; ++j)
 				for (uint k = 0; k < inner; ++k)
@@ -261,7 +262,7 @@ namespace util
 	template <typename T, uint rows, uint cols>
 	vector<T, rows> operator * (matrix<T, rows, cols> const & a, vector<T, cols> const & b)
 	{
-		auto result = vector<T, rows>::make(T(0));
+		auto result = makevector<T, rows>(0);
 		for (uint i = 0; i < rows; ++i)
 			for (uint j = 0; j < cols; ++j)
 					result[i] += a[i][j] * b[j];
@@ -271,7 +272,7 @@ namespace util
 	template <typename T, uint rows, uint cols>
 	vector<T, cols> operator * (vector<T, rows> const & a, matrix<T, rows, cols> const & b)
 	{
-		auto result = vector<T, cols>::make(T(0));
+		auto result = makevector<T, cols>(0);
 		for (uint i = 0; i < rows; ++i)
 			for (uint j = 0; j < cols; ++j)
 					result[j] += a[i] * b[i][j];
@@ -335,7 +336,7 @@ namespace util
 				if (abs(a[i][j]) > abs(a[pivot][j]))
 					pivot = i;
 			if (abs(a[pivot][j]) < epsilon)
-				return matrix<T, n, n>::make(T(NaN));
+				return makematrix<T, n, n>(NaN);
 
 			// Interchange rows to put pivot element on the diagonal,
 			// if it is not already there
@@ -456,7 +457,7 @@ namespace util
 	template <typename T, uint n>
 	matrix<T, n, n> diagonal(T a)
 	{
-		auto result = matrix<T, n, n>::make(T(0));
+		auto result = makematrix<T, n, n>(0);
 		for (uint i = 0; i < n; ++i)
 			result[i][i] = a;
 		return result;
@@ -465,7 +466,7 @@ namespace util
 	template <typename T, uint n>
 	matrix<T, n, n> diagonal(vector<T, n> const & a)
 	{
-		auto result = matrix<T, n, n>::make(T(0));
+		auto result = makematrix<T, n, n>(0);
 		for (uint i = 0; i < n; ++i)
 			result[i][i] = a[i];
 		return result;
@@ -561,7 +562,7 @@ namespace util
 
 	template <typename T, uint rows, uint cols>
 	matrix<T, rows, cols> saturate(matrix<T, rows, cols> const & value)
-		{ return clamp(value, matrix<T, rows, cols>::make(T(0)), matrix<T, rows, cols>::make(T(1))); }
+		{ return clamp(value, makematrix<T, rows, cols>(0), makematrix<T, rows, cols>(1)); }
 
 	template <typename T, uint rows, uint cols>
 	T minComponent(matrix<T, rows, cols> const & a)

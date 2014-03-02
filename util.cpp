@@ -653,7 +653,8 @@ void testAffine()
 	aff5 = translation(bar5);
 	aff5 = scaling<float, 5>(47.0f);
 	aff5 = scaling(bar5);
-	aff5.toMatrix();
+	matrix<float, 6, 6> mat6 = aff5.toMatrix();
+	aff5 = makeaffine(mat6);
 }
 
 

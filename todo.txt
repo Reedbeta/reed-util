@@ -14,11 +14,11 @@ basic utilities
 
 math
 - vectors - DONE
-	- move generic makers out of static methods
-		- but clamp??
+	- extend/extract vectors?
 - matrices
 	- basics - DONE
 	- diagonalization and decomposition?
+	- extend/extract matrices?
 - rectangles and bounding boxes - DONE
 - affine math - DONE
 - simd math - DONE

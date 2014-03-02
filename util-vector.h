@@ -4,7 +4,7 @@
 namespace util
 {
 	// Macro to define conversion and subscript operators
-#define DEFINE_CONVERSIONS(T, n) \
+#define VECTOR_MEMBERS(T, n) \
 			/* Conversions to C arrays of fixed size */ \
 			typedef T (&array_t)[n]; \
 			operator array_t () \
@@ -16,23 +16,7 @@ namespace util
 			T & operator [] (int i) \
 				{ return m_data[i]; } \
 			const T & operator [] (int i) const \
-				{ return m_data[i]; } \
-			/* Generic maker function, broadcasting a scalar */ \
-			static vector<T, n> make(T a) \
-			{ \
-				vector<T, n> result; \
-				for (uint i = 0; i < n; ++i) \
-					result[i] = a; \
-				return result; \
-			} \
-			/* Generic maker function, taking an array */ \
-			static vector<T, n> make(const T * a) \
-			{ \
-				vector<T, n> result; \
-				for (uint i = 0; i < n; ++i) \
-					result[i] = T(a[i]); \
-				return result; \
-			}
+				{ return m_data[i]; }
 
 	// Generic vector struct, providing storage, using partial
 	// specialization to get names (xyzw) for n <= 4
@@ -42,7 +26,7 @@ namespace util
 	{
 		cassert(n > 4);
 		T m_data[n];
-		DEFINE_CONVERSIONS(T, n);
+		VECTOR_MEMBERS(T, n);
 	};
 
 #pragma warning(push)
@@ -56,7 +40,7 @@ namespace util
 			struct { T x, y; };
 			struct { T u, v; };
 		};
-		DEFINE_CONVERSIONS(T, 2);
+		VECTOR_MEMBERS(T, 2);
 	};
 
 	template <typename T>
@@ -70,7 +54,7 @@ namespace util
 			vector<T, 2> xy;
 			vector<T, 2> uv;
 		};
-		DEFINE_CONVERSIONS(T, 3);
+		VECTOR_MEMBERS(T, 3);
 	};
 
 	template <typename T>
@@ -86,11 +70,31 @@ namespace util
 			vector<T, 3> xyz;
 			vector<T, 3> rgb;
 		};
-		DEFINE_CONVERSIONS(T, 4);
+		VECTOR_MEMBERS(T, 4);
 	};
 
 #pragma warning(pop)
-#undef DEFINE_CONVERSIONS
+#undef VECTOR_MEMBERS
+
+	// Generic maker functions
+
+	template <typename T, uint n>
+	vector<T, n> makevector(T a)
+	{
+		vector<T, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = a;
+		return result;
+	}
+
+	template <typename T, uint n>
+	vector<T, n> makevector(const T * a)
+	{
+		vector<T, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = T(a[i]);
+		return result;
+	}
 
 
 
@@ -109,7 +113,7 @@ namespace util
 			type##2 make##type##2(type a) \
 				{ type##2 v = { a, a }; return v; } \
 			type##2 make##type##2(const type * a) \
-				{ return type##2::make(a); } \
+				{ type##2 v = { a[0], a[1] }; return v; } \
 			type##3 make##type##3(type x, type y, type z) \
 				{ type##3 v = { x, y, z }; return v; } \
 			type##3 make##type##3(type##2_arg xy, type z) \
@@ -117,7 +121,7 @@ namespace util
 			type##3 make##type##3(type a) \
 				{ type##3 v = { a, a, a }; return v; } \
 			type##3 make##type##3(const type * a) \
-				{ return type##3::make(a); } \
+				{ type##3 v = { a[0], a[1], a[2] }; return v; } \
 			type##4 make##type##4(type x, type y, type z, type w) \
 				{ type##4 v = { x, y, z, w }; return v; } \
 			type##4 make##type##4(type##2_arg xy, type z, type w) \
@@ -127,7 +131,7 @@ namespace util
 			type##4 make##type##4(type a) \
 				{ type##4 v = { a, a, a, a }; return v; } \
 			type##4 make##type##4(const type * a) \
-				{ return type##4::make(a); }
+				{ type##4 v = { a[0], a[1], a[2], a[3] }; return v; }
 
 	DEFINE_CONCRETE_VECTORS(float);
 	DEFINE_CONCRETE_VECTORS(int);
@@ -399,7 +403,7 @@ namespace util
 
 	template <typename T, uint n>
 	vector<T, n> saturate(vector<T, n> const & value)
-		{ return clamp(value, vector<T, n>::make(T(0)), vector<T, n>::make(T(1))); }
+		{ return clamp(value, makevector<T, n>(0), makevector<T, n>(1)); }
 
 	template <typename T, uint n>
 	T minComponent(vector<T, n> const & a)

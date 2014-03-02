@@ -79,7 +79,7 @@ namespace util
 	template <typename T, uint n>
 	box<T, n> makeboxEmpty()
 	{
-		box<T, n> result = { point<T, n>::make(T(0)), point<T, n>::make(T(-1)) };
+		box<T, n> result = { makepoint<T, n>(0), makepoint<T, n>(-1) };
 		return result;
 	}
 

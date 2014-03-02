@@ -3,7 +3,7 @@
 namespace util
 {
 	// Macro to define conversion and subscript operators
-#define DEFINE_CONVERSIONS(T, n) \
+#define POINT_MEMBERS(T, n) \
 			/* Conversions to C arrays of fixed size */ \
 			typedef T (&array_t)[n]; \
 			operator array_t () \
@@ -15,23 +15,7 @@ namespace util
 			T & operator [] (int i) \
 				{ return m_data[i]; } \
 			const T & operator [] (int i) const \
-				{ return m_data[i]; } \
-			/* Generic maker function, broadcasting a scalar */ \
-			static point<T, n> make(T a) \
-				{ \
-					point<T, n> result; \
-					for (uint i = 0; i < n; ++i) \
-						result[i] = a; \
-					return result; \
-				} \
-			/* Generic maker function, taking an array */ \
-			static point<T, n> make(const T * a) \
-				{ \
-					point<T, n> result; \
-					for (uint i = 0; i < n; ++i) \
-						result[i] = T(a[i]); \
-					return result; \
-				}
+				{ return m_data[i]; }
 
 	// Generic point struct, providing storage, using partial
 	// specialization to get names (xyzw) for n <= 4
@@ -41,7 +25,7 @@ namespace util
 	{
 		cassert(n > 4);
 		T m_data[n];
-		DEFINE_CONVERSIONS(T, n);
+		POINT_MEMBERS(T, n);
 	};
 
 #pragma warning(push)
@@ -55,7 +39,7 @@ namespace util
 			struct { T x, y; };
 			struct { T u, v; };
 		};
-		DEFINE_CONVERSIONS(T, 2);
+		POINT_MEMBERS(T, 2);
 	};
 
 	template <typename T>
@@ -69,7 +53,7 @@ namespace util
 			point<T, 2> xy;
 			point<T, 2> uv;
 		};
-		DEFINE_CONVERSIONS(T, 3);
+		POINT_MEMBERS(T, 3);
 	};
 
 	template <typename T>
@@ -85,11 +69,31 @@ namespace util
 			point<T, 3> xyz;
 			point<T, 3> rgb;
 		};
-		DEFINE_CONVERSIONS(T, 4);
+		POINT_MEMBERS(T, 4);
 	};
 
 #pragma warning(pop)
-#undef DEFINE_CONVERSIONS
+#undef POINT_MEMBERS
+
+	// Generic makers
+
+	template <typename T, uint n>
+	point<T, n> makepoint(T a)
+	{
+		point<T, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = a;
+		return result;
+	}
+
+	template <typename T, uint n>
+	point<T, n> makepoint(const T * a)
+	{
+		point<T, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = T(a[i]);
+		return result;
+	}
 
 
 
@@ -106,7 +110,7 @@ namespace util
 			name##2 make##name##2(type a) \
 				{ name##2 v = { a, a }; return v; } \
 			name##2 make##name##2(const type * a) \
-				{ return name##2::make(a); } \
+				{ name##2 v = { a[0], a[1] }; return v; } \
 			name##3 make##name##3(type x, type y, type z) \
 				{ name##3 v = { x, y, z }; return v; } \
 			name##3 make##name##3(name##2_arg xy, type z) \
@@ -114,7 +118,7 @@ namespace util
 			name##3 make##name##3(type a) \
 				{ name##3 v = { a, a, a }; return v; } \
 			name##3 make##name##3(const type * a) \
-				{ return name##3::make(a); }
+				{ name##3 v = { a[0], a[1], a[2] }; return v; }
 
 	DEFINE_CONCRETE_POINTS(float, point);
 	DEFINE_CONCRETE_POINTS(int, ipoint);
@@ -222,7 +226,7 @@ namespace util
 	template <typename T, uint rows, uint cols>
 	point<T, rows> operator * (matrix<T, rows, cols> const & a, point<T, cols> const & b)
 	{
-		auto result = point<T, rows>::make(T(0));
+		auto result = makepoint<T, rows>(0);
 		for (uint i = 0; i < rows; ++i)
 			for (uint j = 0; j < cols; ++j)
 					result[i] += a[i][j] * b[j];
@@ -232,7 +236,7 @@ namespace util
 	template <typename T, uint rows, uint cols>
 	point<T, cols> operator * (point<T, rows> const & a, matrix<T, rows, cols> const & b)
 	{
-		auto result = point<T, cols>::make(T(0));
+		auto result = makepoint<T, cols>(0);
 		for (uint i = 0; i < rows; ++i)
 			for (uint j = 0; j < cols; ++j)
 					result[j] += a[i] * b[i][j];
@@ -364,17 +368,9 @@ namespace util
 		matrix<T, n, n>	m_linear;
 		vector<T, n>	m_translation;
 
-		// Generic maker function, broadcasting a scalar
-		static affine<T, n> make(T a)
-		{
-			affine<T, n> result = { matrix<T, n, n>::make(a), vector<T, n>::make(a) };
-			return result;
-		}
-
-		// Generic identity maker function
 		static affine<T, n> identity()
 		{
-			affine<T, n> result = { matrix<T, n, n>::identity(), vector<T, n>::make(T(0)) };
+			affine<T, n> result = { matrix<T, n, n>::identity(), makevector<T, n>(0) };
 			return result;
 		}
 
@@ -394,6 +390,29 @@ namespace util
 			return result;
 		}
 	};
+
+	// Generic maker functions
+
+	template <typename T, uint n>
+	affine<T, n> makeaffine(T a)
+	{
+		affine<T, n> result = { makematrix<T, n, n>(a), makevector<T, n>(a) };
+		return result;
+	}
+
+	template <typename T, uint n>
+	affine<T, n-1> makeaffine(matrix<T, n, n> const & a)
+	{
+		// Extract the relevant components of the matrix; note, NO checking
+		// that the matrix actually represents an affine transform!
+		affine<T, n-1> result;
+		for (uint i = 0; i < n-1; ++i)
+			for (uint j = 0; j < n-1; ++j)
+				result.m_linear[i][j] = a[i][j];
+		for (uint j = 0; j < n-1; ++j)
+			result.m_translation[j] = a[n-1][j];
+		return result;
+	}
 
 
 
@@ -420,7 +439,9 @@ namespace util
 			name##3 make##name##3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2, type##3_arg translation) \
 				{ name##3 a = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z, translation.x, translation.y, translation.z }; return a; } \
 			name##3 make##name##3(type##3x3_arg linear, type##3_arg translation) \
-				{ name##3 a = { linear, translation }; return a; }
+				{ name##3 a = { linear, translation }; return a; } \
+			name##3 make##name##3(type##4x4_arg m) \
+				{ name##3 a = { m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2], m[3][0], m[3][1], m[3][2] }; return a; }
 
 	DEFINE_CONCRETE_AFFINES(float, affine);
 	DEFINE_CONCRETE_AFFINES(int, iaffine);
@@ -573,14 +594,14 @@ namespace util
 	template <typename T, uint n>
 	affine<T, n> scaling(T a)
 	{
-		affine<T, n> result = { diagonal<T, n>(a), vector<T, n>::make(T(0)) };
+		affine<T, n> result = { diagonal<T, n>(a), makevector<T, n>(0) };
 		return result;
 	}
 
 	template <typename T, uint n>
 	affine<T, n> scaling(vector<T, n> const & a)
 	{
-		affine<T, n> result = { diagonal(a), vector<T, n>::make(T(0)) };
+		affine<T, n> result = { diagonal(a), makevector<T, n>(0) };
 		return result;
 	}
 
