@@ -738,6 +738,8 @@ void testAffine()
 	makepoint<int, 4>(foo5);
 	makepoint<int, 5>(foo5);
 	makepoint<int, 6>(foo5);
+	makepoint<float, 5>(bar5);
+	makevector<float, 5>(foo5);
 	foo5 + bar5;
 	foo5 - bar5;
 	foo5 - foo5;
@@ -780,6 +782,8 @@ void testAffine()
 	makepoint3(0.0f);
 	makeipoint3(&foo3[0]);
 	makepoint3(makepoint<int, 4>(0));
+	makepoint3(bar5);
+	makefloat3(foo3);
 
 	point2 foo2 = { 1, 2 };
 	foo2.y;
@@ -790,6 +794,8 @@ void testAffine()
 	makepoint2(0.0f);
 	makeipoint2(&foo3[0]);
 	makepoint2(makepoint<int, 4>(0));
+	makepoint2(bar5);
+	makefloat2(foo2);
 
 	affine<float, 5> aff5 = { 1, 2, 3, 4, 5 };
 	makeaffine<float, 5>(0.0f);

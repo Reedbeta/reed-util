@@ -96,9 +96,28 @@ namespace util
 	}
 
 	template <typename T, uint n, typename U, uint n_from>
+	point<T, n> makepoint(vector<U, n_from> const & a)
+	{
+		auto result = makepoint<T, n>(T(0));
+		for (uint i = 0; i < min(n, n_from); ++i)
+			result[i] = T(a[i]);
+		return result;
+	}
+
+	template <typename T, uint n, typename U, uint n_from>
 	point<T, n> makepoint(point<U, n_from> const & a)
 	{
 		auto result = makepoint<T, n>(T(0));
+		for (uint i = 0; i < min(n, n_from); ++i)
+			result[i] = T(a[i]);
+		return result;
+	}
+
+	// Convert points to vectors
+	template <typename T, uint n, typename U, uint n_from>
+	vector<T, n> makevector(point<U, n_from> const & a)
+	{
+		auto result = makevector<T, n>(T(0));
 		for (uint i = 0; i < min(n, n_from); ++i)
 			result[i] = T(a[i]);
 		return result;
