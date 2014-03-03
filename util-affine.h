@@ -86,11 +86,20 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint n>
-	point<T, n> makepoint(const T * a)
+	template <typename T, uint n, typename U>
+	point<T, n> makepoint(const U * a)
 	{
 		point<T, n> result;
 		for (uint i = 0; i < n; ++i)
+			result[i] = T(a[i]);
+		return result;
+	}
+
+	template <typename T, uint n, typename U, uint n_from>
+	point<T, n> makepoint(point<U, n_from> const & a)
+	{
+		auto result = makepoint<T, n>(T(0));
+		for (uint i = 0; i < min(n, n_from); ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
@@ -107,18 +116,16 @@ namespace util
 			typedef point<type, 3> const & name##3_arg; \
 			name##2 make##name##2(type x, type y) \
 				{ name##2 v = { x, y }; return v; } \
-			name##2 make##name##2(type a) \
-				{ name##2 v = { a, a }; return v; } \
-			name##2 make##name##2(const type * a) \
-				{ name##2 v = { a[0], a[1] }; return v; } \
+			template <typename T> \
+			name##2 make##name##2(T a) \
+				{ return makepoint<type, 2>(a); } \
 			name##3 make##name##3(type x, type y, type z) \
 				{ name##3 v = { x, y, z }; return v; } \
 			name##3 make##name##3(name##2_arg xy, type z) \
 				{ name##3 v = { xy.x, xy.y, z }; return v; } \
-			name##3 make##name##3(type a) \
-				{ name##3 v = { a, a, a }; return v; } \
-			name##3 make##name##3(const type * a) \
-				{ name##3 v = { a[0], a[1], a[2] }; return v; }
+			template <typename T> \
+			name##3 make##name##3(T a) \
+				{ return makepoint<type, 3>(a); }
 
 	DEFINE_CONCRETE_POINTS(float, point);
 	DEFINE_CONCRETE_POINTS(int, ipoint);
@@ -373,22 +380,6 @@ namespace util
 			affine<T, n> result = { matrix<T, n, n>::identity(), makevector<T, n>(0) };
 			return result;
 		}
-
-		// Convert to a matrix one bigger acting on homogeneous coordinates (row-vector math)
-		matrix<T, n+1, n+1> toMatrix() const
-		{
-			matrix<T, n+1, n+1> result;
-			for (uint i = 0; i < n; ++i)
-			{
-				for (uint j = 0; j < n; ++j)
-					result[i][j] = m_linear[i][j];
-				result[i][n] = T(0);
-			}
-			for (uint j = 0; j < n; ++j)
-				result[n][j] = m_translation[j];
-			result[n][n] = T(1);
-			return result;
-		}
 	};
 
 	// Generic maker functions
@@ -400,17 +391,20 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint n>
-	affine<T, n-1> makeaffine(matrix<T, n, n> const & a)
+	template <typename T, uint n, typename U, uint n_from>
+	affine<T, n> makeaffine(affine<U, n_from> const & a)
 	{
-		// Extract the relevant components of the matrix; note, NO checking
-		// that the matrix actually represents an affine transform!
-		affine<T, n-1> result;
-		for (uint i = 0; i < n-1; ++i)
-			for (uint j = 0; j < n-1; ++j)
-				result.m_linear[i][j] = a[i][j];
-		for (uint j = 0; j < n-1; ++j)
-			result.m_translation[j] = a[n-1][j];
+		affine<T, n> result = { makematrix<T, n, n>(a.m_linear), makevector<T, n>(a.m_translation) };
+		// If the size is being enlarged, fill in the matrix diagonal with ones
+		for (uint i = n_from; i < n; ++i)
+			result.m_linear[i][i] = T(1);
+		return result;
+	}
+
+	template <typename T, uint n>
+	affine<T, n> makeaffine(matrix<T, n, n> const & a)
+	{
+		affine<T, n> result = { a, makevector<T, n>(0) };
 		return result;
 	}
 
@@ -432,6 +426,9 @@ namespace util
 				{ name##2 a = { col0.x, col1.x, col0.y, col1.y, translation.x, translation.y }; return a; } \
 			name##2 make##name##2(type##2x2_arg linear, type##2_arg translation) \
 				{ name##2 a = { linear, translation }; return a; } \
+			template <typename T> \
+			name##2 make##name##2(T a) \
+				{ return makeaffine<type, 2>(a); } \
 			name##3 make##name##3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type tx, type ty, type tz) \
 				{ name##3 a = { m0, m1, m2, m3, m4, m5, m6, m7, m8, tx, ty, tz }; return a; } \
 			name##3 make##name##3(type##3_arg row0, type##3_arg row1, type##3_arg row2, type##3_arg translation) \
@@ -441,7 +438,10 @@ namespace util
 			name##3 make##name##3(type##3x3_arg linear, type##3_arg translation) \
 				{ name##3 a = { linear, translation }; return a; } \
 			name##3 make##name##3(type##4x4_arg m) \
-				{ name##3 a = { m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2], m[3][0], m[3][1], m[3][2] }; return a; }
+				{ name##3 a = { m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2], m[3][0], m[3][1], m[3][2] }; return a; } \
+			template <typename T> \
+			name##3 make##name##3(T a) \
+				{ return makeaffine<type, 3>(a); }
 
 	DEFINE_CONCRETE_AFFINES(float, affine);
 	DEFINE_CONCRETE_AFFINES(int, iaffine);
@@ -560,6 +560,36 @@ namespace util
 			mInverted,
 			mInverted * -a.m_translation
 		};
+		return result;
+	}
+
+	template <typename T, uint n>
+	matrix<T, n+1, n+1> affineToHomogeneous(affine<T, n> const & a)
+	{
+		matrix<T, n+1, n+1> result;
+		for (uint i = 0; i < n; ++i)
+		{
+			for (uint j = 0; j < n; ++j)
+				result[i][j] = a.m_linear[i][j];
+			result[i][n] = T(0);
+		}
+		for (uint j = 0; j < n; ++j)
+			result[n][j] = a.m_translation[j];
+		result[n][n] = T(1);
+		return result;
+	}
+
+	template <typename T, uint n>
+	affine<T, n-1> homogeneousToAffine(matrix<T, n, n> const & a)
+	{
+		// Extract the relevant components of the matrix; note, NO checking
+		// that the matrix actually represents an affine transform!
+		affine<T, n-1> result;
+		for (uint i = 0; i < n-1; ++i)
+			for (uint j = 0; j < n-1; ++j)
+				result.m_linear[i][j] = T(a[i][j]);
+		for (uint j = 0; j < n-1; ++j)
+			result.m_translation[j] = T(a[n-1][j]);
 		return result;
 	}
 

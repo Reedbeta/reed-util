@@ -14,17 +14,16 @@ basic utilities
 
 math
 - vectors - DONE
-	- extend/extract vectors?
 - matrices
 	- basics - DONE
 	- diagonalization and decomposition?
-	- extend/extract matrices?
 - rectangles and bounding boxes - DONE
 - affine math - DONE
 - simd math - DONE
 - half-float from OpenEXR - DONE
 - quats and rotation stuff - DONE
 - color space conversion - DONE
+- complex numbers?
 - projective math?
 - grassmann algebra?
 

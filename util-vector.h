@@ -87,11 +87,20 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint n>
-	vector<T, n> makevector(const T * a)
+	template <typename T, uint n, typename U>
+	vector<T, n> makevector(const U * a)
 	{
 		vector<T, n> result;
 		for (uint i = 0; i < n; ++i)
+			result[i] = T(a[i]);
+		return result;
+	}
+
+	template <typename T, uint n, typename U, uint n_from>
+	vector<T, n> makevector(vector<U, n_from> const & a)
+	{
+		auto result = makevector<T, n>(T(0));
+		for (uint i = 0; i < min(n, n_from); ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
@@ -110,28 +119,25 @@ namespace util
 			typedef vector<type, 4> const & type##4_arg; \
 			type##2 make##type##2(type x, type y) \
 				{ type##2 v = { x, y }; return v; } \
-			type##2 make##type##2(type a) \
-				{ type##2 v = { a, a }; return v; } \
-			type##2 make##type##2(const type * a) \
-				{ type##2 v = { a[0], a[1] }; return v; } \
+			template <typename T> \
+			type##2 make##type##2(T a) \
+				{ return makevector<type, 2>(a); } \
 			type##3 make##type##3(type x, type y, type z) \
 				{ type##3 v = { x, y, z }; return v; } \
 			type##3 make##type##3(type##2_arg xy, type z) \
 				{ type##3 v = { xy.x, xy.y, z }; return v; } \
-			type##3 make##type##3(type a) \
-				{ type##3 v = { a, a, a }; return v; } \
-			type##3 make##type##3(const type * a) \
-				{ type##3 v = { a[0], a[1], a[2] }; return v; } \
+			template <typename T> \
+			type##3 make##type##3(T a) \
+				{ return makevector<type, 3>(a); } \
 			type##4 make##type##4(type x, type y, type z, type w) \
 				{ type##4 v = { x, y, z, w }; return v; } \
 			type##4 make##type##4(type##2_arg xy, type z, type w) \
 				{ type##4 v = { xy.x, xy.y, z, w }; return v; } \
 			type##4 make##type##4(type##3_arg xyz, type w) \
 				{ type##4 v = { xyz.x, xyz.y, xyz.z, w }; return v; } \
-			type##4 make##type##4(type a) \
-				{ type##4 v = { a, a, a, a }; return v; } \
-			type##4 make##type##4(const type * a) \
-				{ type##4 v = { a[0], a[1], a[2], a[3] }; return v; }
+			template <typename T> \
+			type##4 make##type##4(T a) \
+				{ return makevector<type, 4>(a); }
 
 	DEFINE_CONCRETE_VECTORS(float);
 	DEFINE_CONCRETE_VECTORS(int);

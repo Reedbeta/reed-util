@@ -49,12 +49,22 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint rows, uint cols>
-	matrix<T, rows, cols> makematrix(const T * a)
+	template <typename T, uint rows, uint cols, typename U>
+	matrix<T, rows, cols> makematrix(const U * a)
 	{
 		matrix<T, rows, cols> result;
 		for (uint i = 0; i < rows*cols; ++i)
 			result.m_data[i] = T(a[i]);
+		return result;
+	}
+
+	template <typename T, uint rows, uint cols, typename U, uint rows_from, uint cols_from>
+	matrix<T, rows, cols> makematrix(matrix<U, rows_from, cols_from> const & a)
+	{
+		auto result = makematrix<T, rows, cols>(T(0));
+		for (uint i = 0; i < min(rows, rows_from); ++i)
+			for (uint j = 0; i < min(cols, cols_from); ++j)
+				result[i][j] = T(a[i][j]);
 		return result;
 	}
 
@@ -76,30 +86,27 @@ namespace util
 				{ type##2x2 m = { row0.x, row0.y, row1.x, row1.y }; return m; } \
 			type##2x2 make##type##2x2Cols(type##2_arg col0, type##2_arg col1) \
 				{ type##2x2 m = { col0.x, col1.x, col0.y, col1.y }; return m; } \
-			type##2x2 make##type##2x2(type a) \
-				{ type##2x2 m = { a, a, a, a }; return m; } \
-			type##2x2 make##type##2x2(const type * a) \
-				{ type##2x2 m = { a[0], a[1], a[2], a[3] }; return m; } \
+			template <typename T> \
+			type##2x2 make##type##2x2(T a) \
+				{ return makematrix<type, 2, 2>(a); } \
 			type##3x3 make##type##3x3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8) \
 				{ type##3x3 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8 }; return m; } \
 			type##3x3 make##type##3x3(type##3_arg row0, type##3_arg row1, type##3_arg row2) \
 				{ type##3x3 m = { row0.x, row0.y, row0.z, row1.x, row1.y, row1.z, row2.x, row2.y, row2.z }; return m; } \
 			type##3x3 make##type##3x3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2) \
 				{ type##3x3 m = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z }; return m; } \
-			type##3x3 make##type##3x3(type a) \
-				{ type##3x3 m = { a, a, a, a, a, a, a, a, a }; return m; } \
-			type##3x3 make##type##3x3(const type * a) \
-				{ type##3x3 m = { a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8] }; return m; } \
+			template <typename T> \
+			type##3x3 make##type##3x3(T a) \
+				{ return makematrix<type, 3, 3>(a); } \
 			type##4x4 make##type##4x4(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type m9, type m10, type m11, type m12, type m13, type m14, type m15) \
 				{ type##4x4 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 }; return m; } \
 			type##4x4 make##type##4x4(type##4_arg row0, type##4_arg row1, type##4_arg row2, type##4_arg row3) \
 				{ type##4x4 m = { row0.x, row0.y, row0.z, row0.w, row1.x, row1.y, row1.z, row1.w, row2.x, row2.y, row2.z, row2.w, row3.x, row3.y, row3.z, row3.w }; return m; } \
 			type##4x4 make##type##4x4Cols(type##4_arg col0, type##4_arg col1, type##4_arg col2, type##4_arg col3) \
 				{ type##4x4 m = { col0.x, col1.x, col2.x, col3.x, col0.y, col1.y, col2.y, col3.y, col0.z, col1.z, col2.z, col3.z, col0.w, col1.w, col2.w, col3.w }; return m; } \
-			type##4x4 make##type##4x4Identity(type a) \
-				{ type##4x4 m = { a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a }; return m; } \
-			type##4x4 make##type##4x4(const type * a) \
-				{ type##4x4 m = { a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15] }; return m; }
+			template <typename T> \
+			type##4x4 make##type##4x4(T a) \
+				{ return makematrix<type, 4, 4>(a); }
 
 	DEFINE_CONCRETE_MATRICES(float);
 	DEFINE_CONCRETE_MATRICES(int);

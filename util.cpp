@@ -491,6 +491,7 @@ void testVectors()
 	foo5.m_data[4];
 	foo5[4];
 	passPointer(foo5);
+	makevector<float, 5>(&foo5[0]);
 	foo5 + foo5;
 	foo5 + 47.0f;
 	47.0f + foo5;
@@ -547,6 +548,9 @@ void testVectors()
 	foo5 = square(foo5);
 
 	vector<int, 5> ifoo5 = { 1, 2, 3, 4, 5 };
+	makevector<float, 4>(ifoo5);
+	makevector<float, 5>(ifoo5);
+	makevector<float, 6>(ifoo5);
 	ifoo5 & ifoo5;
 	ifoo5 | ifoo5;
 	ifoo5 ^ ifoo5;
@@ -561,6 +565,11 @@ void testVectors()
 	foo4.a;
 	foo4[3];
 	passPointer(foo4);
+	makefloat4(47.0f);
+	makefloat4(&foo5[0]);
+	makefloat4(&ifoo5[0]);
+	makefloat4(foo5);
+	makefloat4(ifoo5);
 
 	float3 foo3 = { 1, 2, 3 };
 	foo3.z;
@@ -570,6 +579,11 @@ void testVectors()
 	cross(foo3, foo3);
 	orthogonal(foo3);
 	foo3 = foo4.xyz;
+	makefloat3(47.0f);
+	makefloat3(&foo5[0]);
+	makefloat3(&ifoo5[0]);
+	makefloat3(foo5);
+	makefloat3(ifoo5);
 
 	float2 foo2 = { 1, 2 };
 	foo2.y;
@@ -578,6 +592,11 @@ void testVectors()
 	passPointer(foo2);
 	orthogonal(foo2);
 	foo2 = foo3.xy;
+	makefloat2(47.0f);
+	makefloat2(&foo5[0]);
+	makefloat2(&ifoo5[0]);
+	makefloat2(foo5);
+	makefloat2(ifoo5);
 
 	float bazArray[] = { 1, 2, 3, 4 };
 	makefloat4(bazArray);
@@ -601,6 +620,7 @@ void testMatrices()
 	foo5.m_data[4];
 	foo5[4][3] = 47.0f;
 	passPointer(foo5);
+	makematrix<float, 5, 5>(&foo5[0][0]);
 	foo5 + foo5;
 	foo5 + 47.0f;
 	47.0f + foo5;
@@ -661,6 +681,9 @@ void testMatrices()
 	foo5 = square(foo5);
 
 	matrix<int, 5, 5> ifoo5 = { 1, 2, 3, 4, 5 };
+	makematrix<float, 4, 4>(ifoo5);
+	makematrix<float, 5, 5>(ifoo5);
+	makematrix<float, 6, 6>(ifoo5);
 	ifoo5 & ifoo5;
 	ifoo5 | ifoo5;
 	ifoo5 ^ ifoo5;
@@ -670,9 +693,6 @@ void testMatrices()
 	ifoo5 |= ifoo5;
 	ifoo5 ^= ifoo5;
 
-	float bazArray[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-	makefloat4x4(bazArray);
-
 	matrix<float, 4, 3> foo4x3;
 	float4 bar4;
 	float3 bar3;
@@ -681,6 +701,24 @@ void testMatrices()
 	matrix<float, 3, 4> foo3x4 = transpose(foo4x3);
 	(void) foo3x4;
 	foo4x3 = outerProduct(bar4, bar3);
+
+	makefloat4x4(47.0f);
+	makefloat4x4(&foo5[0][0]);
+	makefloat4x4(&ifoo5[0][0]);
+	makefloat4x4(foo5);
+	makefloat4x4(ifoo5);
+
+	makefloat3x3(47.0f);
+	makefloat3x3(&foo5[0][0]);
+	makefloat3x3(&ifoo5[0][0]);
+	makefloat3x3(foo5);
+	makefloat3x3(ifoo5);
+
+	makefloat2x2(47.0f);
+	makefloat2x2(&foo5[0][0]);
+	makefloat2x2(&ifoo5[0][0]);
+	makefloat2x2(foo5);
+	makefloat2x2(ifoo5);
 }
 
 
@@ -694,6 +732,12 @@ void testAffine()
 	foo5.m_data[4];
 	foo5[4];
 	passPointer(foo5);
+	makepoint<int, 4>(&foo5[0]);
+	makepoint<int, 5>(&foo5[0]);
+	makepoint<int, 6>(&foo5[0]);
+	makepoint<int, 4>(foo5);
+	makepoint<int, 5>(foo5);
+	makepoint<int, 6>(foo5);
 	foo5 + bar5;
 	foo5 - bar5;
 	foo5 - foo5;
@@ -733,6 +777,9 @@ void testAffine()
 	foo3.b;
 	foo3[2];
 	passPointer(foo3);
+	makepoint3(0.0f);
+	makeipoint3(&foo3[0]);
+	makepoint3(makepoint<int, 4>(0));
 
 	point2 foo2 = { 1, 2 };
 	foo2.y;
@@ -740,11 +787,19 @@ void testAffine()
 	foo2[1];
 	passPointer(foo2);
 	foo2 = foo3.xy;
-
-	float bazArray[] = { 1, 2, 3 };
-	makepoint3(bazArray);
+	makepoint2(0.0f);
+	makeipoint2(&foo3[0]);
+	makepoint2(makepoint<int, 4>(0));
 
 	affine<float, 5> aff5 = { 1, 2, 3, 4, 5 };
+	makeaffine<float, 5>(0.0f);
+	makeaffine<float, 4>(aff5);
+	makeaffine<float, 5>(aff5);
+	makeaffine<float, 6>(aff5);
+	makeaffine<int, 4>(aff5);
+	makeaffine<int, 5>(aff5);
+	makeaffine<int, 6>(aff5);
+	makeaffine(aff5.m_linear);
 	aff5 == aff5;
 	aff5 != aff5;
 	aff5 * aff5;
@@ -762,8 +817,15 @@ void testAffine()
 	aff5 = translation(bar5);
 	aff5 = scaling<float, 5>(47.0f);
 	aff5 = scaling(bar5);
-	matrix<float, 6, 6> mat6 = aff5.toMatrix();
-	aff5 = makeaffine(mat6);
+	matrix<float, 6, 6> mat6 = affineToHomogeneous(aff5);
+	aff5 = homogeneousToAffine(mat6);
+
+	makeaffine2(0.0f);
+	makeaffine2(makeaffine<int, 4>(0));
+	makeaffine2(makefloat2x2(0.0f));
+	makeaffine3(0.0f);
+	makeaffine3(makeaffine<int, 4>(0));
+	makeaffine3(makefloat3x3(0.0f));
 }
 
 
