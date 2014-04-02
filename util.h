@@ -6,6 +6,7 @@
 template <typename T, int N> char(&dim_helper(T(&)[N]))[N];
 #define dim(x) (sizeof(dim_helper(x)))
 #define dim_field(S, m) dim(((S*)0)->m)
+#define sizeof_field(S, m) (sizeof(((S*)0)->m))
 
 // Compile-time assert
 #define cassert(x) static_assert(x, #x)
