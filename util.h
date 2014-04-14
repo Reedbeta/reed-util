@@ -34,7 +34,7 @@ namespace util
 
 	// Convenient float constants
 	static const float epsilon = 1e-6f;		// A reasonable general-purpose epsilon
-	extern const float infty;
+	extern const float infinity;
 	extern const float NaN;
 
 	// Generic swap

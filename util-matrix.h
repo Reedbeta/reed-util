@@ -80,32 +80,32 @@ namespace util
 			typedef matrix<type, 2, 2> const & type##2x2_arg; \
 			typedef matrix<type, 3, 3> const & type##3x3_arg; \
 			typedef matrix<type, 4, 4> const & type##4x4_arg; \
-			type##2x2 make##type##2x2(type m0, type m1, type m2, type m3) \
+			inline type##2x2 make##type##2x2(type m0, type m1, type m2, type m3) \
 				{ type##2x2 m = { m0, m1, m2, m3 }; return m; } \
-			type##2x2 make##type##2x2(type##2_arg row0, type##2_arg row1) \
+			inline type##2x2 make##type##2x2(type##2_arg row0, type##2_arg row1) \
 				{ type##2x2 m = { row0.x, row0.y, row1.x, row1.y }; return m; } \
-			type##2x2 make##type##2x2Cols(type##2_arg col0, type##2_arg col1) \
+			inline type##2x2 make##type##2x2Cols(type##2_arg col0, type##2_arg col1) \
 				{ type##2x2 m = { col0.x, col1.x, col0.y, col1.y }; return m; } \
 			template <typename T> \
-			type##2x2 make##type##2x2(T a) \
+			inline type##2x2 make##type##2x2(T a) \
 				{ return makematrix<type, 2, 2>(a); } \
-			type##3x3 make##type##3x3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8) \
+			inline type##3x3 make##type##3x3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8) \
 				{ type##3x3 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8 }; return m; } \
-			type##3x3 make##type##3x3(type##3_arg row0, type##3_arg row1, type##3_arg row2) \
+			inline type##3x3 make##type##3x3(type##3_arg row0, type##3_arg row1, type##3_arg row2) \
 				{ type##3x3 m = { row0.x, row0.y, row0.z, row1.x, row1.y, row1.z, row2.x, row2.y, row2.z }; return m; } \
-			type##3x3 make##type##3x3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2) \
+			inline type##3x3 make##type##3x3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2) \
 				{ type##3x3 m = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z }; return m; } \
 			template <typename T> \
-			type##3x3 make##type##3x3(T a) \
+			inline type##3x3 make##type##3x3(T a) \
 				{ return makematrix<type, 3, 3>(a); } \
-			type##4x4 make##type##4x4(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type m9, type m10, type m11, type m12, type m13, type m14, type m15) \
+			inline type##4x4 make##type##4x4(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type m9, type m10, type m11, type m12, type m13, type m14, type m15) \
 				{ type##4x4 m = { m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15 }; return m; } \
-			type##4x4 make##type##4x4(type##4_arg row0, type##4_arg row1, type##4_arg row2, type##4_arg row3) \
+			inline type##4x4 make##type##4x4(type##4_arg row0, type##4_arg row1, type##4_arg row2, type##4_arg row3) \
 				{ type##4x4 m = { row0.x, row0.y, row0.z, row0.w, row1.x, row1.y, row1.z, row1.w, row2.x, row2.y, row2.z, row2.w, row3.x, row3.y, row3.z, row3.w }; return m; } \
-			type##4x4 make##type##4x4Cols(type##4_arg col0, type##4_arg col1, type##4_arg col2, type##4_arg col3) \
+			inline type##4x4 make##type##4x4Cols(type##4_arg col0, type##4_arg col1, type##4_arg col2, type##4_arg col3) \
 				{ type##4x4 m = { col0.x, col1.x, col2.x, col3.x, col0.y, col1.y, col2.y, col3.y, col0.z, col1.z, col2.z, col3.z, col0.w, col1.w, col2.w, col3.w }; return m; } \
 			template <typename T> \
-			type##4x4 make##type##4x4(T a) \
+			inline type##4x4 make##type##4x4(T a) \
 				{ return makematrix<type, 4, 4>(a); }
 
 	DEFINE_CONCRETE_MATRICES(float);

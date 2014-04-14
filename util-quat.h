@@ -217,7 +217,7 @@ namespace util
 	inline float length(quat_arg a)
 		{ return sqrt(lengthSquared(a)); }
 
-	quat normalize(quat_arg a)
+	inline quat normalize(quat_arg a)
 		{ return a / length(a); }
 
 	inline quat conjugate(quat_arg a)

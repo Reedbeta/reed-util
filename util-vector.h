@@ -117,26 +117,26 @@ namespace util
 			typedef vector<type, 2> const & type##2_arg; \
 			typedef vector<type, 3> const & type##3_arg; \
 			typedef vector<type, 4> const & type##4_arg; \
-			type##2 make##type##2(type x, type y) \
+			inline type##2 make##type##2(type x, type y) \
 				{ type##2 v = { x, y }; return v; } \
 			template <typename T> \
-			type##2 make##type##2(T a) \
+			inline type##2 make##type##2(T a) \
 				{ return makevector<type, 2>(a); } \
-			type##3 make##type##3(type x, type y, type z) \
+			inline type##3 make##type##3(type x, type y, type z) \
 				{ type##3 v = { x, y, z }; return v; } \
-			type##3 make##type##3(type##2_arg xy, type z) \
+			inline type##3 make##type##3(type##2_arg xy, type z) \
 				{ type##3 v = { xy.x, xy.y, z }; return v; } \
 			template <typename T> \
-			type##3 make##type##3(T a) \
+			inline type##3 make##type##3(T a) \
 				{ return makevector<type, 3>(a); } \
-			type##4 make##type##4(type x, type y, type z, type w) \
+			inline type##4 make##type##4(type x, type y, type z, type w) \
 				{ type##4 v = { x, y, z, w }; return v; } \
-			type##4 make##type##4(type##2_arg xy, type z, type w) \
+			inline type##4 make##type##4(type##2_arg xy, type z, type w) \
 				{ type##4 v = { xy.x, xy.y, z, w }; return v; } \
-			type##4 make##type##4(type##3_arg xyz, type w) \
+			inline type##4 make##type##4(type##3_arg xyz, type w) \
 				{ type##4 v = { xyz.x, xyz.y, xyz.z, w }; return v; } \
 			template <typename T> \
-			type##4 make##type##4(T a) \
+			inline type##4 make##type##4(T a) \
 				{ return makevector<type, 4>(a); }
 
 	DEFINE_CONCRETE_VECTORS(float);

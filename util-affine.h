@@ -133,17 +133,17 @@ namespace util
 			typedef point<type, 3> name##3; \
 			typedef point<type, 2> const & name##2_arg; \
 			typedef point<type, 3> const & name##3_arg; \
-			name##2 make##name##2(type x, type y) \
+			inline name##2 make##name##2(type x, type y) \
 				{ name##2 v = { x, y }; return v; } \
 			template <typename T> \
-			name##2 make##name##2(T a) \
+			inline name##2 make##name##2(T a) \
 				{ return makepoint<type, 2>(a); } \
-			name##3 make##name##3(type x, type y, type z) \
+			inline name##3 make##name##3(type x, type y, type z) \
 				{ name##3 v = { x, y, z }; return v; } \
-			name##3 make##name##3(name##2_arg xy, type z) \
+			inline name##3 make##name##3(name##2_arg xy, type z) \
 				{ name##3 v = { xy.x, xy.y, z }; return v; } \
 			template <typename T> \
-			name##3 make##name##3(T a) \
+			inline name##3 make##name##3(T a) \
 				{ return makepoint<type, 3>(a); }
 
 	DEFINE_CONCRETE_POINTS(float, point);
@@ -437,29 +437,29 @@ namespace util
 			typedef affine<type, 3> name##3; \
 			typedef affine<type, 2> const & name##2_arg; \
 			typedef affine<type, 3> const & name##3_arg; \
-			name##2 make##name##2(type m0, type m1, type m2, type m3, type tx, type ty) \
+			inline name##2 make##name##2(type m0, type m1, type m2, type m3, type tx, type ty) \
 				{ name##2 a = { m0, m1, m2, m3, tx, ty }; return a; } \
-			name##2 make##name##2(type##2_arg row0, type##2_arg row1, type##2_arg translation) \
+			inline name##2 make##name##2(type##2_arg row0, type##2_arg row1, type##2_arg translation) \
 				{ name##2 a = { row0.x, row0.y, row1.x, row1.y, translation.x, translation.y }; return a; } \
-			name##2 make##name##2Cols(type##2_arg col0, type##2_arg col1, type##2_arg translation) \
+			inline name##2 make##name##2Cols(type##2_arg col0, type##2_arg col1, type##2_arg translation) \
 				{ name##2 a = { col0.x, col1.x, col0.y, col1.y, translation.x, translation.y }; return a; } \
-			name##2 make##name##2(type##2x2_arg linear, type##2_arg translation) \
+			inline name##2 make##name##2(type##2x2_arg linear, type##2_arg translation) \
 				{ name##2 a = { linear, translation }; return a; } \
 			template <typename T> \
-			name##2 make##name##2(T a) \
+			inline name##2 make##name##2(T a) \
 				{ return makeaffine<type, 2>(a); } \
-			name##3 make##name##3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type tx, type ty, type tz) \
+			inline name##3 make##name##3(type m0, type m1, type m2, type m3, type m4, type m5, type m6, type m7, type m8, type tx, type ty, type tz) \
 				{ name##3 a = { m0, m1, m2, m3, m4, m5, m6, m7, m8, tx, ty, tz }; return a; } \
-			name##3 make##name##3(type##3_arg row0, type##3_arg row1, type##3_arg row2, type##3_arg translation) \
+			inline name##3 make##name##3(type##3_arg row0, type##3_arg row1, type##3_arg row2, type##3_arg translation) \
 				{ name##3 a = { row0.x, row0.y, row0.z, row1.x, row1.y, row1.z, row2.x, row2.y, row2.z, translation.x, translation.y, translation.z }; return a; } \
-			name##3 make##name##3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2, type##3_arg translation) \
+			inline name##3 make##name##3Cols(type##3_arg col0, type##3_arg col1, type##3_arg col2, type##3_arg translation) \
 				{ name##3 a = { col0.x, col1.x, col2.x, col0.y, col1.y, col2.y, col0.z, col1.z, col2.z, translation.x, translation.y, translation.z }; return a; } \
-			name##3 make##name##3(type##3x3_arg linear, type##3_arg translation) \
+			inline name##3 make##name##3(type##3x3_arg linear, type##3_arg translation) \
 				{ name##3 a = { linear, translation }; return a; } \
-			name##3 make##name##3(type##4x4_arg m) \
+			inline name##3 make##name##3(type##4x4_arg m) \
 				{ name##3 a = { m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2], m[3][0], m[3][1], m[3][2] }; return a; } \
 			template <typename T> \
-			name##3 make##name##3(T a) \
+			inline name##3 make##name##3(T a) \
 				{ return makeaffine<type, 3>(a); }
 
 	DEFINE_CONCRETE_AFFINES(float, affine);

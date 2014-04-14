@@ -32,6 +32,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="half\half.cpp" />
+    <ClCompile Include="test.cpp" />
+    <ClCompile Include="util-affine.cpp" />
+    <ClCompile Include="util-color.cpp" />
+    <ClCompile Include="util-matrix.cpp" />
+    <ClCompile Include="util-quat.cpp" />
+    <ClCompile Include="util-rng.cpp" />
+    <ClCompile Include="util-simd.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -115,21 +115,21 @@ namespace util
 			typedef box<type, 3> name##3; \
 			typedef box<type, 2> const & name##2_arg; \
 			typedef box<type, 3> const & name##3_arg; \
-			name##2 make##name##2(type minx, type miny, type maxx, type maxy) \
+			inline name##2 make##name##2(type minx, type miny, type maxx, type maxy) \
 				{ name##2 a = { minx, miny, maxx, maxy }; return a; } \
-			name##2 make##name##2Empty() \
+			inline name##2 make##name##2Empty() \
 				{ return makeboxEmpty<type, 2>(); } \
-			name##2 make##name##2(ptype##2_arg mins, ptype##2_arg maxs) \
+			inline name##2 make##name##2(ptype##2_arg mins, ptype##2_arg maxs) \
 				{ return makebox<type, 2>(mins, maxs); } \
-			name##2 make##name##2(uint numPoints, ptype##2 const * points) \
+			inline name##2 make##name##2(uint numPoints, ptype##2 const * points) \
 				{ return makebox<type, 2>(numPoints, points); } \
-			name##3 make##name##3(type minx, type miny, type minz, type maxx, type maxy, type maxz) \
+			inline name##3 make##name##3(type minx, type miny, type minz, type maxx, type maxy, type maxz) \
 				{ name##3 a = { minx, miny, minz, maxx, maxy, maxz }; return a; } \
-			name##3 make##name##3Empty() \
+			inline name##3 make##name##3Empty() \
 				{ return makeboxEmpty<type, 3>(); } \
-			name##3 make##name##3(ptype##3_arg mins, ptype##3_arg maxs) \
+			inline name##3 make##name##3(ptype##3_arg mins, ptype##3_arg maxs) \
 				{ return makebox<type, 3>(mins, maxs); } \
-			name##3 make##name##3(uint numPoints, ptype##3 const * points) \
+			inline name##3 make##name##3(uint numPoints, ptype##3 const * points) \
 				{ return makebox<type, 3>(numPoints, points); } \
 
 	DEFINE_CONCRETE_BOXES(float, box, point);

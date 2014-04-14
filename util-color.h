@@ -11,19 +11,19 @@ namespace util
 			typedef float3_arg name##_arg; \
 			typedef float4 name##a; \
 			typedef float4_arg name##a_arg; \
-			name make##name(float x, float y, float z) \
+			inline name make##name(float x, float y, float z) \
 				{ name v = { x, y, z }; return v; } \
-			name make##name(float a) \
+			inline name make##name(float a) \
 				{ name v = { a, a, a }; return v; } \
-			name make##name(const float * a) \
+			inline name make##name(const float * a) \
 				{ name v = { a[0], a[1], a[2] }; return v; } \
-			name##a make##name##a(float x, float y, float z, float w) \
+			inline name##a make##name##a(float x, float y, float z, float w) \
 				{ name##a v = { x, y, z, w }; return v; } \
-			name##a make##name##a(name##_arg xyz, float w) \
+			inline name##a make##name##a(name##_arg xyz, float w) \
 				{ name##a v = { xyz.x, xyz.y, xyz.z, w }; return v; } \
-			name##a make##name##a(float a) \
+			inline name##a make##name##a(float a) \
 				{ name##a v = { a, a, a, a }; return v; } \
-			name##a make##name##a(const float * a) \
+			inline name##a make##name##a(const float * a) \
 				{ name##a v = { a[0], a[1], a[2], a[3] }; return v; }
 
 	DEFINE_COLOR_SPACE(rgb);		// Linear RGB space

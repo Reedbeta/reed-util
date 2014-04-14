@@ -22,6 +22,8 @@ math
 - half-float from OpenEXR - DONE
 - quats and rotation stuff - DONE
 - color space conversion - DONE
+- splines
+- spherical harmonics
 - complex numbers?
 - projective math?
 - grassmann algebra?
