@@ -23,6 +23,7 @@
     <ClInclude Include="util-affine.h" />
     <ClInclude Include="util-box.h" />
     <ClInclude Include="util-color.h" />
+    <ClInclude Include="util-log.h" />
     <ClInclude Include="util-matrix.h" />
     <ClInclude Include="util-quat.h" />
     <ClInclude Include="util-simd.h" />
@@ -35,6 +36,7 @@
     <ClCompile Include="test.cpp" />
     <ClCompile Include="util-affine.cpp" />
     <ClCompile Include="util-color.cpp" />
+    <ClCompile Include="util-log.cpp" />
     <ClCompile Include="util-matrix.cpp" />
     <ClCompile Include="util-quat.cpp" />
     <ClCompile Include="util-rng.cpp" />

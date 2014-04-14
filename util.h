@@ -93,14 +93,18 @@ namespace util
 		return result;
 	}
 
-	// Print error message and exit
+	// Print an error message and immediately exit with code 1
 	void __declspec(noreturn) exit(const char * fmt, ...);
 
-	// Advance a pointer by a given number of bytes
+	// Advance a pointer by a given number of bytes, regardless of pointer's type
+	// (note: number of bytes can be negative)
 	template <typename T>
 	inline T * advanceBytes(T * ptr, int bytes)
 		{ return (T *)((byte *)ptr + bytes); }
 }
+
+// Logging and errors
+#include "util-log.h"
 
 // Random number library
 #include "util-rng.h"
