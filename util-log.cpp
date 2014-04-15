@@ -53,7 +53,7 @@ namespace util
 		{
 			sprintf_s(message2, "%s[%s:%d] ", message2, file, line);
 		}
-		strcat_s(message2, message);
+		sprintf_s(message2, "%s%s\n", message2, message);
 
 		// Write to file and/or send to callback
 		if (g_logFile)
