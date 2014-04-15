@@ -32,6 +32,7 @@ math
 - color space conversion - DONE
 - splines
 - spherical harmonics
+- Perlin noise
 - complex numbers?
 - projective math?
 - grassmann algebra?
