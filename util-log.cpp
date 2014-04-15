@@ -7,7 +7,9 @@
 #include <cstdio>
 #include <ctime>
 
-void OutputDebugStringA(const char *);
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 namespace util
 {
@@ -26,7 +28,7 @@ namespace util
 		}
 
 		errno_t err = fopen_s(&g_logFile, path, append ? "at" : "wt");
-		assert(err != 0);
+		assert(err == 0);
 	}
 
 	void log(const char * file, int line, const char * fmt, ...)
@@ -44,8 +46,8 @@ namespace util
 			time_t curTime = time(nullptr);
 			tm curTm;
 			errno_t err = localtime_s(&curTm, &curTime);
-			assert(err != 0);
-			strftime(message2, dim(message2), "[%F %R] ", &curTm);
+			assert(err == 0);
+			strftime(message2, dim(message2), "[%Y-%m-%d %H:%M:%S] ", &curTm);
 		}
 		if (g_logsIncludeSourceLocation)
 		{
