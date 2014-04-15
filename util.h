@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include <float.h>
+#include <vector>
 
 // Compile-time array size
 template <typename T, int N> char(&dim_helper(T(&)[N]))[N];
@@ -93,14 +94,21 @@ namespace util
 		return result;
 	}
 
-	// Print an error message and immediately exit with code 1
-	void __declspec(noreturn) exit(const char * fmt, ...);
+	// Base-2 exp and log
+	inline float exp2f(float x) { return expf(0.693147181f * x); }
+	inline float log2f(float x) { return 1.442695041f * logf(x); }
 
 	// Advance a pointer by a given number of bytes, regardless of pointer's type
 	// (note: number of bytes can be negative)
 	template <typename T>
 	inline T * advanceBytes(T * ptr, int bytes)
 		{ return (T *)((byte *)ptr + bytes); }
+
+	// Load an entire file into memory
+	bool loadFile(const char * path, std::vector<byte> * pData, bool text = false);
+
+	// Print an error message to stderr and immediately exit with code 1
+	void __declspec(noreturn) exit(const char * fmt, ...);
 }
 
 // Logging and errors
