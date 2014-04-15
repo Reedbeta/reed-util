@@ -65,6 +65,7 @@ void testVectors()
 	isnear(foo5, 47.0f);
 	isnear(47.0f, foo5);
 	isfinite(foo5);
+	round(foo5);
 	any(foo5 < 47.0f);
 	all(foo5 > 47.0f);
 	select(foo5 < 47.0f, foo5, foo5);
@@ -90,6 +91,7 @@ void testVectors()
 	ifoo5 &= ifoo5;
 	ifoo5 |= ifoo5;
 	ifoo5 ^= ifoo5;
+	ifoo5 = round(foo5);
 
 	float4 foo4 = { 1, 2, 3, 4};
 	foo4.w;
@@ -198,6 +200,7 @@ void testMatrices()
 	isnear(foo5, 47.0f);
 	isnear(47.0f, foo5);
 	isfinite(foo5);
+	round(foo5);
 	any(foo5 < 47.0f);
 	all(foo5 > 47.0f);
 	select(foo5 < 47.0f, foo5, foo5);
@@ -223,6 +226,7 @@ void testMatrices()
 	ifoo5 &= ifoo5;
 	ifoo5 |= ifoo5;
 	ifoo5 ^= ifoo5;
+	ifoo5 = round(foo5);
 
 	matrix<float, 4, 3> foo4x3;
 	float4 bar4;
@@ -296,6 +300,7 @@ void testAffine()
 	isnear(foo5, 47.0f);
 	isnear(47.0f, foo5);
 	isfinite(foo5);
+	round(foo5);
 	any(foo5 < 47.0f);
 	all(foo5 > 47.0f);
 	select(foo5 < 47.0f, foo5, foo5);
@@ -350,6 +355,7 @@ void testAffine()
 	aff5 = inverse(aff5);
 	isnear(aff5, aff5);
 	isfinite(aff5);
+	round(aff5);
 	aff5 = square(aff5);
 	aff5 = translation(bar5);
 	aff5 = scaling<float, 5>(47.0f);
@@ -412,6 +418,7 @@ void testBox()
 	distanceSquared(baz5, foo5);
 	isnear(foo5, foo5);
 	isfinite(foo5);
+	round(foo5);
 }
 
 

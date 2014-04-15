@@ -251,4 +251,10 @@ namespace util
 	{
 		return all(isfinite(a.m_mins)) && all(isfinite(a.m_maxs));
 	}
+
+	template <typename T, uint n>
+	box<int, n> round(box<T, n> const & a)
+	{
+		return makebox(round(a.m_mins), round(a.m_maxs));
+	}
 }

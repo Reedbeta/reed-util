@@ -347,6 +347,15 @@ namespace util
 	}
 
 	template <typename T, uint n>
+	point<int, n> round(point<T, n> const & a)
+	{
+		point<int, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = round(a[i]);
+		return result;
+	}
+
+	template <typename T, uint n>
 	point<T, n> select(vector<bool, n> const & cond, point<T, n> const & a, point<T, n> const & b)
 	{
 		point<T, n> result;
@@ -417,6 +426,13 @@ namespace util
 		// If the size is being enlarged, fill in the matrix diagonal with ones
 		for (uint i = n_from; i < n; ++i)
 			result.m_linear[i][i] = T(1);
+		return result;
+	}
+
+	template <typename T, uint n>
+	affine<T, n> makeaffine(matrix<T, n, n> const & a, vector<T, n> const & b)
+	{
+		affine<T, n> result = { a, b };
 		return result;
 	}
 
@@ -627,6 +643,12 @@ namespace util
 	bool isfinite(affine<T, n> const & a)
 	{
 		return all(isfinite(a.m_linear)) && all(isfinite(a.m_translation));
+	}
+
+	template <typename T, uint n>
+	affine<int, n> round(affine<T, n> const & a)
+	{
+		return makeaffine(round(a.m_linear), round(a.m_translation));
 	}
 
 

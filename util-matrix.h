@@ -524,6 +524,15 @@ namespace util
 		return result;
 	}
 
+	template <typename T, uint rows, uint cols>
+	matrix<int, rows, cols> round(matrix<T, rows, cols> const & a)
+	{
+		matrix<int, rows, cols> result;
+		for (uint i = 0; i < rows*cols; ++i)
+			result.m_data[i] = round(a.m_data[i]);
+		return result;
+	}
+
 
 
 	// Utilities for bool matrices

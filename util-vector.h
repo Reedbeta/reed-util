@@ -337,6 +337,15 @@ namespace util
 		return result;
 	}
 
+	template <typename T, uint n>
+	vector<int, n> round(vector<T, n> const & a)
+	{
+		vector<int, n> result;
+		for (uint i = 0; i < n; ++i)
+			result[i] = round(a[i]);
+		return result;
+	}
+
 	template <typename T>
 	vector<T, 3> cross(vector<T, 3> const & a, vector<T, 3> const & b)
 	{
