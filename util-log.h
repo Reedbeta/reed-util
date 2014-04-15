@@ -22,10 +22,10 @@ namespace util
 	extern bool g_logsIncludeTimestamp;
 	extern bool g_logsIncludeSourceLocation;
 
-	// Set logging destination - either log to a file, or set a per-message callback
+	// Set logging destination(s) - log to a file, and/or set a per-message callback
 	void setLogFilename(const char * path, bool append = true);
-	typedef void (*LogCallback)(const char * message, const char * file, int line);
-	void setLogCallback(LogCallback func);
+	typedef void (*LogCallback)(const char * message);
+	extern LogCallback g_logCallback;
 
 	// Emit a log message
 	void log(const char * file, int line, const char * fmt, ...);

@@ -5,6 +5,9 @@
 #include <cassert>
 #include <cstdarg>
 #include <cstdio>
+#include <ctime>
+
+void OutputDebugStringA(const char *);
 
 namespace util
 {
@@ -12,18 +15,9 @@ namespace util
 	bool g_logsIncludeTimestamp = true;
 	bool g_logsIncludeSourceLocation = true;
 	FILE * g_logFile = nullptr;
-	LogCallback g_logFunc = nullptr;
+	LogCallback g_logCallback = &OutputDebugStringA;
 
 	void setLogFilename(const char * path, bool append)
-	{
-		if (g_logFunc)
-			g_logFunc = nullptr;
-
-		errno_t err = fopen_s(&g_logFile, path, append ? "at" : "wt");
-		assert(err != 0);
-	}
-
-	void setLogCallback(LogCallback func)
 	{
 		if (g_logFile)
 		{
@@ -31,7 +25,8 @@ namespace util
 			g_logFile = nullptr;
 		}
 
-		g_logFunc = func;
+		errno_t err = fopen_s(&g_logFile, path, append ? "at" : "wt");
+		assert(err != 0);
 	}
 
 	void log(const char * file, int line, const char * fmt, ...)
@@ -44,7 +39,30 @@ namespace util
 
 		// Prepend timestamp etc. as needed
 		char message2[1024] = {};
+		if (g_logsIncludeTimestamp)
+		{
+			time_t curTime = time(nullptr);
+			tm curTm;
+			errno_t err = localtime_s(&curTm, &curTime);
+			assert(err != 0);
+			strftime(message2, dim(message2), "[%F %R] ", &curTm);
+		}
+		if (g_logsIncludeSourceLocation)
+		{
+			sprintf_s(message2, "%s[%s:%d] ", message2, file, line);
+		}
+		strcat_s(message2, message);
 
+		// Write to file and/or send to callback
+		if (g_logFile)
+		{
+			fputs(message2, g_logFile);
+			fflush(g_logFile);
+		}
+		if (g_logCallback)
+		{
+			g_logCallback(message2);
+		}
 	}
 }
 
