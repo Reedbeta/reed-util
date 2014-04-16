@@ -33,7 +33,7 @@ namespace util
 			cassert(rows == cols);
 			auto result = makematrix<T, rows, cols>(0);
 			for (uint i = 0; i < rows; ++i)
-				result[rows][rows] = T(1);
+				result[i][i] = T(1);
 			return result;
 		}
 	};
