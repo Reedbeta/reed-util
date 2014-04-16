@@ -104,11 +104,16 @@ namespace util
 	inline T * advanceBytes(T * ptr, int bytes)
 		{ return (T *)((byte *)ptr + bytes); }
 
+	// Print an error message to stderr and immediately exit with code 1
+	void __declspec(noreturn) exit(const char * fmt, ...);
+
 	// Load an entire file into memory
 	bool loadFile(const char * path, std::vector<byte> * pData, bool text = false);
 
-	// Print an error message to stderr and immediately exit with code 1
-	void __declspec(noreturn) exit(const char * fmt, ...);
+	// In-place destructive string tokenizer - like strtok, but safer (stateless)
+	// Returns pointer to the start of the next token, and updates str to point to the
+	// remainder of the string
+	char * tokenize(char * & str, const char * delim);
 }
 
 // Logging and errors

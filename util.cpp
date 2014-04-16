@@ -48,4 +48,50 @@ namespace util
 
 		return true;
 	}
+
+	inline bool isDelimiter(char c, const char * delim)
+	{
+		for (; *delim; ++delim)
+		{
+			if (c == *delim)
+				return true;
+		}
+
+		return false;
+	}
+
+	char * tokenize(char * & str, const char * delim)
+	{
+		if (!str || !*str || !delim)
+			return nullptr;
+
+		// Find the start of the next token
+		char * pStartToken = str;
+		while (*pStartToken && isDelimiter(*pStartToken, delim))
+			++pStartToken;
+
+		// Did we hit the end of the string?
+		if (!*pStartToken)
+		{
+			str = pStartToken;
+			return nullptr;
+		}
+
+		// Find the end of the token
+		char * pEndToken = pStartToken;
+		while (*pEndToken && !isDelimiter(*pEndToken, delim))
+			++pEndToken;
+
+		// Did we hit the end of the string?
+		if (!*pEndToken)
+		{
+			str = pEndToken;
+			return pStartToken;
+		}
+
+		// Terminate the token and update str to the following character
+		*pEndToken = 0;
+		str = pEndToken + 1;
+		return pStartToken;
+	}
 }
