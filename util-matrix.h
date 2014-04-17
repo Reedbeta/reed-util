@@ -603,12 +603,12 @@ namespace util
 	// Generate standard projection matrices (row-vector math; right-handed view space).
 	// "D3D style" means z in [0, 1] after projection; "OGL style" means z in [-1, 1].
 
-	float4x4 orthoProjD3DStyle(float left, float right, float bottom, float top, float near, float far);
-	float4x4 orthoProjOGLStyle(float left, float right, float bottom, float top, float near, float far);
+	float4x4 orthoProjD3DStyle(float left, float right, float bottom, float top, float zNear, float zFar);
+	float4x4 orthoProjOGLStyle(float left, float right, float bottom, float top, float zNear, float zFar);
 
-	float4x4 perspProjD3DStyle(float left, float right, float bottom, float top, float near, float far);
-	float4x4 perspProjOGLStyle(float left, float right, float bottom, float top, float near, float far);
+	float4x4 perspProjD3DStyle(float left, float right, float bottom, float top, float zNear, float zFar);
+	float4x4 perspProjOGLStyle(float left, float right, float bottom, float top, float zNear, float zFar);
 
-	float4x4 perspProjD3DStyle(float verticalFOV, float aspect, float near, float far);
-	float4x4 perspProjOGLStyle(float verticalFOV, float aspect, float near, float far);
+	float4x4 perspProjD3DStyle(float verticalFOV, float aspect, float zNear, float zFar);
+	float4x4 perspProjOGLStyle(float verticalFOV, float aspect, float zNear, float zFar);
 }
