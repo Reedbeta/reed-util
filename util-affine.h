@@ -562,7 +562,7 @@ namespace util
 		affine<T, n> result =
 		{
 			mTransposed,
-			mTransposed * -a.m_translation
+			-a.m_translation * mTransposed
 		};
 		return result;
 	}
@@ -593,7 +593,7 @@ namespace util
 		affine<T, n> result =
 		{
 			mInverted,
-			mInverted * -a.m_translation
+			-a.m_translation * mInverted
 		};
 		return result;
 	}
