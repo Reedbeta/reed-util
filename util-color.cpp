@@ -1,5 +1,4 @@
 #include "util.h"
-#include <cassert>
 
 namespace util
 {
@@ -40,7 +39,7 @@ namespace util
 
 		float h = modPositive(c.x, 360.0f) / 60.0f;
 		int i = int(floor(h));
-		assert(i >= 0 && i < 6);
+		ASSERT_WARN(i >= 0 && i < 6);
 		float f = h - i;
 		float p = c.z * (1.0f - c.y);
 		float q = c.z * (1.0f - c.y * f);
@@ -55,7 +54,6 @@ namespace util
 		case 4: return makergb(t, p, c.z);
 		case 5: return makergb(c.z, p, q);
 		default:
-			assert(false);
 			return makergb(0.0f);
 		}
 	}

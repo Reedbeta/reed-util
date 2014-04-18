@@ -5,16 +5,10 @@ basic utilities
 - uint type - DONE
 - min, max, clamp, saturate - DONE
 - lerp - DONE
-- logging
-	- enable/disable with conditional compilation, global runtime flag, local runtime flags
-	- output to stdout/stderr, and/or file on hard drive
-	- file on hard drive contains timestamps per message
-	- optional .cpp file and line per message like asserts
-- custom (controllable) asserts and debug-breaks
-	- custom assert callback routine
-	- predefined callback for printing to stderr
-	- asserts into log file
-	- skippable vs unskippable asserts (i.e. warning vs fatal error)
+- logging - DONE
+- custom asserts - DONE
+	- error context stack
+	- choose whether to break per individual error
 - custom memory allocators with logging, leak detection, etc.
 - threading-related stuff?  Or does std::async provide enough support?
 - comparisons with epsilon - DONE

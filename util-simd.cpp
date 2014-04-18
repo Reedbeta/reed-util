@@ -1,5 +1,4 @@
 #include "util.h"
-#include <cassert>
 
 namespace util
 {
@@ -15,12 +14,12 @@ namespace util
 	{
 		static const int simdWidth = 4;
 
-		assert(numComponents > 0);
-		assert(pInput);
-		assert(inputStrideBytes >= sizeof(float) * numComponents);
-		assert(pOutput);
-		assert((size_t)pOutput % (simdWidth * sizeof(float)) == 0);
-		assert(outputStrideBytes >= simdWidth * sizeof(float) * numComponents);
+		ASSERT_ERR(numComponents > 0);
+		ASSERT_ERR(pInput);
+		ASSERT_ERR(inputStrideBytes >= sizeof(float) * numComponents);
+		ASSERT_ERR(pOutput);
+		ASSERT_ERR((size_t)pOutput % (simdWidth * sizeof(float)) == 0);
+		ASSERT_ERR(outputStrideBytes >= simdWidth * sizeof(float) * numComponents);
 
 		// Do the part that's a multiple of simdWidth
 		for (; numVectors >= simdWidth; numVectors -= simdWidth)
@@ -56,12 +55,12 @@ namespace util
 	{
 		static const int simdWidth = 4;
 
-		assert(numComponents > 0);
-		assert(pInput);
-		assert((size_t)pInput % (simdWidth * sizeof(float)) == 0);
-		assert(inputStrideBytes >= simdWidth * sizeof(float) * numComponents);
-		assert(pOutput);
-		assert(outputStrideBytes >= sizeof(float) * numComponents);
+		ASSERT_ERR(numComponents > 0);
+		ASSERT_ERR(pInput);
+		ASSERT_ERR((size_t)pInput % (simdWidth * sizeof(float)) == 0);
+		ASSERT_ERR(inputStrideBytes >= simdWidth * sizeof(float) * numComponents);
+		ASSERT_ERR(pOutput);
+		ASSERT_ERR(outputStrideBytes >= sizeof(float) * numComponents);
 
 		// Do the part that's a multiple of simdWidth
 		for (; numVectors >= simdWidth; numVectors -= simdWidth)

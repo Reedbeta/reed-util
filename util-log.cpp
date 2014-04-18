@@ -2,7 +2,6 @@
 
 #if ENABLE_LOGGING
 
-#include <cassert>
 #include <cstdarg>
 #include <cstdio>
 #include <ctime>
@@ -27,8 +26,7 @@ namespace util
 			g_logFile = nullptr;
 		}
 
-		errno_t err = fopen_s(&g_logFile, path, append ? "at" : "wt");
-		assert(err == 0);
+		CHECK_ERR(fopen_s(&g_logFile, path, append ? "at" : "wt") == 0);
 	}
 
 	void log(const char * file, int line, const char * fmt, ...)
@@ -45,8 +43,7 @@ namespace util
 		{
 			time_t curTime = time(nullptr);
 			tm curTm;
-			errno_t err = localtime_s(&curTm, &curTime);
-			assert(err == 0);
+			CHECK_WARN(localtime_s(&curTm, &curTime) == 0);
 			strftime(message2, dim(message2), "[%Y-%m-%d %H:%M:%S] ", &curTm);
 		}
 		if (g_logsIncludeSourceLocation)

@@ -1,7 +1,6 @@
 #ifdef _DEBUG
 
 #include "util.h"
-#include <cassert>
 
 // Vector/matrix unit testing crap
 // (actually only tests compilation, not results...)
@@ -399,7 +398,7 @@ void testBox()
 	foo5.numCorners();
 	baz5 = foo5.getCorner(0);
 	point<float, 5> corners[32];
-	assert(dim(corners) == foo5.numCorners());
+	ASSERT_ERR(dim(corners) == foo5.numCorners());
 	foo5.getCorners(corners);
 	float dotMin, dotMax;
 	foo5.getExtentsAlongAxis(bar5, dotMin, dotMax);

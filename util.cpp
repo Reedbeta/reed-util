@@ -1,6 +1,5 @@
 #include "util.h"
 
-#include <cassert>
 #include <cstdarg>
 #include <cstdio>
 #include <limits>
@@ -23,20 +22,20 @@ namespace util
 		FILE * pFile = nullptr;
 		if (fopen_s(&pFile, path, text ? "rt" : "rb") != 0)
 			return false;
-		assert(pFile);
+		ASSERT_ERR(pFile);
 
 		// Determine file size
 		fseek(pFile, 0, SEEK_END);
 		size_t size = ftell(pFile);
 
 		// Read the whole file into memory
-		assert(pData);
+		ASSERT_ERR(pData);
 		pData->resize(text ? size+1 : size);
 		rewind(pFile);
 		size_t sizeRead = fread(&(*pData)[0], sizeof(byte), size, pFile);
 
 		// Size can be smaller for text files, due to newline conversion
-		assert(sizeRead == size || (text && sizeRead < size));
+		ASSERT_ERR(sizeRead == size || (text && sizeRead < size));
 		fclose(pFile);
 
 		// Automatically null-terminate text files so string functions can be used

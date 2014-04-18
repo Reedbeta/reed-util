@@ -118,6 +118,7 @@ namespace util
 
 // Logging and errors
 #include "util-log.h"
+#include "util-err.h"
 
 // Random number library
 #include "util-rng.h"

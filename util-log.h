@@ -29,9 +29,12 @@ namespace util
 
 	// Emit a log message
 	void log(const char * file, int line, const char * fmt, ...);
-#	define LOG(fmt, ...)	util::log(__FILE__, __LINE__, fmt, __VA_ARGS__)
-#	define LOGIF(f, fmt, ...) { if (f) util::log(__FILE__, __LINE__, fmt, __VA_ARGS__); }
 }
+
+#define LOG(fmt, ...) \
+			util::log(__FILE__, __LINE__, fmt, __VA_ARGS__)
+#define LOGIF(f, fmt, ...) \
+			{ if (f) util::log(__FILE__, __LINE__, fmt, __VA_ARGS__); }
 
 #else // !ENABLE_LOGGING
 
@@ -44,8 +47,9 @@ namespace util
 	typedef void (*LogCallback)(const char * message, const char * file, int line);
 	inline void setLogCallback(LogCallback func) { (void)func; }
 	inline void log(const char * file, int line, const char * fmt, ...) { (void)file; (void)line; (void)fmt; }
-#	define LOG(...)
-#	define LOGIF(...)
 }
+
+#define LOG(...)	{}
+#define LOGIF(...)	{}
 
 #endif // !ENABLE_LOGGING
