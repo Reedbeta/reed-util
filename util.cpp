@@ -21,7 +21,10 @@ namespace util
 	{
 		FILE * pFile = nullptr;
 		if (fopen_s(&pFile, path, text ? "rt" : "rb") != 0)
+		{
+			WARN("Couldn't open file %s", path);
 			return false;
+		}
 		ASSERT_ERR(pFile);
 
 		// Determine file size
