@@ -36,6 +36,10 @@ namespace util
 				result[i][i] = T(1);
 			return result;
 		}
+
+		// Conversion to bool is not allowed (otherwise would
+		// happen implicitly through array conversions)
+		private: operator bool();
 	};
 
 	// Generic maker functions
@@ -308,9 +312,9 @@ namespace util
 	}
 
 	template <typename T, uint n>
-	matrix<T, n, n> pow(matrix<T, n, n> const & a, uint b)
+	matrix<T, n, n> pow(matrix<T, n, n> const & a, int b)
 	{
-		if (b == 0)
+		if (b <= 0)
 			return matrix<T, n, n>::identity();
 		if (b == 1)
 			return a;

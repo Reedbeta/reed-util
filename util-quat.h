@@ -36,6 +36,10 @@ namespace util
 							2*(x*z + y*w), 2*(y*z - x*w), 1 - 2*(x*x + y*y));
 			return makeaffine3(mat, makefloat3(0.0f));
 		}
+
+		// Conversion to bool is not allowed (otherwise would
+		// happen implicitly through array conversions)
+		private: operator bool();
 	};
 
 #pragma warning(pop)
@@ -223,9 +227,9 @@ namespace util
 	inline quat conjugate(quat_arg a)
 		{ return makequat(a.w, -a.x, -a.y, -a.z); }
 
-	inline quat pow(quat_arg a, uint b)
+	inline quat pow(quat_arg a, int b)
 	{
-		if (b == 0)
+		if (b <= 0)
 			return makequatIdentity();
 		if (b == 1)
 			return a;

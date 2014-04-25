@@ -15,7 +15,10 @@ namespace util
 			T & operator [] (int i) \
 				{ return m_data[i]; } \
 			const T & operator [] (int i) const \
-				{ return m_data[i]; }
+				{ return m_data[i]; } \
+			/* Conversion to bool is not allowed (otherwise would \
+			   happen implicitly through array conversions) */ \
+			private: operator bool();
 
 	// Generic point struct, providing storage, using partial
 	// specialization to get names (xyzw) for n <= 4
@@ -568,9 +571,9 @@ namespace util
 	}
 
 	template <typename T, uint n>
-	affine<T, n> pow(affine<T, n> const & a, uint b)
+	affine<T, n> pow(affine<T, n> const & a, int b)
 	{
-		if (b == 0)
+		if (b <= 0)
 			return affine<T, n>::identity();
 		if (b == 1)
 			return a;

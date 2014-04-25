@@ -16,7 +16,10 @@ namespace util
 			T & operator [] (int i) \
 				{ return m_data[i]; } \
 			const T & operator [] (int i) const \
-				{ return m_data[i]; }
+				{ return m_data[i]; } \
+			/* Conversion to bool is not allowed (otherwise would \
+			   happen implicitly through array conversions) */ \
+			private: operator bool();
 
 	// Generic vector struct, providing storage, using partial
 	// specialization to get names (xyzw) for n <= 4
