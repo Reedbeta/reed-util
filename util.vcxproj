@@ -37,9 +37,6 @@
     <ClCompile Include="util-simd.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="todo.txt" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{059ADADD-603C-4508-B2C6-8B0BA87BA4C9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
