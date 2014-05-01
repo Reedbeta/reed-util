@@ -125,6 +125,7 @@ namespace util
 #include "util-rng.h"
 
 // Math libraries
+#include "half/half.h"
 #include "util-vector.h"
 #include "util-matrix.h"
 #include "util-affine.h"
@@ -132,4 +133,3 @@ namespace util
 #include "util-box.h"
 #include "util-color.h"
 #include "util-quat.h"
-#include "half/half.h"

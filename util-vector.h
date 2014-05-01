@@ -143,10 +143,11 @@ namespace util
 				{ return makevector<type, 4>(a); }
 
 	DEFINE_CONCRETE_VECTORS(float);
+	//DEFINE_CONCRETE_VECTORS(half);	// !!!UNDONE: need to de-constructorize half
 	DEFINE_CONCRETE_VECTORS(int);
 	DEFINE_CONCRETE_VECTORS(uint);
-	DEFINE_CONCRETE_VECTORS(bool);
 	DEFINE_CONCRETE_VECTORS(byte);
+	DEFINE_CONCRETE_VECTORS(bool);
 
 #undef DEFINE_CONCRETE_VECTORS
 
