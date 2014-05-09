@@ -120,16 +120,3 @@ namespace util
 // Logging and errors
 #include "util-log.h"
 #include "util-err.h"
-
-// Random number library
-#include "util-rng.h"
-
-// Math libraries
-#include "half/half.h"
-#include "util-vector.h"
-#include "util-matrix.h"
-#include "util-affine.h"
-#include "util-simd.h"
-#include "util-box.h"
-#include "util-color.h"
-#include "util-quat.h"

@@ -1,4 +1,5 @@
 #include "util.h"
+#include "util-rng.h"
 #include <ctime>
 
 namespace util

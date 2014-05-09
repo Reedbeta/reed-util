@@ -1,12 +1,10 @@
 #ifdef _DEBUG
 
-#include "util.h"
+#include "util-all.h"
 
 // Vector/matrix unit testing crap
 // (actually only tests compilation, not results...)
 // !!!UNDONE: proper tests
-
-#include <vector>
 
 void passPointer(const float * p)
 {
