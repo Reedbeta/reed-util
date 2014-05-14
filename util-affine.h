@@ -28,7 +28,7 @@ namespace util
 	{
 		cassert(n > 4);
 		T m_data[n];
-		POINT_MEMBERS(T, n);
+		POINT_MEMBERS(T, n)
 	};
 
 #pragma warning(push)
@@ -42,7 +42,7 @@ namespace util
 			struct { T x, y; };
 			struct { T u, v; };
 		};
-		POINT_MEMBERS(T, 2);
+		POINT_MEMBERS(T, 2)
 	};
 
 	template <typename T>
@@ -56,7 +56,7 @@ namespace util
 			point<T, 2> xy;
 			point<T, 2> uv;
 		};
-		POINT_MEMBERS(T, 3);
+		POINT_MEMBERS(T, 3)
 	};
 
 	template <typename T>
@@ -72,7 +72,7 @@ namespace util
 			point<T, 3> xyz;
 			point<T, 3> rgb;
 		};
-		POINT_MEMBERS(T, 4);
+		POINT_MEMBERS(T, 4)
 	};
 
 #pragma warning(pop)

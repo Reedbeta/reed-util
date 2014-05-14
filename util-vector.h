@@ -29,7 +29,7 @@ namespace util
 	{
 		cassert(n > 4);
 		T m_data[n];
-		VECTOR_MEMBERS(T, n);
+		VECTOR_MEMBERS(T, n)
 	};
 
 #pragma warning(push)
@@ -43,7 +43,7 @@ namespace util
 			struct { T x, y; };
 			struct { T u, v; };
 		};
-		VECTOR_MEMBERS(T, 2);
+		VECTOR_MEMBERS(T, 2)
 	};
 
 	template <typename T>
@@ -57,7 +57,7 @@ namespace util
 			vector<T, 2> xy;
 			vector<T, 2> uv;
 		};
-		VECTOR_MEMBERS(T, 3);
+		VECTOR_MEMBERS(T, 3)
 	};
 
 	template <typename T>
@@ -73,7 +73,7 @@ namespace util
 			vector<T, 3> xyz;
 			vector<T, 3> rgb;
 		};
-		VECTOR_MEMBERS(T, 4);
+		VECTOR_MEMBERS(T, 4)
 	};
 
 #pragma warning(pop)

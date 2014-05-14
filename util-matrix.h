@@ -28,14 +28,7 @@ namespace util
 		const vector<T, cols> & operator [] (int i) const
 			{ return reinterpret_cast<const vector<T, cols> &>(m_data[i*cols]); }
 		
-		static matrix<T, rows, cols> identity()
-		{
-			cassert(rows == cols);
-			auto result = makematrix<T, rows, cols>(0);
-			for (uint i = 0; i < rows; ++i)
-				result[i][i] = T(1);
-			return result;
-		}
+		static matrix<T, rows, cols> identity();
 
 		// Conversion to bool is not allowed (otherwise would
 		// happen implicitly through array conversions)
@@ -72,6 +65,15 @@ namespace util
 		return result;
 	}
 
+	template <typename T, uint rows, uint cols>
+	matrix<T, rows, cols> matrix<T, rows, cols>::identity()
+	{
+		cassert(rows == cols);
+		auto result = makematrix<T, rows, cols>(0);
+		for (uint i = 0; i < rows; ++i)
+			result[i][i] = T(1);
+		return result;
+	}
 
 
 	// Concrete matrices, and their maker functions,
