@@ -99,6 +99,15 @@ namespace util
 	inline float exp2f(float x) { return expf(0.693147181f * x); }
 	inline float log2f(float x) { return 1.442695041f * logf(x); }
 
+	// Integer log2, with rounding up or down
+	inline int log2_floor(uint x) { unsigned long c = 0; _BitScanReverse(&c, x); return int(c); }
+	inline int log2_ceil(uint x) { return (x != 0) ? (highestBitSet(x - 1) + 1) : 0; }
+
+	// Round up or down to nearest power of 2
+	inline bool ispow2(uint x) { return (x != 0) && ((x & (x - 1)) == 0); }
+	inline uint pow2_floor(uint x) { return (1U << log2_floor(x)); }
+	inline uint pow2_ceil(uint x) { return (1U << log2_ceil(x)); }
+
 	// Advance a pointer by a given number of bytes, regardless of pointer's type
 	// (note: number of bytes can be negative)
 	template <typename T>
