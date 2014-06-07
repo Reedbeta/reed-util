@@ -64,8 +64,8 @@ namespace util
 	T square(T a) { return a*a; }
 
 	// Equality test with epsilon
-	inline bool isnear(float a, float b, float epsilon = util::epsilon)
-		{ return (abs(b - a) < epsilon); }
+	inline bool isnear(float a, float b, float eps = util::epsilon)
+		{ return (abs(b - a) < eps); }
 
 	// Test for finiteness
 	inline bool isfinite(float f)
