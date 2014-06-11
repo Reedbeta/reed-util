@@ -60,7 +60,7 @@ namespace util
 	{
 		auto result = makematrix<T, rows, cols>(T(0));
 		for (uint i = 0; i < min(rows, rows_from); ++i)
-			for (uint j = 0; i < min(cols, cols_from); ++j)
+			for (uint j = 0; j < min(cols, cols_from); ++j)
 				result[i][j] = T(a[i][j]);
 		return result;
 	}
