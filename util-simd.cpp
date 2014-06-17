@@ -5,12 +5,12 @@ namespace util
 	// Convert memory layouts to and from SIMD-friendly (AOSOA) layout
 
 	void convertToSIMD(
-			uint numComponents,
-			uint numVectors,
+			int numComponents,
+			int numVectors,
 			const void * pInput,
-			uint inputStrideBytes,
+			int inputStrideBytes,
 			void * pOutput,
-			uint outputStrideBytes)
+			int outputStrideBytes)
 	{
 		static const int simdWidth = 4;
 
@@ -24,9 +24,9 @@ namespace util
 		// Do the part that's a multiple of simdWidth
 		for (; numVectors >= simdWidth; numVectors -= simdWidth)
 		{
-			for (uint i = 0; i < simdWidth; ++i)
+			for (int i = 0; i < simdWidth; ++i)
 			{
-				for (uint j = 0; j < numComponents; ++j)
+				for (int j = 0; j < numComponents; ++j)
 					((float *)pOutput)[simdWidth*j + i] = ((float *)pInput)[j];
 
 				pInput = advanceBytes(pInput, inputStrideBytes);
@@ -36,9 +36,9 @@ namespace util
 		}
 
 		// Do any part left over
-		for (uint i = 0; i < numVectors; ++i)
+		for (int i = 0; i < numVectors; ++i)
 		{
-			for (uint j = 0; j < numComponents; ++j)
+			for (int j = 0; j < numComponents; ++j)
 				((float *)pOutput)[simdWidth*j + i] = ((float *)pInput)[j];
 
 			pInput = advanceBytes(pInput, inputStrideBytes);
@@ -46,12 +46,12 @@ namespace util
 	}
 
 	void convertFromSIMD(
-			uint numComponents,
-			uint numVectors,
+			int numComponents,
+			int numVectors,
 			const void * pInput,
-			uint inputStrideBytes,
+			int inputStrideBytes,
 			void * pOutput,
-			uint outputStrideBytes)
+			int outputStrideBytes)
 	{
 		static const int simdWidth = 4;
 
@@ -65,9 +65,9 @@ namespace util
 		// Do the part that's a multiple of simdWidth
 		for (; numVectors >= simdWidth; numVectors -= simdWidth)
 		{
-			for (uint i = 0; i < simdWidth; ++i)
+			for (int i = 0; i < simdWidth; ++i)
 			{
-				for (uint j = 0; j < numComponents; ++j)
+				for (int j = 0; j < numComponents; ++j)
 					((float *)pOutput)[j] = ((float *)pInput)[simdWidth*j + i];
 
 				pOutput = advanceBytes(pOutput, outputStrideBytes);
@@ -77,9 +77,9 @@ namespace util
 		}
 
 		// Do any part left over
-		for (uint i = 0; i < numVectors; ++i)
+		for (int i = 0; i < numVectors; ++i)
 		{
-			for (uint j = 0; j < numComponents; ++j)
+			for (int j = 0; j < numComponents; ++j)
 				((float *)pOutput)[j] = ((float *)pInput)[simdWidth*j + i];
 
 			pOutput = advanceBytes(pOutput, outputStrideBytes);

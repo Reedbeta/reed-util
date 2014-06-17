@@ -89,7 +89,7 @@ namespace util
 			inline quat operator op (quat_arg a) \
 			{ \
 				quat result; \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					result[i] = op a[i]; \
 				return result; \
 			}
@@ -99,7 +99,7 @@ namespace util
 			inline quat operator op (float a, quat_arg b) \
 			{ \
 				quat result; \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					result.m_data[i] = a op b.m_data[i]; \
 				return result; \
 			} \
@@ -107,7 +107,7 @@ namespace util
 			inline quat operator op (quat_arg a, float b) \
 			{ \
 				quat result; \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					result.m_data[i] = a.m_data[i] op b; \
 				return result; \
 			}
@@ -117,7 +117,7 @@ namespace util
 			inline quat operator op (quat_arg a, quat_arg b) \
 			{ \
 				quat result; \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					result.m_data[i] = a.m_data[i] op b.m_data[i]; \
 				return result; \
 			} \
@@ -127,7 +127,7 @@ namespace util
 			/* Quat-scalar op */ \
 			inline quat & operator op (quat & a, float b) \
 			{ \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					a.m_data[i] op b; \
 				return a; \
 			}
@@ -136,7 +136,7 @@ namespace util
 			/* Quat-quat op */ \
 			inline quat & operator op (quat & a, quat_arg b) \
 			{ \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					a.m_data[i] op b.m_data[i]; \
 				return a; \
 			} \
@@ -147,7 +147,7 @@ namespace util
 			inline bool4 operator op (quat_arg a, quat_arg b) \
 			{ \
 				bool4 result; \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					result[i] = a[i] op b[i]; \
 				return result; \
 			} \
@@ -155,7 +155,7 @@ namespace util
 			inline bool4 operator op (float a, quat_arg b) \
 			{ \
 				bool4 result; \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					result[i] = a op b[i]; \
 				return result; \
 			} \
@@ -163,7 +163,7 @@ namespace util
 			inline bool4 operator op (quat_arg a, float b) \
 			{ \
 				bool4 result; \
-				for (uint i = 0; i < 4; ++i) \
+				for (int i = 0; i < 4; ++i) \
 					result[i] = a[i] op b; \
 				return result; \
 			}
@@ -271,7 +271,7 @@ namespace util
 	inline bool4 isnear(quat_arg a, quat_arg b, float epsilon = util::epsilon)
 	{
 		bool4 result;
-		for (uint i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 			result[i] = isnear(a[i], b[i], epsilon);
 		return result;
 	}
@@ -279,7 +279,7 @@ namespace util
 	inline bool4 isnear(quat_arg a, float b, float epsilon = util::epsilon)
 	{
 		bool4 result;
-		for (uint i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 			result[i] = isnear(a[i], b, epsilon);
 		return result;
 	}
@@ -287,7 +287,7 @@ namespace util
 	inline bool4 isnear(float a, quat_arg b, float epsilon = util::epsilon)
 	{
 		bool4 result;
-		for (uint i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 			result[i] = isnear(a, b[i], epsilon);
 		return result;
 	}
@@ -295,7 +295,7 @@ namespace util
 	inline bool4 isfinite(quat_arg a)
 	{
 		bool4 result;
-		for (uint i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 			result[i] = isfinite(a[i]);
 		return result;
 	}
@@ -303,7 +303,7 @@ namespace util
 	inline quat select(bool4_arg cond, quat_arg a, quat_arg b)
 	{
 		quat result;
-		for (uint i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 			result[i] = cond[i] ? a[i] : b[i];
 		return result;
 	}
@@ -323,7 +323,7 @@ namespace util
 	inline float minComponent(quat_arg a)
 	{
 		float result = a[0];
-		for (uint i = 1; i < 4; ++i)
+		for (int i = 1; i < 4; ++i)
 			result = min(result, a[i]);
 		return result;
 	}
@@ -331,7 +331,7 @@ namespace util
 	inline float maxComponent(quat_arg a)
 	{
 		float result = a[0];
-		for (uint i = 1; i < 4; ++i)
+		for (int i = 1; i < 4; ++i)
 			result = max(result, a[i]);
 		return result;
 	}

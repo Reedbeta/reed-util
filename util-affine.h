@@ -23,7 +23,7 @@ namespace util
 	// Generic point struct, providing storage, using partial
 	// specialization to get names (xyzw) for n <= 4
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	struct point
 	{
 		cassert(n > 4);
@@ -80,48 +80,48 @@ namespace util
 
 	// Generic makers
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> makepoint(T a)
 	{
 		point<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = a;
 		return result;
 	}
 
-	template <typename T, uint n, typename U>
+	template <typename T, int n, typename U>
 	point<T, n> makepoint(const U * a)
 	{
 		point<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
 
-	template <typename T, uint n, typename U, uint n_from>
+	template <typename T, int n, typename U, int n_from>
 	point<T, n> makepoint(vector<U, n_from> const & a)
 	{
 		auto result = makepoint<T, n>(T(0));
-		for (uint i = 0; i < min(n, n_from); ++i)
+		for (int i = 0; i < min(n, n_from); ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
 
-	template <typename T, uint n, typename U, uint n_from>
+	template <typename T, int n, typename U, int n_from>
 	point<T, n> makepoint(point<U, n_from> const & a)
 	{
 		auto result = makepoint<T, n>(T(0));
-		for (uint i = 0; i < min(n, n_from); ++i)
+		for (int i = 0; i < min(n, n_from); ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
 
 	// Convert points to vectors
-	template <typename T, uint n, typename U, uint n_from>
+	template <typename T, int n, typename U, int n_from>
 	vector<T, n> makevector(point<U, n_from> const & a)
 	{
 		auto result = makevector<T, n>(T(0));
-		for (uint i = 0; i < min(n, n_from); ++i)
+		for (int i = 0; i < min(n, n_from); ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
@@ -158,83 +158,83 @@ namespace util
 
 	// Overloaded math operators - much more restrictive than the vector ones
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> operator + (point<T, n> const & a, vector<T, n> const & b)
 	{
 		point<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = a[i] + b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> operator + (vector<T, n> const & a, point<T, n> const & b)
 	{
 		point<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = a[i] + b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> operator - (point<T, n> const & a, vector<T, n> const & b)
 	{
 		point<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = a[i] - b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> operator - (point<T, n> const & a, point<T, n> const & b)
 	{
 		vector<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = a[i] - b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> & operator += (point<T, n> & a, vector<T, n> const & b)
 	{
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			a[i] += b[i];
 		return a;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> & operator -= (point<T, n> & a, vector<T, n> const & b)
 	{
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			a[i] -= b[i];
 		return a;
 	}
 
 #define DEFINE_RELATIONAL_OPERATORS(op) \
 			/* Point-point op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<bool, n> operator op (point<T, n> const & a, point<T, n> const & b) \
 			{ \
 				vector<bool, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a[i] op b[i]; \
 				return result; \
 			} \
 			/* Scalar-point op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<bool, n> operator op (T a, point<T, n> const & b) \
 			{ \
 				vector<bool, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a op b[i]; \
 				return result; \
 			} \
 			/* Point-scalar op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<bool, n> operator op (point<T, n> const & a, T b) \
 			{ \
 				vector<bool, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a[i] op b; \
 				return result; \
 			}
@@ -252,27 +252,27 @@ namespace util
 
 	// Matrix-point multiplication
 
-	template <typename T, uint rows, uint cols>
+	template <typename T, int rows, int cols>
 	point<T, rows> operator * (matrix<T, rows, cols> const & a, point<T, cols> const & b)
 	{
 		auto result = makepoint<T, rows>(0);
-		for (uint i = 0; i < rows; ++i)
-			for (uint j = 0; j < cols; ++j)
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < cols; ++j)
 					result[i] += a[i][j] * b[j];
 		return result;
 	}
 
-	template <typename T, uint rows, uint cols>
+	template <typename T, int rows, int cols>
 	point<T, cols> operator * (point<T, rows> const & a, matrix<T, rows, cols> const & b)
 	{
 		auto result = makepoint<T, cols>(0);
-		for (uint i = 0; i < rows; ++i)
-			for (uint j = 0; j < cols; ++j)
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < cols; ++j)
 					result[j] += a[i] * b[i][j];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> operator *= (point<T, n> & a, matrix<T, n, n> const & b)
 	{
 		a = a*b;
@@ -283,112 +283,112 @@ namespace util
 
 	// Other math functions
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T distance(point<T, n> const & a, point<T, n> const & b)
 	{
 		return length(b - a);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T distanceSquared(point<T, n> const & a, point<T, n> const & b)
 	{
 		return lengthSquared(b - a);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T dot(point<T, n> const & a, vector<T, n> const & b)
 	{
 		T result(0);
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result += a[i] * b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T dot(vector<T, n> const & a, point<T, n> const & b)
 	{
 		T result(0);
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result += a[i] * b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isnear(point<T, n> const & a, point<T, n> const & b, float epsilon = util::epsilon)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isnear(a[i], b[i], epsilon);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isnear(point<T, n> const & a, T b, float epsilon = util::epsilon)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isnear(a[i], b, epsilon);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isnear(T a, point<T, n> const & b, float epsilon = util::epsilon)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isnear(a, b[i], epsilon);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isfinite(point<T, n> const & a)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isfinite(a[i]);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<int, n> round(point<T, n> const & a)
 	{
 		point<int, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = round(a[i]);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> select(vector<bool, n> const & cond, point<T, n> const & a, point<T, n> const & b)
 	{
 		point<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = cond[i] ? a[i] : b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> min(point<T, n> const & a, point<T, n> const & b)
 		{ return select(a < b, a, b); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> max(point<T, n> const & a, point<T, n> const & b)
 		{ return select(a < b, b, a); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T minComponent(point<T, n> const & a)
 	{
 		T result = a[0];
-		for (uint i = 1; i < n; ++i)
+		for (int i = 1; i < n; ++i)
 			result = min(result, a[i]);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T maxComponent(point<T, n> const & a)
 	{
 		T result = a[0];
-		for (uint i = 1; i < n; ++i)
+		for (int i = 1; i < n; ++i)
 			result = max(result, a[i]);
 		return result;
 	}
@@ -398,7 +398,7 @@ namespace util
 	// Generic affine transform struct, with a matrix and translation vector
 	// !!!UNDONE: support non-square matrices?
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	struct affine
 	{
 		cassert(n > 1);
@@ -415,31 +415,31 @@ namespace util
 
 	// Generic maker functions
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> makeaffine(T a)
 	{
 		affine<T, n> result = { makematrix<T, n, n>(a), makevector<T, n>(a) };
 		return result;
 	}
 
-	template <typename T, uint n, typename U, uint n_from>
+	template <typename T, int n, typename U, int n_from>
 	affine<T, n> makeaffine(affine<U, n_from> const & a)
 	{
 		affine<T, n> result = { makematrix<T, n, n>(a.m_linear), makevector<T, n>(a.m_translation) };
 		// If the size is being enlarged, fill in the matrix diagonal with ones
-		for (uint i = n_from; i < n; ++i)
+		for (int i = n_from; i < n; ++i)
 			result.m_linear[i][i] = T(1);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> makeaffine(matrix<T, n, n> const & a, vector<T, n> const & b)
 	{
 		affine<T, n> result = { a, b };
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> makeaffine(matrix<T, n, n> const & a)
 	{
 		affine<T, n> result = { a, makevector<T, n>(0) };
@@ -494,13 +494,13 @@ namespace util
 	// !!! these don't match the behavior of relational ops for vectors and matrices -
 	// return single results rather than componentwise results
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool operator == (affine<T, n> const & a, affine<T, n> const & b)
 	{
 		return all(a.m_linear == b.m_linear) && all(a.m_translation == b.m_translation);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool operator != (affine<T, n> const & a, affine<T, n> const & b)
 	{
 		return any(a.m_linear != b.m_linear) || any(a.m_translation != b.m_translation);
@@ -508,7 +508,7 @@ namespace util
 
 	// Affine composition (row-vector math)
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> operator * (affine<T, n> const & a, affine<T, n> const & b)
 	{
 		affine<T, n> result =
@@ -519,7 +519,7 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> & operator *= (affine<T, n> & a, affine<T, n> const & b)
 	{
 		a = a*b;
@@ -528,26 +528,26 @@ namespace util
 
 	// Affine application to point or vector (row-vector math)
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> operator * (vector<T, n> const & a, affine<T, n> const & b)
 	{
 		return a * b.m_linear;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> operator * (point<T, n> const & a, affine<T, n> const & b)
 	{
 		return a * b.m_linear + b.m_translation;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> operator *= (vector<T, n> & a, affine<T, n> const & b)
 	{
 		a = a*b;
 		return a;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	point<T, n> operator *= (point<T, n> & a, affine<T, n> const & b)
 	{
 		a = a*b;
@@ -558,7 +558,7 @@ namespace util
 
 	// Other math functions
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> transpose(affine<T, n> const & a)
 	{
 		auto mTransposed = transpose(a.m_linear);
@@ -570,7 +570,7 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> pow(affine<T, n> const & a, int b)
 	{
 		if (b <= 0)
@@ -589,7 +589,7 @@ namespace util
 		return oddpart * evenpart;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> inverse(affine<T, n> const & a)
 	{
 		auto mInverted = inverse(a.m_linear);
@@ -601,39 +601,39 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	matrix<T, n+1, n+1> affineToHomogeneous(affine<T, n> const & a)
 	{
 		matrix<T, n+1, n+1> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (uint j = 0; j < n; ++j)
+			for (int j = 0; j < n; ++j)
 				result[i][j] = a.m_linear[i][j];
 			result[i][n] = T(0);
 		}
-		for (uint j = 0; j < n; ++j)
+		for (int j = 0; j < n; ++j)
 			result[n][j] = a.m_translation[j];
 		result[n][n] = T(1);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n-1> homogeneousToAffine(matrix<T, n, n> const & a)
 	{
 		// Extract the relevant components of the matrix; note, NO checking
 		// that the matrix actually represents an affine transform!
 		affine<T, n-1> result;
-		for (uint i = 0; i < n-1; ++i)
-			for (uint j = 0; j < n-1; ++j)
+		for (int i = 0; i < n-1; ++i)
+			for (int j = 0; j < n-1; ++j)
 				result.m_linear[i][j] = T(a[i][j]);
-		for (uint j = 0; j < n-1; ++j)
+		for (int j = 0; j < n-1; ++j)
 			result.m_translation[j] = T(a[n-1][j]);
 		return result;
 	}
 
 	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
 	// returns a single result rather than a componentwise result
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool isnear(affine<T, n> const & a, affine<T, n> const & b, float epsilon = util::epsilon)
 	{
 		return all(isnear(a.m_linear, b.m_linear, epsilon)) &&
@@ -642,13 +642,13 @@ namespace util
 
 	// !!! this doesn't match the behavior of isfinite() for vectors and matrices -
 	// returns a single result rather than a componentwise result
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool isfinite(affine<T, n> const & a)
 	{
 		return all(isfinite(a.m_linear)) && all(isfinite(a.m_translation));
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<int, n> round(affine<T, n> const & a)
 	{
 		return makeaffine(round(a.m_linear), round(a.m_translation));
@@ -658,21 +658,21 @@ namespace util
 
 	// Generate various types of transformations (row-vector math)
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> translation(vector<T, n> const & a)
 	{
 		affine<T, n> result = { matrix<T, n, n>::identity(), a };
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> scaling(T a)
 	{
 		affine<T, n> result = { diagonal<T, n>(a), makevector<T, n>(0) };
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	affine<T, n> scaling(vector<T, n> const & a)
 	{
 		affine<T, n> result = { diagonal(a), makevector<T, n>(0) };

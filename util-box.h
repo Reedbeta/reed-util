@@ -6,7 +6,7 @@ namespace util
 	// Note: min > max (on any axis) is an empty (null) box.  All empty boxes are the same.
 	// min == max is a box containing only one point along that axis.
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	struct box
 	{
 		cassert(n > 1);
@@ -34,10 +34,10 @@ namespace util
 		vector<T, n> diagonal() const
 			{ return m_maxs - m_mins; }
 
-		uint numCorners() const
+		int numCorners() const
 			{ return (1 << n); }
 
-		point<T, n> getCorner(uint iCorner) const
+		point<T, n> getCorner(int iCorner) const
 		{
 			point<T, n> result;
 			for (int j = 0; j < n; ++j)
@@ -47,7 +47,7 @@ namespace util
 
 		void getCorners(point<T, n> * cornersOut) const
 		{
-			for (uint i = 0, nc = numCorners(); i < nc; ++i)
+			for (int i = 0, nc = numCorners(); i < nc; ++i)
 				cornersOut[i] = getCorner(i);
 		}
 
@@ -76,28 +76,28 @@ namespace util
 
 	// Generic makers
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> makeboxEmpty()
 	{
 		box<T, n> result = { makepoint<T, n>(0), makepoint<T, n>(-1) };
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> makebox(point<T, n> const & mins, point<T, n> const & maxs)
 	{
 		box<T, n> result = { mins, maxs };
 		return result;
 	}
 
-	template <typename T, uint n>
-	box<T, n> makebox(uint numPoints, point<T, n> const * points)
+	template <typename T, int n>
+	box<T, n> makebox(int numPoints, point<T, n> const * points)
 	{
 		if (numPoints == 0)
 			return makeboxEmpty<T, n>();
 
 		box<T, n> result = { points[0], points[0] };
-		for (uint i = 1; i < numPoints; ++i)
+		for (int i = 1; i < numPoints; ++i)
 		{
 			result.m_mins = min(result.m_mins, points[i]);
 			result.m_maxs = max(result.m_maxs, points[i]);
@@ -121,7 +121,7 @@ namespace util
 				{ return makeboxEmpty<type, 2>(); } \
 			inline name##2 make##name##2(ptype##2_arg mins, ptype##2_arg maxs) \
 				{ return makebox<type, 2>(mins, maxs); } \
-			inline name##2 make##name##2(uint numPoints, ptype##2 const * points) \
+			inline name##2 make##name##2(int numPoints, ptype##2 const * points) \
 				{ return makebox<type, 2>(numPoints, points); } \
 			inline name##3 make##name##3(type minx, type miny, type minz, type maxx, type maxy, type maxz) \
 				{ name##3 a = { minx, miny, minz, maxx, maxy, maxz }; return a; } \
@@ -129,7 +129,7 @@ namespace util
 				{ return makeboxEmpty<type, 3>(); } \
 			inline name##3 make##name##3(ptype##3_arg mins, ptype##3_arg maxs) \
 				{ return makebox<type, 3>(mins, maxs); } \
-			inline name##3 make##name##3(uint numPoints, ptype##3 const * points) \
+			inline name##3 make##name##3(int numPoints, ptype##3 const * points) \
 				{ return makebox<type, 3>(numPoints, points); } \
 
 	DEFINE_CONCRETE_BOXES(float, box, point);
@@ -145,13 +145,13 @@ namespace util
 	// !!! these don't match the behavior of relational ops for vectors and matrices -
 	// return single results rather than componentwise results
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool operator == (box<T, n> const & a, box<T, n> const & b)
 	{
 		return all(a.m_mins == b.m_mins) && all(a.m_maxs == b.m_maxs);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool operator != (box<T, n> const & a, box<T, n> const & b)
 	{
 		return any(a.m_mins != b.m_mins) || any(a.m_maxs != b.m_maxs);
@@ -161,7 +161,7 @@ namespace util
 
 	// Other math functions
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> boxUnion(box<T, n> const & a, box<T, n> const & b)
 	{
 		if (a.isempty()) return b;
@@ -169,7 +169,7 @@ namespace util
 		return makebox(min(a.m_mins, b.m_mins), max(a.m_maxs, b.m_maxs));
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> boxIntersection(box<T, n> const & a, box<T, n> const & b)
 	{
 		if (a.isempty()) return a;
@@ -177,31 +177,31 @@ namespace util
 		return makebox(max(a.m_mins, b.m_mins), min(a.m_maxs, b.m_maxs));
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> boxTranslate(box<T, n> const & a, vector<T, n> const & b)
 	{
 		return makebox(a.m_mins + b, a.m_maxs + b);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> boxGrow(box<T, n> const & a, vector<T, n> const & b)
 	{
 		return makebox(a.m_mins - b, a.m_maxs + b);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> boxGrow(box<T, n> const & a, T b)
 	{
 		return makebox(a.m_mins - b, a.m_maxs + b);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<T, n> boxTransform(box<T, n> const & a, affine<T, n> const & aff)
 	{
 		point<T, n> corner = a.getCorner(0);
 		corner *= aff;
 		box<T, n> result = { corner, corner };
-		for (uint i = 1, nc = a.numCorners(); i < nc; ++i)
+		for (int i = 1, nc = a.numCorners(); i < nc; ++i)
 		{
 			corner = a.getCorner(i);
 			corner *= aff;
@@ -211,25 +211,25 @@ namespace util
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T distance(box<T, n> const & a, point<T, n> const & b)
 	{
 		return distance(a.clamp(b), b);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T distance(point<T, n> const & a, box<T, n> const & b)
 	{
 		return distance(a, b.clamp(a));
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T distanceSquared(box<T, n> const & a, point<T, n> const & b)
 	{
 		return distanceSquared(a.clamp(b), b);
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T distanceSquared(point<T, n> const & a, box<T, n> const & b)
 	{
 		return distanceSquared(a, b.clamp(a));
@@ -237,7 +237,7 @@ namespace util
 
 	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
 	// returns a single result rather than a componentwise result
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool isnear(box<T, n> const & a, box<T, n> const & b, float epsilon = util::epsilon)
 	{
 		return all(isnear(a.m_mins, b.m_mins, epsilon)) &&
@@ -246,13 +246,13 @@ namespace util
 
 	// !!! this doesn't match the behavior of isfinite() for vectors and matrices -
 	// returns a single result rather than a componentwise result
-	template <typename T, uint n>
+	template <typename T, int n>
 	bool isfinite(box<T, n> const & a)
 	{
 		return all(isfinite(a.m_mins)) && all(isfinite(a.m_maxs));
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	box<int, n> round(box<T, n> const & a)
 	{
 		return makebox(round(a.m_mins), round(a.m_maxs));

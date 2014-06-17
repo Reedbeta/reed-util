@@ -24,7 +24,7 @@ namespace util
 	// Generic vector struct, providing storage, using partial
 	// specialization to get names (xyzw) for n <= 4
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	struct vector
 	{
 		cassert(n > 4);
@@ -81,29 +81,29 @@ namespace util
 
 	// Generic maker functions
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> makevector(T a)
 	{
 		vector<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = a;
 		return result;
 	}
 
-	template <typename T, uint n, typename U>
+	template <typename T, int n, typename U>
 	vector<T, n> makevector(const U * a)
 	{
 		vector<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
 
-	template <typename T, uint n, typename U, uint n_from>
+	template <typename T, int n, typename U, int n_from>
 	vector<T, n> makevector(vector<U, n_from> const & a)
 	{
 		auto result = makevector<T, n>(T(0));
-		for (uint i = 0; i < min(n, n_from); ++i)
+		for (int i = 0; i < min(n, n_from); ++i)
 			result[i] = T(a[i]);
 		return result;
 	}
@@ -156,87 +156,87 @@ namespace util
 	// Overloaded math operators
 
 #define DEFINE_UNARY_OPERATOR(op) \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<T, n> operator op (vector<T, n> const & a) \
 			{ \
 				vector<T, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = op a[i]; \
 				return result; \
 			}
 
 #define DEFINE_BINARY_OPERATORS(op) \
 			/* Vector-vector op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<T, n> operator op (vector<T, n> const & a, vector<T, n> const & b) \
 			{ \
 				vector<T, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a[i] op b[i]; \
 				return result; \
 			} \
 			/* Scalar-vector op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<T, n> operator op (T a, vector<T, n> const & b) \
 			{ \
 				vector<T, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a op b[i]; \
 				return result; \
 			} \
 			/* Vector-scalar op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<T, n> operator op (vector<T, n> const & a, T b) \
 			{ \
 				vector<T, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a[i] op b; \
 				return result; \
 			}
 
 #define DEFINE_INPLACE_OPERATORS(op) \
 			/* Vector-vector op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<T, n> & operator op (vector<T, n> & a, vector<T, n> const & b) \
 			{ \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					a[i] op b[i]; \
 				return a; \
 			} \
 			/* Vector-scalar op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<T, n> & operator op (vector<T, n> & a, T b) \
 			{ \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					a[i] op b; \
 				return a; \
 			}
 
 #define DEFINE_RELATIONAL_OPERATORS(op) \
 			/* Vector-vector op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<bool, n> operator op (vector<T, n> const & a, vector<T, n> const & b) \
 			{ \
 				vector<bool, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a[i] op b[i]; \
 				return result; \
 			} \
 			/* Scalar-vector op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<bool, n> operator op (T a, vector<T, n> const & b) \
 			{ \
 				vector<bool, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a op b[i]; \
 				return result; \
 			} \
 			/* Vector-scalar op */ \
-			template <typename T, uint n> \
+			template <typename T, int n> \
 			vector<bool, n> operator op (vector<T, n> const & a, T b) \
 			{ \
 				vector<bool, n> result; \
-				for (uint i = 0; i < n; ++i) \
+				for (int i = 0; i < n; ++i) \
 					result[i] = a[i] op b; \
 				return result; \
 			}
@@ -276,77 +276,77 @@ namespace util
 
 	// Other math functions
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T dot(vector<T, n> const & a, vector<T, n> const & b)
 	{
 		T result(0);
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result += a[i] * b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T lengthSquared(vector<T, n> const & a)
 		{ return dot(a, a); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T length(vector<T, n> const & a)
 		{ return sqrt(lengthSquared(a)); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> normalize(vector<T, n> const & a)
 		{ return a / length(a); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> pow(vector<T, n> const & a, float p)
 	{
 		vector<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = ::pow(a[i], p);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isnear(vector<T, n> const & a, vector<T, n> const & b, float epsilon = util::epsilon)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isnear(a[i], b[i], epsilon);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isnear(vector<T, n> const & a, T b, float epsilon = util::epsilon)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isnear(a[i], b, epsilon);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isnear(T a, vector<T, n> const & b, float epsilon = util::epsilon)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isnear(a, b[i], epsilon);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<bool, n> isfinite(vector<T, n> const & a)
 	{
 		vector<bool, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = isfinite(a[i]);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<int, n> round(vector<T, n> const & a)
 	{
 		vector<int, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = round(a[i]);
 		return result;
 	}
@@ -391,63 +391,63 @@ namespace util
 
 	// Utilities for bool vectors
 
-	template <uint n>
+	template <int n>
 	bool any(vector<bool, n> const & a)
 	{
 		bool result = false;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result = result || a[i];
 		return result;
 	}
 
-	template <uint n>
+	template <int n>
 	bool all(vector<bool, n> const & a)
 	{
 		bool result = true;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result = result && a[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> select(vector<bool, n> const & cond, vector<T, n> const & a, vector<T, n> const & b)
 	{
 		vector<T, n> result;
-		for (uint i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			result[i] = cond[i] ? a[i] : b[i];
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> min(vector<T, n> const & a, vector<T, n> const & b)
 		{ return select(a < b, a, b); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> max(vector<T, n> const & a, vector<T, n> const & b)
 		{ return select(a < b, b, a); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> abs(vector<T, n> const & a)
 		{ return select(a < T(0), -a, a); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	vector<T, n> saturate(vector<T, n> const & value)
 		{ return clamp(value, makevector<T, n>(0), makevector<T, n>(1)); }
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T minComponent(vector<T, n> const & a)
 	{
 		T result = a[0];
-		for (uint i = 1; i < n; ++i)
+		for (int i = 1; i < n; ++i)
 			result = min(result, a[i]);
 		return result;
 	}
 
-	template <typename T, uint n>
+	template <typename T, int n>
 	T maxComponent(vector<T, n> const & a)
 	{
 		T result = a[0];
-		for (uint i = 1; i < n; ++i)
+		for (int i = 1; i < n; ++i)
 			result = max(result, a[i]);
 		return result;
 	}

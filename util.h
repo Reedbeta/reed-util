@@ -100,16 +100,16 @@ namespace util
 	inline float log2f(float x) { return 1.442695041f * logf(x); }
 
 	// Integer log2, with rounding up or down
-	inline int log2_floor(uint x) { unsigned long c = 0; _BitScanReverse(&c, x); return int(c); }
-	inline int log2_ceil(uint x) { return (x != 0) ? (log2_floor(x - 1) + 1) : 0; }
+	inline int log2_floor(int x) { if (x <= 0) return 0; unsigned long c = 0; _BitScanReverse(&c, x); return int(c); }
+	inline int log2_ceil(int x) { return (x > 0) ? (log2_floor(x - 1) + 1) : 0; }
 
 	// Round up or down to nearest power of 2
-	inline bool ispow2(uint x) { return (x != 0) && ((x & (x - 1)) == 0); }
-	inline uint pow2_floor(uint x) { return (1U << log2_floor(x)); }
-	inline uint pow2_ceil(uint x) { return (1U << log2_ceil(x)); }
+	inline bool ispow2(int x) { return (x > 0) && ((x & (x - 1)) == 0); }
+	inline int pow2_floor(int x) { return (1 << log2_floor(x)); }
+	inline int pow2_ceil(int x) { return (1 << log2_ceil(x)); }
 
 	// Integer division, with rounding up (assuming positive arguments)
-	inline uint div_ceil(int dividend, int divisor) { return (dividend + (divisor - 1)) / divisor; }
+	inline int div_ceil(int dividend, int divisor) { return (dividend + (divisor - 1)) / divisor; }
 
 	// Advance a pointer by a given number of bytes, regardless of pointer's type
 	// (note: number of bytes can be negative)

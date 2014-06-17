@@ -572,22 +572,22 @@ namespace util
 	// the last item in the output array will be only partially filled.
 
 	void convertToSIMD(
-			uint numComponents,
-			uint numVectors,
+			int numComponents,
+			int numVectors,
 			const void * pInput,
-			uint inputStrideBytes,
+			int inputStrideBytes,
 			void * pOutput,
-			uint outputStrideBytes);
+			int outputStrideBytes);
 
 	// convertFromSIMD does the inverse of convertToSIMD.
 
 	void convertFromSIMD(
-			uint numComponents,
-			uint numVectors,
+			int numComponents,
+			int numVectors,
 			const void * pInput,
-			uint inputStrideBytes,
+			int inputStrideBytes,
 			void * pOutput,
-			uint outputStrideBytes);
+			int outputStrideBytes);
 
 
 
