@@ -162,6 +162,13 @@ namespace util
 	// Other math functions
 
 	template <typename T, int n>
+	box<T, n> boxUnion(box<T, n> const & a, point<T, n> const & b)
+	{
+		if (a.isempty()) return makebox(b, b);
+		return makebox(min(a.m_mins, b), max(a.m_maxs, b));
+	}
+
+	template <typename T, int n>
 	box<T, n> boxUnion(box<T, n> const & a, box<T, n> const & b)
 	{
 		if (a.isempty()) return b;
