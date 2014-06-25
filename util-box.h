@@ -47,6 +47,7 @@ namespace util
 
 		void getCorners(point<T, n> * cornersOut) const
 		{
+			ASSERT_ERR(cornersOut);
 			for (int i = 0, nc = numCorners(); i < nc; ++i)
 				cornersOut[i] = getCorner(i);
 		}
@@ -95,6 +96,8 @@ namespace util
 	{
 		if (numPoints == 0)
 			return makeboxEmpty<T, n>();
+
+		ASSERT_ERR(points);
 
 		box<T, n> result = { points[0], points[0] };
 		for (int i = 1; i < numPoints; ++i)

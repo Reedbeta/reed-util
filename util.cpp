@@ -19,6 +19,9 @@ namespace util
 
 	bool loadFile(const char * path, std::vector<byte> * pData, bool text /*= false*/)
 	{
+		ASSERT_ERR(path);
+		ASSERT_ERR(pData);
+
 		FILE * pFile = nullptr;
 		if (fopen_s(&pFile, path, text ? "rt" : "rb") != 0)
 		{
