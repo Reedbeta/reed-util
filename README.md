@@ -32,7 +32,7 @@ Math, based on design principles from [On Vector Math Libraries](http://www.reed
 * Quaternions
 * Color space conversions
 
-Random number generation, from [Quick and Easy GPU Random Numbers in D3D11](http://www.reedbeta.com/blog/2013/01/12/quick-and-easy-gpu-random-numbers-in-d3d11/)) (although these are on the CPU):
+Random number generation, from [Quick and Easy GPU Random Numbers in D3D11](http://www.reedbeta.com/blog/2013/01/12/quick-and-easy-gpu-random-numbers-in-d3d11/) (although these are on the CPU):
 * Xorshift PRNG (simple, fast 32-bit PRNG)
 * Wang hash (simple, fast 32-bit hash for seeding Xorshift, etc.)
 
