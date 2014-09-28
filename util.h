@@ -111,6 +111,10 @@ namespace util
 	// Integer division, with rounding up (assuming positive arguments)
 	inline int div_ceil(int dividend, int divisor) { return (dividend + (divisor - 1)) / divisor; }
 
+	// Integer rounding to multiples
+	inline int roundDown(int i, int multiple) { return (i / multiple) * multiple; }
+	inline int roundUp(int i, int multiple) { return ((i + (multiple - 1)) / multiple) * multiple; }
+
 	// Advance a pointer by a given number of bytes, regardless of pointer's type
 	// (note: number of bytes can be negative)
 	template <typename T>
