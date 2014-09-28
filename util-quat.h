@@ -27,14 +27,19 @@ namespace util
 		const float & operator [] (int i) const
 			{ return m_data[i]; }
 
-		// Convert to an affine transform
-		affine3 toAffine() const
+		// Convert to a matrix
+		float3x3 toFloat3x3() const
 		{
-			float3x3 mat = makefloat3x3(
+			return makefloat3x3(
 							1 - 2*(y*y + z*z), 2*(x*y + z*w), 2*(x*z - y*w),
 							2*(x*y - z*w), 1 - 2*(x*x + z*z), 2*(y*z + x*w),
 							2*(x*z + y*w), 2*(y*z - x*w), 1 - 2*(x*x + y*y));
-			return makeaffine3(mat, makefloat3(0.0f));
+		}
+
+		// Convert to an affine transform
+		affine3 toAffine() const
+		{
+			return makeaffine3(toFloat3x3(), makefloat3(0.0f));
 		}
 
 		// Conversion to bool is not allowed (otherwise would
@@ -339,4 +344,7 @@ namespace util
 	quat rotationQuat(float3_arg axis, float radians);
 	quat rotationQuat(float3_arg euler);
 	quat slerp(quat_arg a, quat_arg b, float u);
+
+	inline affine3 makeaffine3(quat_arg rotation, float3_arg translation)
+		{ return makeaffine3(rotation.toFloat3x3(), translation); }
 }
