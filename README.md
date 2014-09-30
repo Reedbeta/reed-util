@@ -55,3 +55,6 @@ Todo list (in no particular order):
 * Custom memory allocators with logging, leak detection, etc.
 * Threading-related stuff?  Or does `std::async` provide enough support?
 * Cross-platform, cross-compiler support
+* Command-line parameter parsing
+* Basic UTF-8 string processing and conversion to/from UTF-16 for Windows
+* `rigid` transformation class, represented by quat and translation vector?
