@@ -125,7 +125,12 @@ namespace util
 	void __declspec(noreturn) exit(const char * fmt, ...);
 
 	// Load an entire file into memory
-	bool LoadFile(const char * path, std::vector<byte> * pDataOut, bool text = false);
+	enum LFK	// Load File Kind
+	{
+		LFK_Binary,
+		LFK_Text,
+	};
+	bool LoadFile(const char * path, std::vector<byte> * pDataOut, LFK lfk = LFK_Binary);
 
 	// In-place destructive string tokenizer - like strtok, but safer (stateless)
 	// Returns pointer to the start of the next token, and updates str to point to the

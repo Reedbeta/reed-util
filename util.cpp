@@ -17,13 +17,13 @@ namespace util
 		::exit(1);
 	}
 
-	bool LoadFile(const char * path, std::vector<byte> * pDataOut, bool text /*= false*/)
+	bool LoadFile(const char * path, std::vector<byte> * pDataOut, LFK lfk /*= LFK_Binary*/)
 	{
 		ASSERT_ERR(path);
 		ASSERT_ERR(pDataOut);
 
 		FILE * pFile = nullptr;
-		if (fopen_s(&pFile, path, text ? "rt" : "rb") != 0)
+		if (fopen_s(&pFile, path, (lfk == LFK_Text) ? "rt" : "rb") != 0)
 		{
 			WARN("Couldn't open file %s", path);
 			return false;
@@ -35,16 +35,16 @@ namespace util
 		size_t size = ftell(pFile);
 
 		// Read the whole file into memory
-		pDataOut->resize(text ? size+1 : size);
+		pDataOut->resize((lfk == LFK_Text) ? size+1 : size);
 		rewind(pFile);
 		size_t sizeRead = fread(&(*pDataOut)[0], sizeof(byte), size, pFile);
 
 		// Size can be smaller for text files, due to newline conversion
-		ASSERT_ERR(sizeRead == size || (text && sizeRead <= size));
+		ASSERT_ERR(sizeRead == size || ((lfk == LFK_Text) && sizeRead <= size));
 		fclose(pFile);
 
 		// Automatically null-terminate text files so string functions can be used
-		if (text)
+		if (lfk == LFK_Text)
 		{
 			pDataOut->resize(sizeRead + 1);
 			(*pDataOut)[sizeRead] = 0;
