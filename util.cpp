@@ -17,10 +17,10 @@ namespace util
 		::exit(1);
 	}
 
-	bool loadFile(const char * path, std::vector<byte> * pData, bool text /*= false*/)
+	bool loadFile(const char * path, std::vector<byte> * pDataOut, bool text /*= false*/)
 	{
 		ASSERT_ERR(path);
-		ASSERT_ERR(pData);
+		ASSERT_ERR(pDataOut);
 
 		FILE * pFile = nullptr;
 		if (fopen_s(&pFile, path, text ? "rt" : "rb") != 0)
@@ -35,10 +35,9 @@ namespace util
 		size_t size = ftell(pFile);
 
 		// Read the whole file into memory
-		ASSERT_ERR(pData);
-		pData->resize(text ? size+1 : size);
+		pDataOut->resize(text ? size+1 : size);
 		rewind(pFile);
-		size_t sizeRead = fread(&(*pData)[0], sizeof(byte), size, pFile);
+		size_t sizeRead = fread(&(*pDataOut)[0], sizeof(byte), size, pFile);
 
 		// Size can be smaller for text files, due to newline conversion
 		ASSERT_ERR(sizeRead == size || (text && sizeRead < size));
@@ -47,8 +46,8 @@ namespace util
 		// Automatically null-terminate text files so string functions can be used
 		if (text)
 		{
-			pData->resize(sizeRead + 1);
-			(*pData)[sizeRead] = 0;
+			pDataOut->resize(sizeRead + 1);
+			(*pDataOut)[sizeRead] = 0;
 		}
 
 		return true;
