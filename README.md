@@ -39,6 +39,7 @@ Random number generation, from [Quick and Easy GPU Random Numbers in D3D11](http
 Todo list (in no particular order):
 * Error context stack
 * Allow choice of whether to break per individual error/warning/assert
+* Range structs (one-dimensional boxes)
 * Ray/line/plane structs
 * Primitive intersection tests (e.g. box vs ray, box vs frustum, etc.)
 * Primitive clipping (e.g. line vs box, triangle vs box, etc.)
