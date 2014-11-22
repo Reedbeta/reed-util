@@ -17,7 +17,7 @@ namespace util
 		::exit(1);
 	}
 
-	bool loadFile(const char * path, std::vector<byte> * pDataOut, bool text /*= false*/)
+	bool LoadFile(const char * path, std::vector<byte> * pDataOut, bool text /*= false*/)
 	{
 		ASSERT_ERR(path);
 		ASSERT_ERR(pDataOut);
@@ -40,7 +40,7 @@ namespace util
 		size_t sizeRead = fread(&(*pDataOut)[0], sizeof(byte), size, pFile);
 
 		// Size can be smaller for text files, due to newline conversion
-		ASSERT_ERR(sizeRead == size || (text && sizeRead < size));
+		ASSERT_ERR(sizeRead == size || (text && sizeRead <= size));
 		fclose(pFile);
 
 		// Automatically null-terminate text files so string functions can be used

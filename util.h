@@ -125,7 +125,7 @@ namespace util
 	void __declspec(noreturn) exit(const char * fmt, ...);
 
 	// Load an entire file into memory
-	bool loadFile(const char * path, std::vector<byte> * pDataOut, bool text = false);
+	bool LoadFile(const char * path, std::vector<byte> * pDataOut, bool text = false);
 
 	// In-place destructive string tokenizer - like strtok, but safer (stateless)
 	// Returns pointer to the start of the next token, and updates str to point to the
