@@ -98,4 +98,29 @@ namespace util
 		str = pEndToken + 1;
 		return pStartToken;
 	}
+
+	char * tokenizeConsecutive(char * & str, const char * delim)
+	{
+		if (!str || !*str || !delim)
+			return nullptr;
+
+		char * pStartToken = str;
+
+		// Find the end of the token
+		char * pEndToken = pStartToken;
+		while (*pEndToken && !isDelimiter(*pEndToken, delim))
+			++pEndToken;
+
+		// Did we hit the end of the string?
+		if (!*pEndToken)
+		{
+			str = pEndToken;
+			return pStartToken;
+		}
+
+		// Terminate the token and update str to the following character
+		*pEndToken = 0;
+		str = pEndToken + 1;
+		return pStartToken;
+	}
 }

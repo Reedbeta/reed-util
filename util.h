@@ -132,10 +132,12 @@ namespace util
 	};
 	bool LoadFile(const char * path, std::vector<byte> * pDataOut, LFK lfk = LFK_Binary);
 
-	// In-place destructive string tokenizer - like strtok, but safer (stateless)
+	// In-place destructive string tokenizer - like strtok, but with external state.
 	// Returns pointer to the start of the next token, and updates str to point to the
 	// remainder of the string
 	char * tokenize(char * & str, const char * delim);
+	// Variant that treats consecutive delimiters as denoting empty tokens between them
+	char * tokenizeConsecutive(char * & str, const char * delim);
 }
 
 // Logging and errors
