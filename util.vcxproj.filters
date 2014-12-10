@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="half\half.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-affine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-err.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-quat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-rng.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util-simd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="half\half.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-affine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-all.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-err.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-quat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-rng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-simd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util-vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{bca83429-b597-4b9b-97e1-6ebb270a9b8f}</UniqueIdentifier>
+      <Extensions>*.cpp</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{d2d68aab-40d7-448f-a08c-8ca230acd3c1}</UniqueIdentifier>
+      <Extensions>*.h</Extensions>
+    </Filter>
+  </ItemGroup>
+</Project>
