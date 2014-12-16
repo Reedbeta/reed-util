@@ -237,4 +237,108 @@ namespace util
 			return true;
 		}
 	};
+
+
+
+	// Serializing helpers - read/write common data types from a byte stream
+
+	class SerializeHelper
+	{
+	public:
+		std::vector<byte> * m_pData;
+
+		explicit SerializeHelper(std::vector<byte> * pData)
+		:	m_pData(pData)
+		{
+			ASSERT_ERR(pData);
+		}
+
+		void WriteBytes(const void * data, size_t sizeBytes)
+			{ m_pData->insert(m_pData->end(), (byte *)data, (byte *)data + sizeBytes); }
+
+		template <typename T>
+		void Write(const T & t)
+			{ WriteBytes(&t, sizeof(T)); }
+
+		void WriteString(const char * str)
+			{ WriteBytes(str, strlen(str) + 1); }
+
+		void WriteString(const std::string & str)
+			{ WriteBytes(str.c_str(), str.size() + 1); }
+	};
+
+	class DeserializeHelper
+	{
+	public:
+		const byte *	m_pCur;
+		const byte *	m_pEnd;
+
+		explicit DeserializeHelper(const byte * pData, size_t sizeBytes)
+		:	m_pCur(pData),
+			m_pEnd(pData + sizeBytes)
+		{
+			ASSERT_ERR(pData);
+		}
+
+		bool AtEOF()
+			{ return m_pCur == m_pEnd; }
+
+		bool ReadBytes(void * pDataOut, size_t sizeBytes)
+		{
+			if (size_t(m_pEnd - m_pCur) < sizeBytes)
+			{
+				WARN("Corrupt serialized data: missing %zu bytes", sizeBytes);
+				return false;
+			}
+			memcpy(pDataOut, m_pCur, sizeBytes);
+			m_pCur += sizeBytes;
+			return true;
+		}
+
+		template <typename T>
+		bool Read(T * pTOut)
+			{ return ReadBytes(pTOut, sizeof(T)); }
+
+		bool ReadString(const char ** pStrOut)
+		{
+			ASSERT_ERR(pStrOut);
+			*pStrOut = (const char *)m_pCur;
+
+			// Advance past the string contents
+			while (m_pCur < m_pEnd && *m_pCur)
+				++m_pCur;
+
+			if (m_pCur == m_pEnd)
+			{
+				WARN("Corrupt serialized data: unterminated string");
+				return false;
+			}
+
+			// Advance past the null terminator
+			++m_pCur;
+			return true;
+		}
+
+		bool ReadString(std::string * pStrOut)
+		{
+			ASSERT_ERR(pStrOut);
+
+			const char * pStart = (const char *)m_pCur;
+			// Advance past the string contents
+			while (m_pCur < m_pEnd && *m_pCur)
+				++m_pCur;
+
+			if (m_pCur == m_pEnd)
+			{
+				WARN("Corrupt serialized data: unterminated string");
+				return false;
+			}
+
+			pStrOut->assign(pStart, (const char *)m_pCur);
+
+			// Advance past the null terminator
+			++m_pCur;
+			return true;
+		}
+	};
 }
