@@ -164,12 +164,15 @@ namespace util
 	class TextParsingHelper
 	{
 	public:
-		char * m_pCtxLine;
-		char * m_pCtxToken;
-		int m_iLine;				// 1-based line number, for use in error messages
+		char *	m_pCtxLine;
+		char *	m_pCtxToken;
+		int		m_iLine;				// 1-based line number, for use in error messages
 
 		explicit TextParsingHelper(char * pText)
-			:	m_pCtxLine(pText), m_pCtxToken(nullptr), m_iLine(0) {}
+		:	m_pCtxLine(pText), m_pCtxToken(nullptr), m_iLine(0)
+		{
+			ASSERT_ERR(pText);
+		}
 
 		bool NextLine()
 		{
@@ -202,6 +205,8 @@ namespace util
 
 		void ExpectEOL(const char * path)
 		{
+			(void)path;
+
 			// Issue a warning if there's any more tokens in the current line
 			if (const char * pExtra = NextToken())
 				WARN("%s: syntax error at line %d: unexpected extra token \"%s\"; ignoring", path, m_iLine, pExtra);
@@ -209,6 +214,9 @@ namespace util
 
 		char * ExpectOneToken(const char * path, const char * whatsMissing = "token")
 		{
+			(void)path;
+			(void)whatsMissing;
+
 			// Grab a token and warn if it's missing
 			char * pToken = NextToken();
 			if (!pToken)
