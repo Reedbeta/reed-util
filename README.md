@@ -4,30 +4,34 @@ reed-util
 Vector/matrix math and other basic utilities.
 
 Instructions:
-* `#include <util-all.h>` for everything
-  * Or, `#include <util.h>` for just the stuff in the "Basics" section below
+* `#include <util.h>` for everything
+  * Or, `#include <util-basics.h>` for just the stuff in the "Basics" section below
 * Link with `util.lib`, or just add `util.vcxproj` to your solution and reference it
 
 Basics:
-* `dim()` and `dim_field()`—size of static arrays
-* `cassert()`
+* `dim()`, `dim_field()`—size of static arrays
+* `sizeof_field()`—size of a struct member
+* `cassert()`—compile-time assert (like `static_assert` but no separate error message)
 * `uint`, `byte`, sized integer types `i8`, `u8` through `i64`, `u64`
 * Float constants: `pi`, `epsilon = 1e-6f`, `infinity`, `NaN`
 * Generic `swap`, `min`, `max`, `clamp`, `saturate`, `lerp`, `square`
 * Float utilities: `isnear` (comparisons with epsilon), `isfinite`, `exp2f`, `log2f`
 * Integer utilities: `round`, `modPositive`, various power-of-2-related utilities
-* `advanceBytes`—do byte arithmetic on a pointer of any type
+* `advanceBytes()`—do byte arithmetic on a pointer of any type
 * `exit("error message", ...)`—printf a message to stderr, and exit with a nonzero code
-* `loadFile`—just slurp an entire file into memory
-* `tokenize`—in-place destructive tokenization, à la `strtok` but stateless
-* Logging—to a file, to the console, etc.
-* Custom asserts, errors, and warnings
+* `LoadFile()`—just slurp an entire file into memory
+* `tokenize()`—in-place destructive tokenization, à la `strtok` but stateless
+* `makeLowercase()`—lowercase a string in-place
+* `TextParsingHelper`—help parse a text file into lines and tokens, and issue warnings for syntax errors
+* `SerializeHelper`, `DeserializeHelper`—help read/write common types from a byte stream
+* Logging—to a file and/or a callback
+* Asserts, checks, errors, and warnings—with log messages, callbacks, and debugbreaks
 
 Math, based on design principles from [On Vector Math Libraries](http://www.reedbeta.com/blog/2013/12/28/on-vector-math-libraries/):
 * Vectors and matrices
 * Affine math (points and affine transforms)
 * Rectangles and bounding boxes
-* SIMD math using AoSoA
+* SIMD math using AoSoA (not well tested)
 * Half-float from OpenEXR
 * Quaternions
 * Color space conversions
