@@ -1,7 +1,10 @@
 #pragma once
 #include <cmath>
 #include <cstdarg>
+#include <cstring>
+#include <ctype.h>
 #include <float.h>
+#include <string>
 #include <vector>
 
 // Compile-time array size
@@ -138,8 +141,92 @@ namespace util
 	char * tokenize(char * & str, const char * delim);
 	// Variant that treats consecutive delimiters as denoting empty tokens between them
 	char * tokenizeConsecutive(char * & str, const char * delim);
+
+	// In-place convert a string to lowercase
+	inline void makeLowercase(char * str)
+	{
+		if (!str) return;
+		for (; *str; ++str)
+			*str = char(tolower(*str));
+	}
+	inline void makeLowercase(std::string & str)
+		{ makeLowercase(&str[0]); }
 }
 
 // Logging and errors
 #include "util-log.h"
 #include "util-err.h"
+
+namespace util
+{
+	// Text parsing helper - in-place destructively parse text files into lines and
+	// whitespace-delimited tokens.  Input is entire text file as a null-terminated string.
+	class TextParsingHelper
+	{
+	public:
+		char * m_pCtxLine;
+		char * m_pCtxToken;
+		int m_iLine;				// 1-based line number, for use in error messages
+
+		explicit TextParsingHelper(char * pText)
+			:	m_pCtxLine(pText), m_pCtxToken(nullptr), m_iLine(0) {}
+
+		bool NextLine()
+		{
+			while (char * pLine = tokenizeConsecutive(m_pCtxLine, "\n"))
+			{
+				++m_iLine;
+
+				// Strip comments starting with #
+				if (char * pChzComment = strchr(pLine, '#'))
+					*pChzComment = 0;
+
+				// Skip ahead to the first non-whitespace character
+				while (*pLine == ' ' || *pLine == '\t')
+					++pLine;
+
+				// Skip blank lines
+				if (!*pLine)
+					continue;
+
+				// Ready to parse token-by-token
+				m_pCtxToken = pLine;
+				return true;
+			}
+
+			return false;
+		}
+
+		char * NextToken()
+			{ return tokenize(m_pCtxToken, " \t"); }
+
+		void ExpectEOL(const char * path)
+		{
+			// Issue a warning if there's any more tokens in the current line
+			if (const char * pExtra = NextToken())
+				WARN("%s: syntax error at line %d: unexpected extra token \"%s\"; ignoring", path, m_iLine, pExtra);
+		}
+
+		char * ExpectOneToken(const char * path, const char * whatsMissing = "token")
+		{
+			// Grab a token and warn if it's missing
+			char * pToken = NextToken();
+			if (!pToken)
+				WARN("%s: syntax error at line %d: missing %s", path, m_iLine, whatsMissing);
+			return pToken;
+		}
+
+		bool ExpectTokens(char ** tokensOut, int numTokens, const char * path, const char * whatsMissing = "token")
+		{
+			// Grab several tokens and warn if any are missing
+			for (int i = 0; i < numTokens; ++i)
+			{
+				char * pToken = ExpectOneToken(path, whatsMissing);
+				if (!pToken)
+					return false;
+				tokensOut[i] = pToken;
+			}
+			return true;
+		}
+	};
+}
