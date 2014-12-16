@@ -31,7 +31,7 @@
     <ClCompile Include="util-simd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="util.cpp">
+    <ClCompile Include="util-basics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -40,9 +40,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="util-affine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="util-all.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="util-box.h">
@@ -75,6 +72,9 @@
     <ClInclude Include="util-vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util-basics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -88,5 +88,9 @@
       <UniqueIdentifier>{d2d68aab-40d7-448f-a08c-8ca230acd3c1}</UniqueIdentifier>
       <Extensions>*.h</Extensions>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include=".gitignore" />
   </ItemGroup>
 </Project>

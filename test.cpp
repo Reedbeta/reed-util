@@ -1,6 +1,6 @@
 #ifdef _DEBUG
 
-#include "util-all.h"
+#include "util.h"
 
 // Vector/matrix unit testing crap
 // (actually only tests compilation, not results...)
