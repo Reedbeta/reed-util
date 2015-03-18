@@ -63,3 +63,4 @@ Todo list (in no particular order):
 * Command-line parameter parsing
 * Basic UTF-8 string processing and conversion to/from UTF-16 for Windows
 * `rigid` transformation class, represented by quat and translation vector?
+* Infinite-far-plane and z-reversed projection matrices
