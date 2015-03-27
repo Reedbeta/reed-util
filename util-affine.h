@@ -156,25 +156,10 @@ namespace util
 
 
 
-	// Overloaded math operators - much more restrictive than the vector ones
-
-	template <typename T, int n>
-	point<T, n> operator + (point<T, n> const & a, vector<T, n> const & b)
-	{
-		point<T, n> result;
-		for (int i = 0; i < n; ++i)
-			result[i] = a[i] + b[i];
-		return result;
-	}
-
-	template <typename T, int n>
-	point<T, n> operator + (vector<T, n> const & a, point<T, n> const & b)
-	{
-		point<T, n> result;
-		for (int i = 0; i < n; ++i)
-			result[i] = a[i] + b[i];
-		return result;
-	}
+	// Overloaded math operators - generally similar to the vector ones, but:
+	//   * Operating on a point and a vector yields a point
+	//   * Subtraction is special: subtracting two points yields a vector,
+	//       and subtracting a point from a vector is not allowed.
 
 	template <typename T, int n>
 	point<T, n> operator - (point<T, n> const & a, vector<T, n> const & b)
@@ -182,6 +167,15 @@ namespace util
 		point<T, n> result;
 		for (int i = 0; i < n; ++i)
 			result[i] = a[i] - b[i];
+		return result;
+	}
+
+	template <typename T, int n>
+	point<T, n> operator - (point<T, n> const & a, T b)
+	{
+		point<T, n> result;
+		for (int i = 0; i < n; ++i)
+			result[i] = a[i] - b;
 		return result;
 	}
 
@@ -194,21 +188,61 @@ namespace util
 		return result;
 	}
 
-	template <typename T, int n>
-	point<T, n> & operator += (point<T, n> & a, vector<T, n> const & b)
-	{
-		for (int i = 0; i < n; ++i)
-			a[i] += b[i];
-		return a;
-	}
+#define DEFINE_BINARY_OPERATORS(op) \
+			/* Point-vector op */ \
+			template <typename T, int n> \
+			point<T, n> operator op (point<T, n> const & a, vector<T, n> const & b) \
+			{ \
+				point<T, n> result; \
+				for (int i = 0; i < n; ++i) \
+					result[i] = a[i] op b[i]; \
+				return result; \
+			} \
+			/* Vector-point op */ \
+			template <typename T, int n> \
+			point<T, n> operator op (vector<T, n> const & a, point<T, n> const & b) \
+			{ \
+				point<T, n> result; \
+				for (int i = 0; i < n; ++i) \
+					result[i] = a[i] op b[i]; \
+				return result; \
+			} \
+			/* Scalar-point op */ \
+			template <typename T, int n> \
+			point<T, n> operator op (T a, point<T, n> const & b) \
+			{ \
+				point<T, n> result; \
+				for (int i = 0; i < n; ++i) \
+					result[i] = a op b[i]; \
+				return result; \
+			} \
+			/* Point-scalar op */ \
+			template <typename T, int n> \
+			point<T, n> operator op (point<T, n> const & a, T b) \
+			{ \
+				point<T, n> result; \
+				for (int i = 0; i < n; ++i) \
+					result[i] = a[i] op b; \
+				return result; \
+			}
 
-	template <typename T, int n>
-	point<T, n> & operator -= (point<T, n> & a, vector<T, n> const & b)
-	{
-		for (int i = 0; i < n; ++i)
-			a[i] -= b[i];
-		return a;
-	}
+#define DEFINE_INPLACE_OPERATORS(op) \
+			/* Point-vector op */ \
+			template <typename T, int n> \
+			point<T, n> & operator op (point<T, n> & a, vector<T, n> const & b) \
+			{ \
+				for (int i = 0; i < n; ++i) \
+					a[i] op b[i]; \
+				return a; \
+			} \
+			/* Point-scalar op */ \
+			template <typename T, int n> \
+			point<T, n> & operator op (point<T, n> & a, T b) \
+			{ \
+				for (int i = 0; i < n; ++i) \
+					a[i] op b; \
+				return a; \
+			}
 
 #define DEFINE_RELATIONAL_OPERATORS(op) \
 			/* Point-point op */ \
@@ -239,6 +273,15 @@ namespace util
 				return result; \
 			}
 
+	DEFINE_BINARY_OPERATORS(+);
+	DEFINE_BINARY_OPERATORS(*);
+	DEFINE_BINARY_OPERATORS(/);
+
+	DEFINE_INPLACE_OPERATORS(+=);
+	DEFINE_INPLACE_OPERATORS(-=);
+	DEFINE_INPLACE_OPERATORS(*=);
+	DEFINE_INPLACE_OPERATORS(/=);
+
 	DEFINE_RELATIONAL_OPERATORS(==);
 	DEFINE_RELATIONAL_OPERATORS(!=);
 	DEFINE_RELATIONAL_OPERATORS(<);
@@ -246,6 +289,8 @@ namespace util
 	DEFINE_RELATIONAL_OPERATORS(<=);
 	DEFINE_RELATIONAL_OPERATORS(>=);
 
+#undef DEFINE_BINARY_OPERATORS
+#undef DEFINE_INPLACE_OPERATORS
 #undef DEFINE_RELATIONAL_OPERATORS
 
 
