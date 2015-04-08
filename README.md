@@ -56,6 +56,7 @@ Todo list (in no particular order):
 * Complex numbers?
 * Projective math?
 * Grassmann algebra?
+* Dual numbers?
 * Filename/path manipulation, à la Python's `os.path`
 * Custom memory allocators with logging, leak detection, etc.
 * Threading-related stuff?  Or does `std::async` provide enough support?
