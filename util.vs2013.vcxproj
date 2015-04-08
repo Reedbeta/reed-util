@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClInclude Include="half\half.h" />
     <ClInclude Include="util-affine.h" />
-    <ClInclude Include="util-all.h" />
+    <ClInclude Include="util-basics.h" />
     <ClInclude Include="util-box.h" />
     <ClInclude Include="util-color.h" />
     <ClInclude Include="util-err.h" />
@@ -30,6 +30,7 @@
     <ClCompile Include="half\half.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="util-affine.cpp" />
+    <ClCompile Include="util-basics.cpp" />
     <ClCompile Include="util-color.cpp" />
     <ClCompile Include="util-err.cpp" />
     <ClCompile Include="util-log.cpp" />
@@ -37,7 +38,6 @@
     <ClCompile Include="util-quat.cpp" />
     <ClCompile Include="util-rng.cpp" />
     <ClCompile Include="util-simd.cpp" />
-    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>util</ProjectName>
