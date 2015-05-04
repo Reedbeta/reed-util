@@ -151,6 +151,34 @@ namespace util
 	}
 	inline void makeLowercase(std::string & str)
 		{ makeLowercase(&str[0]); }
+
+	// In-place character replacement
+	inline void replaceChars(char * str, char target, char replacement)
+	{
+		if (!str) return;
+		for (; *str; ++str)
+			if (*str == target) *str = replacement;
+	}
+	inline void replaceChars(std::string & str, char target, char replacement)
+		{ replaceChars(&str[0], target, replacement); }
+
+	// Find basename of a path
+	inline const char * findBasename(const char * path, char separator = '/')
+	{
+		if (const char * pLastSeparator = strrchr(path, separator))
+			return pLastSeparator + 1;
+		return path;
+	}
+	inline char * findBasename(char * path, char separator = '/')
+		{ return (char *)findBasename((const char *)path, separator); }
+	inline const char * findBasename(const std::string & str, char separator = '/')
+		{ return findBasename(&str[0], separator); }
+	inline char * findBasename(std::string & str, char separator = '/')
+		{ return findBasename(&str[0], separator); }
+
+	// Extract the directory part of a path as a separate string (includes trailing slash)
+	inline std::string findDirectory(const char * path, char separator = '/')
+		{ return std::string(path, findBasename(path, separator)); }
 }
 
 // Logging and errors
