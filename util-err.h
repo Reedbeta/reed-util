@@ -5,14 +5,11 @@
 // Both warnings and errors can trigger debug breaks if desired.
 
 // Warnings can be compiled in or out by #defining ENABLE_WARNINGS to 1 or 0.
-// If not defined, warnings default to on in debug builds only.
-// (Note that when compiled in, warnings can be enabled/disabled at runtime.)
+// If not defined, warnings default to on in all builds.
+// (Note that when compiled in, warnings can be enabled/disabled at runtime.
+// Debug breaks are on by default in debug builds only.)
 #ifndef ENABLE_WARNINGS
-#	ifdef _DEBUG
-#		define ENABLE_WARNINGS 1
-#	else
-#		define ENABLE_WARNINGS 0
-#	endif
+#	define ENABLE_WARNINGS 1
 #endif
 
 #if ENABLE_WARNINGS
@@ -73,7 +70,8 @@
 
 // Errors can be compiled in or out by #defining ENABLE_WARNINGS to 1 or 0.
 // If not defined, errors default to on in all builds.
-// (Note that when compiled in, warnings can be enabled/disabled at runtime.)
+// (Note that when compiled in, errors can be enabled/disabled at runtime.
+// Debug breaks are on by default in debug builds only.)
 #ifndef ENABLE_ERRORS
 #	define ENABLE_ERRORS 1
 #endif

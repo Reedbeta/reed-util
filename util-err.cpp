@@ -4,7 +4,11 @@
 
 	namespace util
 	{
-		bool g_breakOnWarning = true;
+#		ifdef _DEBUG
+			bool g_breakOnWarning = true;
+#		else
+			bool g_breakOnWarning = false;
+#		endif
 	}
 
 #endif // ENABLE_WARNINGS

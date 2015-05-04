@@ -1,13 +1,9 @@
 #pragma once
 
 // Logging can be compiled in or out by #defining ENABLE_LOGGING to 1 or 0.
-// If not defined, logging defaults to on in debug builds only.
+// If not defined, logging defaults to on in all builds.
 #ifndef ENABLE_LOGGING
-#	ifdef _DEBUG
-#		define ENABLE_LOGGING 1
-#	else
-#		define ENABLE_LOGGING 0
-#	endif
+#	define ENABLE_LOGGING 1
 #endif
 
 #if ENABLE_LOGGING
