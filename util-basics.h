@@ -192,12 +192,13 @@ namespace util
 	class TextParsingHelper
 	{
 	public:
-		char *	m_pCtxLine;
-		char *	m_pCtxToken;
-		int		m_iLine;				// 1-based line number, for use in error messages
+		char *			m_pCtxLine;
+		char *			m_pCtxToken;
+		const char *	m_origin;				// Origin of text, for use in error messages
+		int				m_iLine;				// 1-based line number, for use in error messages
 
-		explicit TextParsingHelper(char * pText)
-		:	m_pCtxLine(pText), m_pCtxToken(nullptr), m_iLine(0)
+		explicit TextParsingHelper(char * pText, const char * origin = "")
+		:	m_pCtxLine(pText), m_pCtxToken(nullptr), m_origin(origin), m_iLine(0)
 		{
 			ASSERT_ERR(pText);
 		}
@@ -231,33 +232,30 @@ namespace util
 		char * NextToken()
 			{ return tokenize(m_pCtxToken, " \t"); }
 
-		void ExpectEOL(const char * path)
+		void ExpectEOL()
 		{
-			(void)path;
-
 			// Issue a warning if there's any more tokens in the current line
 			if (const char * pExtra = NextToken())
-				WARN("%s: syntax error at line %d: unexpected extra token \"%s\"; ignoring", path, m_iLine, pExtra);
+				WARN("%s: syntax error at line %d: unexpected extra token \"%s\"; ignoring", m_origin, m_iLine, pExtra);
 		}
 
-		char * ExpectOneToken(const char * path, const char * whatsMissing = "token")
+		char * ExpectOneToken(const char * whatsMissing = "token")
 		{
-			(void)path;
 			(void)whatsMissing;
 
 			// Grab a token and warn if it's missing
 			char * pToken = NextToken();
 			if (!pToken)
-				WARN("%s: syntax error at line %d: missing %s", path, m_iLine, whatsMissing);
+				WARN("%s: syntax error at line %d: missing %s", m_origin, m_iLine, whatsMissing);
 			return pToken;
 		}
 
-		bool ExpectTokens(char ** tokensOut, int numTokens, const char * path, const char * whatsMissing = "token")
+		bool ExpectTokens(char ** tokensOut, int numTokens, const char * whatsMissing = "token")
 		{
 			// Grab several tokens and warn if any are missing
 			for (int i = 0; i < numTokens; ++i)
 			{
-				char * pToken = ExpectOneToken(path, whatsMissing);
+				char * pToken = ExpectOneToken(whatsMissing);
 				if (!pToken)
 					return false;
 				tokensOut[i] = pToken;
