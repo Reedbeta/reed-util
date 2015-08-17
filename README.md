@@ -65,3 +65,5 @@ Todo list (in no particular order):
 * Basic UTF-8 string processing and conversion to/from UTF-16 for Windows
 * `rigid` transformation class, represented by quat and translation vector?
 * Infinite-far-plane and z-reversed projection matrices
+* Containers (arrays, hashtables, intrusive linked lists)
+* Allocators (linear allocator, stack allocator, tracked heap allocator?)
