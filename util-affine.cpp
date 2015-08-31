@@ -61,34 +61,39 @@ namespace util
 
 	affine2 lookat(float2_arg look)
 	{
-		return makeaffine2(look, orthogonal(look), makefloat2(0.0f));
+		float2 lookNormalized = normalize(look);
+		return makeaffine2(lookNormalized, orthogonal(lookNormalized), makefloat2(0.0f));
 	}
 
 	affine3 lookatX(float3_arg look)
 	{
-		float3 left = orthogonal(look);
-		float3 up = cross(look, left);
-		return makeaffine3(look, left, up, makefloat3(0.0f));
+		float3 lookNormalized = normalize(look);
+		float3 left = orthogonal(lookNormalized);
+		float3 up = cross(lookNormalized, left);
+		return makeaffine3(lookNormalized, left, up, makefloat3(0.0f));
 	}
 
 	affine3 lookatX(float3_arg look, float3_arg up)
 	{
-		float3 left = cross(up, look);
-		float3 trueUp = cross(look, left);
-		return makeaffine3(look, left, trueUp, makefloat3(0.0f));
+		float3 lookNormalized = normalize(look);
+		float3 left = normalize(cross(up, lookNormalized));
+		float3 trueUp = cross(lookNormalized, left);
+		return makeaffine3(lookNormalized, left, trueUp, makefloat3(0.0f));
 	}
 
 	affine3 lookatZ(float3_arg look)
 	{
-		float3 left = orthogonal(look);
-		float3 up = cross(look, left);
-		return makeaffine3(-left, up, -look, makefloat3(0.0f));
+		float3 lookNormalized = normalize(look);
+		float3 left = orthogonal(lookNormalized);
+		float3 up = cross(lookNormalized, left);
+		return makeaffine3(-left, up, -lookNormalized, makefloat3(0.0f));
 	}
 
 	affine3 lookatZ(float3_arg look, float3_arg up)
 	{
-		float3 left = cross(up, look);
-		float3 trueUp = cross(look, left);
-		return makeaffine3(-left, trueUp, -look, makefloat3(0.0f));
+		float3 lookNormalized = normalize(look);
+		float3 left = normalize(cross(up, lookNormalized));
+		float3 trueUp = cross(lookNormalized, left);
+		return makeaffine3(-left, trueUp, -lookNormalized, makefloat3(0.0f));
 	}
 }
