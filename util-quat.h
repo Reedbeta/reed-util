@@ -273,27 +273,27 @@ namespace util
 		return result;
 	}
 
-	inline bool4 isnear(quat_arg a, quat_arg b, float epsilon = util::epsilon)
+	inline bool4 isnear(quat_arg a, quat_arg b, float eps = util::epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
-			result[i] = isnear(a[i], b[i], epsilon);
+			result[i] = isnear(a[i], b[i], eps);
 		return result;
 	}
 
-	inline bool4 isnear(quat_arg a, float b, float epsilon = util::epsilon)
+	inline bool4 isnear(quat_arg a, float b, float eps = util::epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
-			result[i] = isnear(a[i], b, epsilon);
+			result[i] = isnear(a[i], b, eps);
 		return result;
 	}
 
-	inline bool4 isnear(float a, quat_arg b, float epsilon = util::epsilon)
+	inline bool4 isnear(float a, quat_arg b, float eps = util::epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
-			result[i] = isnear(a, b[i], epsilon);
+			result[i] = isnear(a, b[i], eps);
 		return result;
 	}
 
