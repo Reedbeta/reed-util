@@ -92,5 +92,6 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include=".gitignore" />
+    <None Include="util.natvis" />
   </ItemGroup>
 </Project>

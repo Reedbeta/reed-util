@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="util::vector&lt;*,*&gt;">
+    <AlternativeType Name="util::point&lt;*,*&gt;"/>
+    <!-- note: "na" specifier to hide the address only seems to work on pointers, not arrays -->
+    <DisplayString>{($T1*)m_data,[$T2]na}</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>$T2</Size>
+        <ValuePointer>m_data</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  <Type Name="util::matrix&lt;*,*,*&gt;">
+    <!-- note: "na" specifier to hide the address only seems to work on pointers, not arrays -->
+    <DisplayString>{($T1*)m_data,[$T2*$T3]na}</DisplayString>
+    <Expand>
+      <IndexListItems>
+        <Size>$T2</Size>
+        <ValueNode>&amp;m_data[$i*$T3],[$T3]na</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+  <Type Name="util::quat">
+    <DisplayString>{{{w}, {x}, {y}, {z}}}</DisplayString>
+    <Expand>
+      <Item Name="w">w</Item>
+      <Item Name="x">x</Item>
+      <Item Name="y">y</Item>
+      <Item Name="z">z</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>

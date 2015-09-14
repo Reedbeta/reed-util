@@ -42,6 +42,7 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="util.natvis" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{059ADADD-603C-4508-B2C6-8B0BA87BA4C9}</ProjectGuid>
@@ -95,6 +96,18 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>copy /y "$(ProjectDir)util.natvis" "$(VisualStudioDir)\Visualizers"</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Installing util.natvis</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(VisualStudioDir)\Visualizers\util.natvis</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(ProjectDir)util.natvis</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -114,6 +127,18 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <CustomBuildStep>
+      <Command>copy /y "$(ProjectDir)util.natvis" "$(VisualStudioDir)\Visualizers"</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Installing util.natvis</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(VisualStudioDir)\Visualizers\util.natvis</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(ProjectDir)util.natvis</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
