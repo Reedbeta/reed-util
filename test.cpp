@@ -15,6 +15,7 @@ void testVectors()
 {
 	using namespace util;
 
+#if LATER
 	vector<float, 5> foo5 = { 1, 2, 3, 4, 5 };
 	foo5.m_data[4];
 	foo5[4];
@@ -130,17 +131,12 @@ void testVectors()
 
 	float bazArray[] = { 1, 2, 3, 4 };
 	makefloat4(bazArray);
-
-	__m128 simdA = {}, simdB = {};
-	simdA + simdB;
-	simdA += simdB;
-	vector<__m128, 4> simdVector;
-	simdVector + simdVector;
-	simdVector + _mm_set_ps(47, 47, 47, 47);
+#endif // LATER
 }
 
 
 
+#if LATER
 void testMatrices()
 {
 	using namespace util;
@@ -370,6 +366,18 @@ void testAffine()
 
 
 
+void testSIMD()
+{
+	__m128 simdA = {}, simdB = {};
+	simdA + simdB;
+	simdA += simdB;
+	vector<__m128, 4> simdVector;
+	simdVector + simdVector;
+	simdVector + _mm_set_ps(47, 47, 47, 47);
+}
+
+
+
 void testBox()
 {
 	using namespace util;
@@ -470,5 +478,6 @@ void testColor()
 	RGBtoCIELAB(bar);
 	CIELABtoRGB(bar);
 }
+#endif // LATER
 
 #endif // DEBUG

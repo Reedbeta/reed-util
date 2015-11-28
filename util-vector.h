@@ -3,6 +3,7 @@
 
 namespace util
 {
+#if OLD
 	// Macro to define conversion and subscript operators
 #define VECTOR_MEMBERS(T, n) \
 			/* Conversions to C arrays of fixed size */ \
@@ -451,4 +452,5 @@ namespace util
 			result = max(result, a[i]);
 		return result;
 	}
+#endif // OLD
 }
