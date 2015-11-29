@@ -3,114 +3,116 @@
 
 namespace util
 {
-#if OLD
-	// Macro to define conversion and subscript operators
-#define VECTOR_MEMBERS(T, n) \
-			/* Conversions to C arrays of fixed size */ \
-			typedef T (&array_t)[n]; \
-			operator array_t () \
-				{ return m_data; } \
-			typedef const T (&const_array_t)[n]; \
-			operator const_array_t () const \
-				{ return m_data; } \
-			/* Subscript operators - built-in subscripts are ambiguous without these */ \
-			T & operator [] (int i) \
-				{ return m_data[i]; } \
-			const T & operator [] (int i) const \
-				{ return m_data[i]; } \
-			/* Conversion to bool is not allowed (otherwise would \
-			   happen implicitly through array conversions) */ \
-			private: operator bool();
+	// Mixin macro for vector members common to all specializations
+#define MIXIN_VECTOR_MEMBERS(n)																\
+			/* Subscript accessors */														\
+			      T & operator [] (int i)       { return data[i]; }							\
+			const T & operator [] (int i) const { return data[i]; }							\
+			/* Constructors */																\
+			vector() {}																		\
+			vector(std::initializer_list<T> initList)										\
+			{																				\
+				int m = min(n, int(initList.size()));										\
+				auto iter = initList.begin();												\
+				for (int i = 0; i < m; ++i)													\
+				{																			\
+					data[i] = *iter;														\
+					++iter;																	\
+				}																			\
+				/* Zero-fill any remaining elements */										\
+				for (int i = m; i < n; ++i)													\
+					data[i] = T(0);															\
+			}																				\
+			explicit vector(T a)															\
+			{																				\
+				for (int i = 0; i < n; ++i)													\
+					data[i] = a;															\
+			}																				\
+			template <typename U>															\
+			explicit vector(const U * p)													\
+			{																				\
+				for (int i = 0; i < n; ++i)													\
+					data[i] = T(p[i]);														\
+			}																				\
+			template <typename U, int nOther>												\
+			explicit vector(vector<U, nOther> const & v)									\
+			{																				\
+				int m = min(n, int(nOther));												\
+				for (int i = 0; i < m; ++i)													\
+					data[i] = v[i];															\
+				/* Zero-fill any remaining elements */										\
+				for (int i = m; i < n; ++i)													\
+					data[i] = T(0);															\
+			}																				\
+			/* C array conversions */														\
+			typedef T(&array_t)[n];															\
+			operator array_t () { return data; }											\
+			typedef const T(&const_array_t)[n];												\
+			operator const_array_t () const { return data; }								\
+			/* Disallow bool conversions, with a relevant error message;					\
+			   (without this, they'd happen implicitly via the array conversions) */		\
+			operator bool()																	\
+			{																				\
+				static_assert(false,														\
+					"Can't convert vector to bool. "										\
+					"Make sure to use any() or all() on conditionals!");					\
+			}																				\
 
-	// Generic vector struct, providing storage, using partial
-	// specialization to get names (xyzw) for n <= 4
-
+	// Generic vector struct, parameterized by element type and dimension
 	template <typename T, int n>
 	struct vector
 	{
-		cassert(n > 4);
-		T m_data[n];
-		VECTOR_MEMBERS(T, n)
+		T data[n];
+		MIXIN_VECTOR_MEMBERS(n);
 	};
 
 #pragma warning(push)
 #pragma warning(disable: 4201)	// Nameless struct/union
 
+	// Specializations for n = 2, 3, 4, adding element names and additional constructors
 	template <typename T>
 	struct vector<T, 2>
 	{
 		union {
-			T m_data[2];
+			T data[2];
 			struct { T x, y; };
 			struct { T u, v; };
 		};
-		VECTOR_MEMBERS(T, 2)
+		MIXIN_VECTOR_MEMBERS(2);
 	};
-
 	template <typename T>
 	struct vector<T, 3>
 	{
 		union {
-			T m_data[3];
+			T data[3];
 			struct { T x, y, z; };
 			struct { T r, g, b; };
 			struct { T u, v; };
-			vector<T, 2> xy;
-			vector<T, 2> uv;
+			struct { vector<T, 2> xy; };
+			struct { vector<T, 2> uv; };
 		};
-		VECTOR_MEMBERS(T, 3)
+		MIXIN_VECTOR_MEMBERS(3);
 	};
-
 	template <typename T>
 	struct vector<T, 4>
 	{
 		union {
-			T m_data[4];
+			T data[4];
 			struct { T x, y, z, w; };
 			struct { T r, g, b, a; };
 			struct { T u, v; };
-			vector<T, 2> xy;
-			vector<T, 2> uv;
-			vector<T, 3> xyz;
-			vector<T, 3> rgb;
+			struct { vector<T, 2> xy;  };
+			struct { vector<T, 2> uv;  };
+			struct { vector<T, 3> xyz; };
+			struct { vector<T, 3> rgb; };
 		};
-		VECTOR_MEMBERS(T, 4)
+		MIXIN_VECTOR_MEMBERS(4);
 	};
 
 #pragma warning(pop)
-#undef VECTOR_MEMBERS
+#undef MIXIN_VECTOR_MEMBERS
 
-	// Generic maker functions
-
-	template <typename T, int n>
-	vector<T, n> makevector(T a)
-	{
-		vector<T, n> result;
-		for (int i = 0; i < n; ++i)
-			result[i] = a;
-		return result;
-	}
-
-	template <typename T, int n, typename U>
-	vector<T, n> makevector(const U * a)
-	{
-		vector<T, n> result;
-		for (int i = 0; i < n; ++i)
-			result[i] = T(a[i]);
-		return result;
-	}
-
-	template <typename T, int n, typename U, int n_from>
-	vector<T, n> makevector(vector<U, n_from> const & a)
-	{
-		auto result = makevector<T, n>(T(0));
-		for (int i = 0; i < min(n, n_from); ++i)
-			result[i] = T(a[i]);
-		return result;
-	}
-
-
-
+#if OLD
 	// Concrete vectors, and their maker functions,
 	// for the most common types and dimensions
 

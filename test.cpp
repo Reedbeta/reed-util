@@ -11,15 +11,27 @@ void passPointer(const float * p)
 	(void)p;
 }
 
+static const float FloatData[] = { 2, 4, 7, 9, 11 };
+static const int IntData[] = { 13, 12, 18, 2, 3 };
+
 void testVectors()
 {
 	using namespace util;
 
-#if LATER
-	vector<float, 5> foo5 = { 1, 2, 3, 4, 5 };
-	foo5.m_data[4];
+	vector<float, 4> foo1;
+	vector<float, 2> foo2(2.0f);
+	vector<float, 3> foo3(2);
+	vector<float, 4> foo4(FloatData);
+	vector<float, 2> foo5(IntData);
+	vector<float, 3> foo6 = { 1, 2.5f, };
+	vector<float, 4> foo7 = { 1, 2, 3, 4, 5, };
+	vector<float, 2> foo8(foo4);
+	vector<float, 3> foo9(foo2);
+	foo5.data[4];
 	foo5[4];
 	passPointer(foo5);
+	//if(foo5) passPointer(foo5);	// Should give error about conversion to bool
+#if LATER
 	makevector<float, 5>(&foo5[0]);
 	foo5 + foo5;
 	foo5 + 47.0f;
