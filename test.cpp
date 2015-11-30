@@ -22,17 +22,16 @@ void testVectors()
 	vector<float, 2> foo2(2.0f);
 	vector<float, 3> foo3(2);
 	vector<float, 4> foo4(FloatData);
-	vector<float, 2> foo5(IntData);
+	vector<float, 5> foo5(IntData);
 	vector<float, 3> foo6 = { 1, 2.5f, };
 	vector<float, 4> foo7 = { 1, 2, 3, 4, 5, };
 	vector<float, 2> foo8(foo4);
 	vector<float, 3> foo9(foo2);
+	vector<float, 5> foo10(&foo5[0]);
 	foo5.data[4];
 	foo5[4];
 	passPointer(foo5);
 	//if(foo5) passPointer(foo5);	// Should give error about conversion to bool
-#if LATER
-	makevector<float, 5>(&foo5[0]);
 	foo5 + foo5;
 	foo5 + 47.0f;
 	47.0f + foo5;
@@ -90,9 +89,9 @@ void testVectors()
 	foo5 = square(foo5);
 
 	vector<int, 5> ifoo5 = { 1, 2, 3, 4, 5 };
-	makevector<float, 4>(ifoo5);
-	makevector<float, 5>(ifoo5);
-	makevector<float, 6>(ifoo5);
+	(void) vector<float, 4>(ifoo5);
+	(void) vector<float, 5>(ifoo5);
+	(void) vector<float, 6>(ifoo5);
 	ifoo5 & ifoo5;
 	ifoo5 | ifoo5;
 	ifoo5 ^ ifoo5;
@@ -102,48 +101,71 @@ void testVectors()
 	ifoo5 |= ifoo5;
 	ifoo5 ^= ifoo5;
 	ifoo5 = round(foo5);
+	ifoo5 == foo5;
+	ifoo5 == 47.0f;
+	ifoo5 != foo5;
+	ifoo5 != 47.0f;
+	ifoo5 < foo5;
+	ifoo5 < 47.0f;
+	ifoo5 > foo5;
+	ifoo5 > 47.0f;
+	ifoo5 <= foo5;
+	ifoo5 <= 47.0f;
+	ifoo5 >= foo5;
+	ifoo5 >= 47.0f;
+	foo5 == ifoo5;
+	foo5 == 47;
+	foo5 != ifoo5;
+	foo5 != 47;
+	foo5 < ifoo5;
+	foo5 < 47;
+	foo5 > ifoo5;
+	foo5 > 47;
+	foo5 <= ifoo5;
+	foo5 <= 47;
+	foo5 >= ifoo5;
+	foo5 >= 47;
 
-	float4 foo4 = { 1, 2, 3, 4};
-	foo4.w;
-	foo4.a;
-	foo4[3];
-	passPointer(foo4);
-	makefloat4(47.0f);
-	makefloat4(&foo5[0]);
-	makefloat4(&ifoo5[0]);
-	makefloat4(foo5);
-	makefloat4(ifoo5);
+	float4 foof4 = { 1, 2, 3, 4};
+	foof4.w;
+	foof4.a;
+	foof4[3];
+	passPointer(foof4);
+	(void) float4(47.0f);
+	(void) float4(&foo5[0]);
+	(void) float4(&ifoo5[0]);
+	(void) float4(foo5);
+	(void) float4(ifoo5);
 
-	float3 foo3 = { 1, 2, 3 };
-	foo3.z;
-	foo3.b;
-	foo3[2];
-	passPointer(foo3);
-	cross(foo3, foo3);
-	orthogonal(foo3);
-	foo3 = foo4.xyz;
-	makefloat3(47.0f);
-	makefloat3(&foo5[0]);
-	makefloat3(&ifoo5[0]);
-	makefloat3(foo5);
-	makefloat3(ifoo5);
+	float3 foof3 = { 1, 2, 3 };
+	foof3.z;
+	foof3.b;
+	foof3[2];
+	passPointer(foof3);
+	cross(foof3, foof3);
+	orthogonal(foof3);
+	foof3 = foof4.xyz;
+	(void) float3(47.0f);
+	(void) float3(&foo5[0]);
+	(void) float3(&ifoo5[0]);
+	(void) float3(foo5);
+	(void) float3(ifoo5);
 
-	float2 foo2 = { 1, 2 };
-	foo2.y;
-	foo2.v;
-	foo2[1];
-	passPointer(foo2);
-	orthogonal(foo2);
-	foo2 = foo3.xy;
-	makefloat2(47.0f);
-	makefloat2(&foo5[0]);
-	makefloat2(&ifoo5[0]);
-	makefloat2(foo5);
-	makefloat2(ifoo5);
+	float2 foof2 = { 1, 2 };
+	foof2.y;
+	foof2.v;
+	foof2[1];
+	passPointer(foof2);
+	orthogonal(foof2);
+	foof2 = foof3.xy;
+	(void) float2(47.0f);
+	(void) float2(&foo5[0]);
+	(void) float2(&ifoo5[0]);
+	(void) float2(foo5);
+	(void) float2(ifoo5);
 
 	float bazArray[] = { 1, 2, 3, 4 };
-	makefloat4(bazArray);
-#endif // LATER
+	(void) float4(bazArray);
 }
 
 
