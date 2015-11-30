@@ -249,11 +249,13 @@ void testMatrices()
 	maxComponent(foo5);
 	foo5 = lerp(foo5, foo5, 0.5f);
 	foo5 = square(foo5);
+#endif
 
 	matrix<int, 5, 5> ifoo5 = { 1, 2, 3, 4, 5 };
-	makematrix<float, 4, 4>(ifoo5);
-	makematrix<float, 5, 5>(ifoo5);
-	makematrix<float, 6, 6>(ifoo5);
+	(void) matrix<float, 4, 4>(ifoo5);
+	(void) matrix<float, 5, 5>(ifoo5);
+	(void) matrix<float, 6, 6>(ifoo5);
+#if LATER
 	ifoo5 & ifoo5;
 	ifoo5 | ifoo5;
 	ifoo5 ^ ifoo5;
@@ -272,25 +274,25 @@ void testMatrices()
 	matrix<float, 3, 4> foo3x4 = transpose(foo4x3);
 	(void) foo3x4;
 	foo4x3 = outerProduct(bar4, bar3);
-
-	makefloat4x4(47.0f);
-	makefloat4x4(&foo5[0][0]);
-	makefloat4x4(&ifoo5[0][0]);
-	makefloat4x4(foo5);
-	makefloat4x4(ifoo5);
-
-	makefloat3x3(47.0f);
-	makefloat3x3(&foo5[0][0]);
-	makefloat3x3(&ifoo5[0][0]);
-	makefloat3x3(foo5);
-	makefloat3x3(ifoo5);
-
-	makefloat2x2(47.0f);
-	makefloat2x2(&foo5[0][0]);
-	makefloat2x2(&ifoo5[0][0]);
-	makefloat2x2(foo5);
-	makefloat2x2(ifoo5);
 #endif
+
+	(void) float4x4(47.0f);
+	(void) float4x4(&foo5[0][0]);
+	(void) float4x4(&ifoo5[0][0]);
+	(void) float4x4(foo5);
+	(void) float4x4(ifoo5);
+
+	(void) float3x3(47.0f);
+	(void) float3x3(&foo5[0][0]);
+	(void) float3x3(&ifoo5[0][0]);
+	(void) float3x3(foo5);
+	(void) float3x3(ifoo5);
+
+	(void) float2x2(47.0f);
+	(void) float2x2(&foo5[0][0]);
+	(void) float2x2(&ifoo5[0][0]);
+	(void) float2x2(foo5);
+	(void) float2x2(ifoo5);
 }
 
 

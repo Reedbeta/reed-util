@@ -81,6 +81,23 @@ namespace util
 			{ static_assert(false, "Can't convert matrix to bool. Make sure to use any() or all() on conditionals!"); }
 	};
 
+	// Typedefs for the most common types and dimensions
+	typedef matrix<float, 2, 2> float2x2;
+	typedef matrix<float, 3, 3> float3x3;
+	typedef matrix<float, 3, 4> float3x4;
+	typedef matrix<float, 4, 3> float4x3;
+	typedef matrix<float, 4, 4> float4x4;
+	typedef matrix<int, 2, 2> int2x2;
+	typedef matrix<int, 3, 3> int3x3;
+	typedef matrix<int, 3, 4> int3x4;
+	typedef matrix<int, 4, 3> int4x3;
+	typedef matrix<int, 4, 4> int4x4;
+	typedef matrix<bool, 2, 2> bool2x2;
+	typedef matrix<bool, 3, 3> bool3x3;
+	typedef matrix<bool, 3, 4> bool3x4;
+	typedef matrix<bool, 4, 3> bool4x3;
+	typedef matrix<bool, 4, 4> bool4x4;
+
 #if OLD
 	// Concrete matrices, and their maker functions,
 	// for the most common types and dimensions
