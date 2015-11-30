@@ -6,76 +6,82 @@ namespace util
 	// Generic matrix struct, providing (row-major) storage,
 	// conversion and subscript operators
 
+	enum identityTag { identity };
+
 	template <typename T, int rows, int cols>
 	struct matrix
 	{
-		cassert(rows > 1);
-		cassert(cols > 1);
-
-		T m_data[rows*cols];
-
-		// Conversions to C arrays of fixed size
-		typedef T (&array_t)[rows*cols];
-		operator array_t ()
-			{ return m_data; }
-		typedef const T (&const_array_t)[rows*cols];
-		operator const_array_t () const
-			{ return m_data; }
+		T data[rows*cols];
 
 		// Subscript operators - built-in subscripts are ambiguous without these
 		vector<T, cols> & operator [] (int i)
-			{ return reinterpret_cast<vector<T, cols> &>(m_data[i*cols]); }
+			{ return reinterpret_cast<vector<T, cols> &>(data[i*cols]); }
 		const vector<T, cols> & operator [] (int i) const
-			{ return reinterpret_cast<const vector<T, cols> &>(m_data[i*cols]); }
-		
-		static matrix<T, rows, cols> identity();
+			{ return reinterpret_cast<const vector<T, cols> &>(data[i*cols]); }
 
-		// Conversion to bool is not allowed (otherwise would
-		// happen implicitly through array conversions)
-		private: operator bool();
+		// Constructors
+		matrix() {}
+		matrix(std::initializer_list<T> initList)
+		{
+			int m = min(rows*cols, int(initList.size()));
+			auto iter = initList.begin();
+			for (int i = 0; i < m; ++i)
+			{
+				data[i] = *iter;
+				++iter;
+			}
+			// Zero-fill any remaining elements
+			for (int i = m; i < rows*cols; ++i)
+				data[i] = T(0);
+		}
+		explicit matrix(T a)
+		{
+			for (int i = 0; i < rows*cols; ++i)
+				data[i] = a;
+		}
+		template <typename U>
+		explicit matrix(U * p)
+		{
+			for (int i = 0; i < rows*cols; ++i)
+				data[i] = T(p[i]);
+		}
+		template <typename U, int rowsOther, int colsOther>
+		explicit matrix(matrix<U, rowsOther, colsOther> const & m)
+		{
+			int r = min(rows, rowsOther);
+			int c = min(cols, colsOther);
+			for (int i = 0; i < r; ++i)
+			{
+				for (int j = 0; j < c; ++j)
+					(*this)[i][j] = T(m[i][j]);
+				// Zero-fill any remaining cols
+				for (int j = c; j < cols; ++j)
+					(*this)[i][j] = T(0);
+			}
+			// Zero-fill any remaining rows
+			for (int i = r*cols; i < rows*cols; ++i)
+				data[i] = T(0);
+		}
+		explicit matrix(identityTag)
+		{
+			static_assert(rows == cols, "Can't construct identity for a non-square matrix");
+			for (int i = 0; i < rows*cols; ++i)
+				data[i] = (i % (rows+1) == 0) ? T(1) : T(0);
+		}
+
+		// C array conversions
+		typedef T (&array_t)[rows*cols];
+		operator array_t () { return data; }
+		typedef const T (&const_array_t)[rows*cols];
+		operator const_array_t () const { return data; }
+
+		// Disallow bool conversions, with a relevant error message;
+		// (without this, they'd happen implicitly via the array conversions)
+		operator bool()
+			{ static_assert(false, "Can't convert matrix to bool. Make sure to use any() or all() on conditionals!"); }
 	};
 
-	// Generic maker functions
-
-	template <typename T, int rows, int cols>
-	matrix<T, rows, cols> makematrix(T a)
-	{
-		matrix<T, rows, cols> result;
-		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = a;
-		return result;
-	}
-
-	template <typename T, int rows, int cols, typename U>
-	matrix<T, rows, cols> makematrix(const U * a)
-	{
-		matrix<T, rows, cols> result;
-		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = T(a[i]);
-		return result;
-	}
-
-	template <typename T, int rows, int cols, typename U, int rows_from, int cols_from>
-	matrix<T, rows, cols> makematrix(matrix<U, rows_from, cols_from> const & a)
-	{
-		auto result = makematrix<T, rows, cols>(T(0));
-		for (int i = 0; i < min(rows, rows_from); ++i)
-			for (int j = 0; j < min(cols, cols_from); ++j)
-				result[i][j] = T(a[i][j]);
-		return result;
-	}
-
-	template <typename T, int rows, int cols>
-	matrix<T, rows, cols> matrix<T, rows, cols>::identity()
-	{
-		cassert(rows == cols);
-		auto result = makematrix<T, rows, cols>(0);
-		for (int i = 0; i < rows; ++i)
-			result[i][i] = T(1);
-		return result;
-	}
-
-
+#if OLD
 	// Concrete matrices, and their maker functions,
 	// for the most common types and dimensions
 
@@ -142,7 +148,7 @@ namespace util
 			{ \
 				matrix<T, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
-					result.m_data[i] = op a.m_data[i]; \
+					result.data[i] = op a.data[i]; \
 				return result; \
 			}
 
@@ -153,7 +159,7 @@ namespace util
 			{ \
 				matrix<T, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
-					result.m_data[i] = a op b.m_data[i]; \
+					result.data[i] = a op b.data[i]; \
 				return result; \
 			} \
 			/* Matrix-scalar op */ \
@@ -162,7 +168,7 @@ namespace util
 			{ \
 				matrix<T, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
-					result.m_data[i] = a.m_data[i] op b; \
+					result.data[i] = a.data[i] op b; \
 				return result; \
 			}
 
@@ -173,7 +179,7 @@ namespace util
 			{ \
 				matrix<T, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
-					result.m_data[i] = a.m_data[i] op b.m_data[i]; \
+					result.data[i] = a.data[i] op b.data[i]; \
 				return result; \
 			} \
 			DEFINE_BINARY_SCALAR_OPERATORS(op)
@@ -184,7 +190,7 @@ namespace util
 			matrix<T, rows, cols> & operator op (matrix<T, rows, cols> & a, T b) \
 			{ \
 				for (int i = 0; i < rows*cols; ++i) \
-					a.m_data[i] op b; \
+					a.data[i] op b; \
 				return a; \
 			}
 
@@ -194,7 +200,7 @@ namespace util
 			matrix<T, rows, cols> & operator op (matrix<T, rows, cols> & a, matrix<T, rows, cols> const & b) \
 			{ \
 				for (int i = 0; i < rows*cols; ++i) \
-					a.m_data[i] op b.m_data[i]; \
+					a.data[i] op b.data[i]; \
 				return a; \
 			} \
 			DEFINE_INPLACE_SCALAR_OPERATOR(op)
@@ -206,7 +212,7 @@ namespace util
 			{ \
 				matrix<bool, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
-					result.m_data[i] = a.m_data[i] op b.m_data[i]; \
+					result.data[i] = a.data[i] op b.data[i]; \
 				return result; \
 			} \
 			/* Scalar-matrix op */ \
@@ -215,7 +221,7 @@ namespace util
 			{ \
 				matrix<bool, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
-					result.m_data[i] = a op b.m_data[i]; \
+					result.data[i] = a op b.data[i]; \
 				return result; \
 			} \
 			/* Matrix-scalar op */ \
@@ -224,7 +230,7 @@ namespace util
 			{ \
 				matrix<bool, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
-					result.m_data[i] = a.m_data[i] op b; \
+					result.data[i] = a.data[i] op b; \
 				return result; \
 			}
 
@@ -510,7 +516,7 @@ namespace util
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = isnear(a.m_data[i], b.m_data[i], epsilon);
+			result.data[i] = isnear(a.data[i], b.data[i], epsilon);
 		return result;
 	}
 
@@ -519,7 +525,7 @@ namespace util
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = isnear(a.m_data[i], b, epsilon);
+			result.data[i] = isnear(a.data[i], b, epsilon);
 		return result;
 	}
 
@@ -528,7 +534,7 @@ namespace util
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = isnear(a, b.m_data[i], epsilon);
+			result.data[i] = isnear(a, b.data[i], epsilon);
 		return result;
 	}
 
@@ -537,7 +543,7 @@ namespace util
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = isfinite(a.m_data[i]);
+			result.data[i] = isfinite(a.data[i]);
 		return result;
 	}
 
@@ -546,7 +552,7 @@ namespace util
 	{
 		matrix<int, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = round(a.m_data[i]);
+			result.data[i] = round(a.data[i]);
 		return result;
 	}
 
@@ -559,7 +565,7 @@ namespace util
 	{
 		bool result = false;
 		for (int i = 0; i < rows*cols; ++i)
-			result = result || a.m_data[i];
+			result = result || a.data[i];
 		return result;
 	}
 
@@ -568,7 +574,7 @@ namespace util
 	{
 		bool result = true;
 		for (int i = 0; i < rows*cols; ++i)
-			result = result && a.m_data[i];
+			result = result && a.data[i];
 		return result;
 	}
 
@@ -577,7 +583,7 @@ namespace util
 	{
 		matrix<T, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
-			result.m_data[i] = cond.m_data[i] ? a.m_data[i] : b.m_data[i];
+			result.data[i] = cond.data[i] ? a.data[i] : b.data[i];
 		return result;
 	}
 
@@ -600,18 +606,18 @@ namespace util
 	template <typename T, int rows, int cols>
 	T minComponent(matrix<T, rows, cols> const & a)
 	{
-		T result = a.m_data[0];
+		T result = a.data[0];
 		for (int i = 1; i < rows*cols; ++i)
-			result = min(result, a.m_data[i]);
+			result = min(result, a.data[i]);
 		return result;
 	}
 
 	template <typename T, int rows, int cols>
 	T maxComponent(matrix<T, rows, cols> const & a)
 	{
-		T result = a.m_data[0];
+		T result = a.data[0];
 		for (int i = 1; i < rows*cols; ++i)
-			result = max(result, a.m_data[i]);
+			result = max(result, a.data[i]);
 		return result;
 	}
 
@@ -628,4 +634,5 @@ namespace util
 
 	float4x4 perspProjD3DStyle(float verticalFOV, float aspect, float zNear, float zFar);
 	float4x4 perspProjOGLStyle(float verticalFOV, float aspect, float zNear, float zFar);
+#endif // OLD
 }

@@ -170,17 +170,26 @@ void testVectors()
 
 
 
-#if LATER
 void testMatrices()
 {
 	using namespace util;
 
-	matrix<float, 5, 5> foo5 = { 1, 2, 3, 4, 5 };
+	matrix<float, 2, 4> foo1;
+	matrix<float, 2, 2> foo2(2.0f);
+	matrix<float, 2, 3> foo3(2);
+	matrix<float, 3, 4> foo4(FloatData);
+	matrix<float, 5, 5> foo5(IntData);
+	matrix<float, 3, 3> foo6 = { 1, 2.5f, };
+	matrix<float, 3, 4> foo7 = { 1, 2, 3, 4, 5, };
+	matrix<float, 4, 2> foo8(foo4);
+	matrix<float, 4, 3> foo9(foo2);
+	matrix<float, 4, 5> foo10(&foo5[0][0]);
+	matrix<float, 4, 4> foo11(identity);
 	vector<float, 5> bar5;
-	foo5.m_data[4];
+	foo5.data[4];
 	foo5[4][3] = 47.0f;
 	passPointer(foo5);
-	makematrix<float, 5, 5>(&foo5[0][0]);
+#if LATER
 	foo5 + foo5;
 	foo5 + 47.0f;
 	47.0f + foo5;
@@ -281,10 +290,12 @@ void testMatrices()
 	makefloat2x2(&ifoo5[0][0]);
 	makefloat2x2(foo5);
 	makefloat2x2(ifoo5);
+#endif
 }
 
 
 
+#if LATER
 void testAffine()
 {
 	using namespace util;
