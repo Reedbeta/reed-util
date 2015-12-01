@@ -349,13 +349,13 @@ namespace util
 	}
 
 	template <typename T>
-	vector<T, 2> orthogonal(vector<T, 2> a)
+	vector<T, 2> orthogonalTo(vector<T, 2> a)
 	{
 		return { -a.y, a.x };
 	}
 
 	template <typename T>
-	vector<T, 3> orthogonal(vector<T, 3> a)
+	vector<T, 3> orthogonalTo(vector<T, 3> a)
 	{
 		// Implementation due to Sam Hocevar - see blog post:
 		// http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts
