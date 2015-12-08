@@ -186,8 +186,8 @@ void testMatrices()
 	matrix<float, 4, 5> foo10(&foo5[0][0]);
 	matrix<float, 4, 4> foo11(identity);
 	vector<float, 5> bar5;
-	matrixFromRows<3>({ bar5, bar5, bar5 });
-	matrixFromCols<3>({ bar5, bar5, bar5 });
+	matrixFromRows(bar5, bar5, bar5);
+	//matrixFromCols(bar5, bar5, bar5);
 	foo5.data[4];
 	foo5[4][3] = 47.0f;
 	passPointer(foo5);
@@ -257,8 +257,8 @@ void testMatrices()
 	(void) matrix<float, 4, 4>(ifoo5);
 	(void) matrix<float, 5, 5>(ifoo5);
 	(void) matrix<float, 6, 6>(ifoo5);
-	matrixFromRows<3>({ ifoo5[0], ifoo5[1], ifoo5[2] });
-	matrixFromCols<3>({ ifoo5[0], ifoo5[1], ifoo5[2] });
+	matrixFromRows(ifoo5[0], ifoo5[1], ifoo5[2]);
+	//matrixFromCols(ifoo5[0], ifoo5[1], ifoo5[2]);
 #if LATER
 	ifoo5 & ifoo5;
 	ifoo5 | ifoo5;

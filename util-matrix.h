@@ -1,5 +1,9 @@
 #pragma once
 #include <cmath>
+#include <initializer_list>
+#include <tuple>
+#include <type_traits>
+#include <utility>
 
 namespace util
 {
@@ -81,7 +85,31 @@ namespace util
 			{ static_assert(false, "Can't convert matrix to bool. Make sure to use any() or all() on conditionals!"); }
 	};
 
-	// Free function constructors for building matrices out of row and column vectors
+	// Free function "constructors" for building matrices out of passed-in row and column vectors
+	namespace detail
+	{
+		template <typename T> struct vectorDetectorHelper {};
+		template <typename T_, int n_> struct vectorDetectorHelper<vector<T_, n_>> { typedef T_ T; static const int n = n_; };
+		template <typename... Ts> struct vectorDetector {
+			typedef typename vectorDetectorHelper<std::common_type_t<Ts...>>::T T;
+			static const int n = vectorDetectorHelper<std::common_type_t<Ts...>>::n;
+		};
+		template <typename M, typename T, std::size_t... Is>
+		M matrixFromRowsHelper(const T & tupleOfVectors, std::index_sequence<Is...>)
+		{
+			M m;
+			int dummy[] = { (m[Is] = std::get<Is>(tupleOfVectors), 0)... };
+			return m;
+		}
+	}
+	template <typename... Ts>
+	auto matrixFromRows(Ts... args) -> matrix<typename detail::vectorDetector<Ts...>::T, sizeof...(Ts), detail::vectorDetector<Ts...>::n>
+	{
+		return detail::matrixFromRowsHelper<decltype(matrixFromRows(args...))>(std::make_tuple(args...), std::index_sequence_for<Ts...>());
+	}
+
+#if 0
+	// Alternate implementation using initializer lists - causes ICE under VS2013. :(
 	template <int rows, typename T, int cols>
 	matrix<T, rows, cols> matrixFromRows(std::initializer_list<vector<T, cols>> initList)
 	{
@@ -104,6 +132,7 @@ namespace util
 		}
 		return result;
 	}
+#endif
 
 	// Typedefs for the most common types and dimensions
 	typedef matrix<float, 2, 2> float2x2;

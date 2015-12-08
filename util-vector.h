@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <initializer_list>
 
 namespace util
 {
