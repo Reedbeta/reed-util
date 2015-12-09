@@ -86,53 +86,22 @@ namespace util
 	};
 
 	// Free function "constructors" for building matrices out of passed-in row and column vectors
-	namespace detail
+	template <typename T, int n, typename... Ts>
+	matrix<T, 1+sizeof...(Ts), n> matrixFromRows(vector<T, n> first, Ts... rest)
 	{
-		template <typename T> struct vectorDetectorHelper {};
-		template <typename T_, int n_> struct vectorDetectorHelper<vector<T_, n_>> { typedef T_ T; static const int n = n_; };
-		template <typename... Ts> struct vectorDetector {
-			typedef typename vectorDetectorHelper<std::common_type_t<Ts...>>::T T;
-			static const int n = vectorDetectorHelper<std::common_type_t<Ts...>>::n;
-		};
-		template <typename M, typename T, std::size_t... Is>
-		M matrixFromRowsHelper(const T & tupleOfVectors, std::index_sequence<Is...>)
-		{
-			M m;
-			int dummy[] = { (m[Is] = std::get<Is>(tupleOfVectors), 0)... };
-			return m;
-		}
+		vector<T, n> rows[] = { first, rest... };
+		return matrix<T, 1+sizeof...(Ts), n>(&rows[0][0]);
 	}
-	template <typename... Ts>
-	auto matrixFromRows(Ts... args) -> matrix<typename detail::vectorDetector<Ts...>::T, sizeof...(Ts), detail::vectorDetector<Ts...>::n>
+	template <typename T, int n, typename... Ts>
+	matrix<T, n, 1+sizeof...(Ts)> matrixFromCols(vector<T, n> first, Ts... rest)
 	{
-		return detail::matrixFromRowsHelper<decltype(matrixFromRows(args...))>(std::make_tuple(args...), std::index_sequence_for<Ts...>());
-	}
-
-#if 0
-	// Alternate implementation using initializer lists - causes ICE under VS2013. :(
-	template <int rows, typename T, int cols>
-	matrix<T, rows, cols> matrixFromRows(std::initializer_list<vector<T, cols>> initList)
-	{
-		matrix<T, rows, cols> result;
-		auto iter = initList.begin();
-		for (int i = 0; i < rows; ++i)
-			result[i] = *(iter++);
+		vector<T, n> cols[] = { first, rest... };
+		matrix<T, n, 1+sizeof...(Ts)> result;
+		for (int i = 0; i < n; ++i)
+			for (int j = 0; j < 1+sizeof...(Ts); ++j)
+				result[i][j] = cols[j][i];
 		return result;
 	}
-	template <int cols, typename T, int rows>
-	matrix<T, rows, cols> matrixFromCols(std::initializer_list<vector<T, rows>> initList)
-	{
-		matrix<T, rows, cols> result;
-		auto iter = initList.begin();
-		for (int j = 0; j < cols; ++j)
-		{
-			for (int i = 0; i < rows; ++i)
-				result[i][j] = (*iter)[i];
-			++iter;
-		}
-		return result;
-	}
-#endif
 
 	// Typedefs for the most common types and dimensions
 	typedef matrix<float, 2, 2> float2x2;
