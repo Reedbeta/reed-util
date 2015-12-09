@@ -1,9 +1,6 @@
 #pragma once
 #include <cmath>
 #include <initializer_list>
-#include <tuple>
-#include <type_traits>
-#include <utility>
 
 namespace util
 {
@@ -120,7 +117,8 @@ namespace util
 	typedef matrix<bool, 4, 3> bool4x3;
 	typedef matrix<bool, 4, 4> bool4x4;
 
-#if OLD
+
+
 	// Overloaded math operators
 
 #define DEFINE_UNARY_OPERATOR(op) \
@@ -188,8 +186,8 @@ namespace util
 
 #define DEFINE_RELATIONAL_OPERATORS(op) \
 			/* Matrix-matrix op */ \
-			template <typename T, int rows, int cols> \
-			matrix<bool, rows, cols> operator op (matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b) \
+			template <typename T, typename U, int rows, int cols> \
+			matrix<bool, rows, cols> operator op (matrix<T, rows, cols> const & a, matrix<U, rows, cols> const & b) \
 			{ \
 				matrix<bool, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
@@ -197,8 +195,8 @@ namespace util
 				return result; \
 			} \
 			/* Scalar-matrix op */ \
-			template <typename T, int rows, int cols> \
-			matrix<bool, rows, cols> operator op (T a, matrix<T, rows, cols> const & b) \
+			template <typename T, typename U, int rows, int cols> \
+			matrix<bool, rows, cols> operator op (T a, matrix<U, rows, cols> const & b) \
 			{ \
 				matrix<bool, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
@@ -206,8 +204,8 @@ namespace util
 				return result; \
 			} \
 			/* Matrix-scalar op */ \
-			template <typename T, int rows, int cols> \
-			matrix<bool, rows, cols> operator op (matrix<T, rows, cols> const & a, T b) \
+			template <typename T, typename U, int rows, int cols> \
+			matrix<bool, rows, cols> operator op (matrix<T, rows, cols> const & a, U b) \
 			{ \
 				matrix<bool, rows, cols> result; \
 				for (int i = 0; i < rows*cols; ++i) \
@@ -253,7 +251,7 @@ namespace util
 	template <typename T, int rows, int inner, int cols>
 	matrix<T, rows, cols> operator * (matrix<T, rows, inner> const & a, matrix<T, inner, cols> const & b)
 	{
-		auto result = makematrix<T, rows, cols>(0);
+		matrix<T, rows, cols> result = {};
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < cols; ++j)
 				for (int k = 0; k < inner; ++k)
@@ -271,9 +269,9 @@ namespace util
 	// Matrix-vector multiplication
 
 	template <typename T, int rows, int cols>
-	vector<T, rows> operator * (matrix<T, rows, cols> const & a, vector<T, cols> const & b)
+	vector<T, rows> operator * (matrix<T, rows, cols> const & a, vector<T, cols> b)
 	{
-		auto result = makevector<T, rows>(0);
+		vector<T, rows> result = {};
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < cols; ++j)
 					result[i] += a[i][j] * b[j];
@@ -281,9 +279,9 @@ namespace util
 	}
 
 	template <typename T, int rows, int cols>
-	vector<T, cols> operator * (vector<T, rows> const & a, matrix<T, rows, cols> const & b)
+	vector<T, cols> operator * (vector<T, rows> a, matrix<T, rows, cols> const & b)
 	{
-		auto result = makevector<T, cols>(0);
+		vector<T, cols> result = {};
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < cols; ++j)
 					result[j] += a[i] * b[i][j];
@@ -315,10 +313,11 @@ namespace util
 	matrix<T, n, n> pow(matrix<T, n, n> const & a, int b)
 	{
 		if (b <= 0)
-			return matrix<T, n, n>::identity();
+			return matrix<T, n, n>(identity);
 		if (b == 1)
 			return a;
-		auto oddpart = matrix<T, n, n>::identity(), evenpart = a;
+		matrix<T, n, n> oddpart(identity);
+		matrix<T, n, n> evenpart = a;
 		while (b > 1)
 		{
 			if (b % 2 == 1)
@@ -336,7 +335,7 @@ namespace util
 		// Calculate inverse using Gaussian elimination
 
 		matrix<T, n, n> a = m;
-		auto b = matrix<T, n, n>::identity();
+		matrix<T, n, n> b(identity);
 
 		// Loop through columns
 		for (int j = 0; j < n; ++j)
@@ -347,7 +346,7 @@ namespace util
 				if (abs(a[i][j]) > abs(a[pivot][j]))
 					pivot = i;
 			if (abs(a[pivot][j]) < epsilon)
-				return makematrix<T, n, n>(NaN);
+				return matrix<T, n, n>(NaN);
 
 			// Interchange rows to put pivot element on the diagonal,
 			// if it is not already there
@@ -387,11 +386,10 @@ namespace util
 	template <typename T>
 	matrix<T, 2, 2> inverse(matrix<T, 2, 2> const & a)
 	{
-		matrix<T, 2, 2> result = { a[1][1], -a[0][1], -a[1][0], a[0][0] };
-		return result / determinant(a);
+		return matrix<T, 2, 2>{ a[1][1], -a[0][1], -a[1][0], a[0][0] } / determinant(a);
 	}
 
-	// !!!UNDONE: specialization for 3x3? worth it?
+	// !!!UNDONE: inverse specialization for 3x3? worth it?
 
 	template <typename T, int n>
 	T determinant(matrix<T, n, n> const & m)
@@ -452,7 +450,7 @@ namespace util
 		return (a[0][0]*a[1][1] - a[0][1]*a[1][0]);
 	}
 
-	// !!!UNDONE: specialization for 3x3? worth it?
+	// !!!UNDONE: determinant specialization for 3x3? worth it?
 
 	template <typename T, int n>
 	T trace(matrix<T, n, n> const & a)
@@ -466,25 +464,25 @@ namespace util
 	// !!!UNDONE: diagonalization and decomposition?
 
 	template <typename T, int n>
-	matrix<T, n, n> diagonal(T a)
+	matrix<T, n, n> diagonalMatrix(T a)
 	{
-		auto result = makematrix<T, n, n>(0);
+		matrix<T, n, n> result = {};
 		for (int i = 0; i < n; ++i)
 			result[i][i] = a;
 		return result;
 	}
 
 	template <typename T, int n>
-	matrix<T, n, n> diagonal(vector<T, n> const & a)
+	matrix<T, n, n> diagonalMatrix(vector<T, n> a)
 	{
-		auto result = makematrix<T, n, n>(0);
+		matrix<T, n, n> result = {};
 		for (int i = 0; i < n; ++i)
 			result[i][i] = a[i];
 		return result;
 	}
 
 	template <typename T, int rows, int cols>
-	matrix<T, rows, cols> outerProduct(vector<T, rows> const & a, vector<T, cols> const & b)
+	matrix<T, rows, cols> outerProduct(vector<T, rows> a, vector<T, cols> b)
 	{
 		matrix<T, rows, cols> result;
 		for (int i = 0; i < rows; ++i)
@@ -544,18 +542,18 @@ namespace util
 	template <int rows, int cols>
 	bool any(matrix<bool, rows, cols> const & a)
 	{
-		bool result = false;
-		for (int i = 0; i < rows*cols; ++i)
-			result = result || a.data[i];
+		bool result = a.data[0];
+		for (int i = 1; i < rows*cols; ++i)
+			result |= a.data[i];
 		return result;
 	}
 
 	template <int rows, int cols>
 	bool all(matrix<bool, rows, cols> const & a)
 	{
-		bool result = true;
-		for (int i = 0; i < rows*cols; ++i)
-			result = result && a.data[i];
+		bool result = a.data[0];
+		for (int i = 1; i < rows*cols; ++i)
+			result &= a.data[i];
 		return result;
 	}
 
@@ -576,13 +574,15 @@ namespace util
 	matrix<T, rows, cols> max(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b)
 		{ return select(a < b, b, a); }
 
+	// !!!UNDONE: scalar-broadcasting versions of select, min, max, clamp, lerp
+
 	template <typename T, int rows, int cols>
 	matrix<T, rows, cols> abs(matrix<T, rows, cols> const & a)
 		{ return select(a < T(0), -a, a); }
 
 	template <typename T, int rows, int cols>
 	matrix<T, rows, cols> saturate(matrix<T, rows, cols> const & value)
-		{ return clamp(value, makematrix<T, rows, cols>(0), makematrix<T, rows, cols>(1)); }
+		{ return clamp(value, matrix<T, rows, cols>(0), matrix<T, rows, cols>(1)); }
 
 	template <typename T, int rows, int cols>
 	T minComponent(matrix<T, rows, cols> const & a)
@@ -615,5 +615,4 @@ namespace util
 
 	float4x4 perspProjD3DStyle(float verticalFOV, float aspect, float zNear, float zFar);
 	float4x4 perspProjOGLStyle(float verticalFOV, float aspect, float zNear, float zFar);
-#endif // OLD
 }

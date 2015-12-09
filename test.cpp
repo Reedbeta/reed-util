@@ -191,7 +191,6 @@ void testMatrices()
 	foo5.data[4];
 	foo5[4][3] = 47.0f;
 	passPointer(foo5);
-#if LATER
 	foo5 + foo5;
 	foo5 + 47.0f;
 	47.0f + foo5;
@@ -231,8 +230,8 @@ void testMatrices()
 	foo5 = inverse(foo5);
 	determinant(foo5);
 	trace(foo5);
-	foo5 = diagonal<float, 5>(47.0f);
-	foo5 = diagonal(bar5);
+	foo5 = diagonalMatrix<float, 5>(47.0f);
+	foo5 = diagonalMatrix(bar5);
 	foo5 = outerProduct(bar5, bar5);
 	isnear(foo5, foo5);
 	isnear(foo5, 47.0f);
@@ -251,7 +250,6 @@ void testMatrices()
 	maxComponent(foo5);
 	foo5 = lerp(foo5, foo5, 0.5f);
 	foo5 = square(foo5);
-#endif
 
 	matrix<int, 5, 5> ifoo5 = { 1, 2, 3, 4, 5 };
 	(void) matrix<float, 4, 4>(ifoo5);
@@ -259,7 +257,6 @@ void testMatrices()
 	(void) matrix<float, 6, 6>(ifoo5);
 	matrixFromRows(ifoo5[0], ifoo5[1], ifoo5[2]);
 	matrixFromCols(ifoo5[0], ifoo5[1], ifoo5[2]);
-#if LATER
 	ifoo5 & ifoo5;
 	ifoo5 | ifoo5;
 	ifoo5 ^ ifoo5;
@@ -269,6 +266,30 @@ void testMatrices()
 	ifoo5 |= ifoo5;
 	ifoo5 ^= ifoo5;
 	ifoo5 = round(foo5);
+	ifoo5 == foo5;
+	ifoo5 == 47.0f;
+	ifoo5 != foo5;
+	ifoo5 != 47.0f;
+	ifoo5 < foo5;
+	ifoo5 < 47.0f;
+	ifoo5 > foo5;
+	ifoo5 > 47.0f;
+	ifoo5 <= foo5;
+	ifoo5 <= 47.0f;
+	ifoo5 >= foo5;
+	ifoo5 >= 47.0f;
+	foo5 == ifoo5;
+	foo5 == 47;
+	foo5 != ifoo5;
+	foo5 != 47;
+	foo5 < ifoo5;
+	foo5 < 47;
+	foo5 > ifoo5;
+	foo5 > 47;
+	foo5 <= ifoo5;
+	foo5 <= 47;
+	foo5 >= ifoo5;
+	foo5 >= 47;
 
 	matrix<float, 4, 3> foo4x3;
 	float4 bar4;
@@ -278,7 +299,6 @@ void testMatrices()
 	matrix<float, 3, 4> foo3x4 = transpose(foo4x3);
 	(void) foo3x4;
 	foo4x3 = outerProduct(bar4, bar3);
-#endif
 
 	(void) float4x4(47.0f);
 	(void) float4x4(&foo5[0][0]);

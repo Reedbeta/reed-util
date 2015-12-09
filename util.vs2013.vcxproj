@@ -37,9 +37,7 @@
     </ClCompile>
     <ClCompile Include="util-err.cpp" />
     <ClCompile Include="util-log.cpp" />
-    <ClCompile Include="util-matrix.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="util-matrix.cpp" />
     <ClCompile Include="util-quat.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>

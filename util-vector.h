@@ -373,18 +373,18 @@ namespace util
 	template <int n>
 	bool any(vector<bool, n> a)
 	{
-		bool result = false;
-		for (int i = 0; i < n; ++i)
-			result = result || a[i];
+		bool result = a[0];
+		for (int i = 1; i < n; ++i)
+			result |= a[i];
 		return result;
 	}
 
 	template <int n>
 	bool all(vector<bool, n> a)
 	{
-		bool result = true;
-		for (int i = 0; i < n; ++i)
-			result = result && a[i];
+		bool result = a[0];
+		for (int i = 1; i < n; ++i)
+			result &= a[i];
 		return result;
 	}
 
@@ -404,6 +404,8 @@ namespace util
 	template <typename T, int n>
 	vector<T, n> max(vector<T, n> a, vector<T, n> b)
 		{ return select(a < b, b, a); }
+
+	// !!!UNDONE: scalar-broadcasting versions of select, min, max, clamp, lerp
 
 	template <typename T, int n>
 	vector<T, n> abs(vector<T, n> a)
