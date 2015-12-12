@@ -50,14 +50,10 @@ namespace util
 			operator array_t () { return data; }											\
 			typedef const T(&const_array_t)[n];												\
 			operator const_array_t () const { return data; }								\
-			/* Disallow bool conversions, with a relevant error message;					\
-			   (without this, they'd happen implicitly via the array conversions) */		\
-			operator bool()																	\
-			{																				\
-				static_assert(false,														\
-					"Can't convert vector to bool. "										\
-					"Make sure to use any() or all() on conditionals!");					\
-			}																				\
+			/* Disallow bool conversions (without this, they'd happen						\
+			   implicitly via the array conversions) */										\
+			private: operator bool();														\
+			public:																			\
 
 	// Generic vector struct, parameterized by element type and dimension
 	template <typename T, int n>

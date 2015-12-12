@@ -198,6 +198,7 @@ void testMatrices()
 	foo5.data[4];
 	foo5[4][3] = 47.0f;
 	passPointer(foo5);
+	//if (foo5) passPointer(foo5);	// Should give error about conversion to bool
 	foo5 + foo5;
 	foo5 + 47.0f;
 	47.0f + foo5;
@@ -516,6 +517,7 @@ void testBox()
 	isfinite(foo5);
 	round(foo5);
 }
+#endif // LATER
 
 
 
@@ -524,21 +526,74 @@ void testQuat()
 	using namespace util;
 
 	float3 foo = { 1, 2, 3 };
-	point3 bar = { 1, 2, 3 };
+	//point3 bar = { 1, 2, 3 };
 	quat q = { 1, 2, 3, 4 };
+	passPointer(q);
+	//if (q) passPointer(q);	// Should give error about conversion to bool
 	foo = applyQuat(q, foo);
-	bar = applyQuat(q, bar);
+	//bar = applyQuat(q, bar);
+	q + q;
+	q + 47.0f;
+	47.0f + q;
+	q - q;
+	q - 47.0f;
+	47.0f - q;
+	-q;
+	q * q;
+	q * 47.0f;
+	47.0f * q;
+	q / 47.0f;
+	47.0f / q;
+	q += q;
+	q += 47.0f;
+	q -= q;
+	q -= 47.0f;
+	q *= q;
+	q *= 47.0f;
+	q /= 47.0f;
+	q == q;
+	q == 47.0f;
+	q != q;
+	q != 47.0f;
+	q < q;
+	q < 47.0f;
+	q > q;
+	q > 47.0f;
+	q <= q;
+	q <= 47.0f;
+	q >= q;
+	q >= 47.0f;
+	dot(q, q);
+	lengthSquared(q);
+	length(q);
+	q = normalize(q);
+	q = conjugate(q);
+	q = pow(q, 47);
+	q = inverse(q);
+	isnear(q, q);
+	isnear(q, 47.0f);
+	isnear(47.0f, q);
+	isfinite(q);
+	any(q < 47.0f);
+	all(q > 47.0f);
+	select(q < 47.0f, q, q);
+	select(q < 47.0f, 47.0f, q);
+	select(q < 47.0f, q, 47.0f);
 	q = min(q, q);
+	q = min(q, 47.0f);
+	q = min(47.0f, q);
 	q = max(q, q);
+	q = max(q, 47.0f);
+	q = max(47.0f, q);
 	q = abs(q);
 	q = clamp(q, q, q);
+	q = clamp(q, 47.0f, 47.0f);
 	q = saturate(q);
 	minComponent(q);
 	maxComponent(q);
 	q = lerp(q, q, 0.5f);
 	q = square(q);
 }
-#endif // LATER
 
 
 

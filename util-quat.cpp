@@ -4,16 +4,16 @@ namespace util
 {
 	// Quaternion implementations
 
-	quat rotationQuat(float3_arg axis, float radians)
+	quat rotationQuat(float3 axis, float radians)
 	{
 		// Note: assumes axis is normalized
 		float sinHalfTheta = sinf(0.5f * radians);
 		float cosHalfTheta = cosf(0.5f * radians);
 
-		return makequat(cosHalfTheta, axis * sinHalfTheta);
+		return quat(cosHalfTheta, axis * sinHalfTheta);
 	}
 
-	quat rotationQuat(float3_arg euler)
+	quat rotationQuat(float3 euler)
 	{
 		float sinHalfX = sinf(0.5f * euler.x);
 		float cosHalfX = cosf(0.5f * euler.x);
@@ -22,15 +22,15 @@ namespace util
 		float sinHalfZ = sinf(0.5f * euler.z);
 		float cosHalfZ = cosf(0.5f * euler.z);
 
-		quat quatX = makequat(cosHalfX, sinHalfX, 0, 0);
-		quat quatY = makequat(cosHalfY, 0, sinHalfY, 0);
-		quat quatZ = makequat(cosHalfZ, 0, 0, sinHalfZ);
+		quat quatX = { cosHalfX, sinHalfX, 0, 0 };
+		quat quatY = { cosHalfY, 0, sinHalfY, 0 };
+		quat quatZ = { cosHalfZ, 0, 0, sinHalfZ };
 
 		// Note: multiplication order for quats is like column-vector convention
 		return quatZ * quatY * quatX;
 	}
 
-	quat slerp(quat_arg a, quat_arg b, float u)
+	quat slerp(quat a, quat b, float u)
 	{
 		float theta = acosf(dot(a, b));
 		return (a * sinf((1.0f - u) * theta) + b * sinf(u * theta)) / sinf(theta);

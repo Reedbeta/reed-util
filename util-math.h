@@ -9,4 +9,4 @@
 #include "util-simd.h"
 //#include "util-box.h"
 #include "util-color.h"
-//#include "util-quat.h"
+#include "util-quat.h"

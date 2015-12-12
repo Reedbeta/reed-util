@@ -9,89 +9,66 @@ namespace util
 	struct quat
 	{
 		union {
-			float m_data[4];
+			float data[4];
 			struct { float w, x, y, z; };
 		};
 
-		// Conversions to C arrays of fixed size
+		// Subscript accessors
+		      float & operator [] (int i)       { return data[i]; }
+		const float & operator [] (int i) const { return data[i]; }
+
+		// Constructors
+		quat() {}
+		quat(std::initializer_list<float> initList)
+		{
+			int m = min(4, int(initList.size()));
+			auto iter = initList.begin();
+			for (int i = 0; i < m; ++i)
+			{
+				data[i] = *iter;
+				++iter;
+			}
+			// Zero-fill any remaining elements
+			for (int i = m; i < 4; ++i)
+				data[i] = 0.0f;
+		}
+		explicit quat(float a)
+		{
+			for (int i = 0; i < 4; ++i)
+				data[i] = a;
+		}
+		explicit quat(const float * p)
+		{
+			for (int i = 0; i < 4; ++i)
+				data[i] = p[i];
+		}
+		quat(float w_, float x_, float y_, float z_)
+			{ w = w_; x = x_; y = y_; z = z_; }
+		quat(float w_, float3 xyz)
+			{ w = w_; x = xyz.x; y = xyz.y; z = xyz.z; }
+		explicit quat(float4 xyzw)
+			{ w = xyzw.w; x = xyzw.x; y = xyzw.y; z = xyzw.z; }
+		explicit quat(identityTag)
+			{ w = 1.0f; x = 0.0f; y = 0.0f; z = 0.0f; }
+
+		// C array conversions
 		typedef float (&array_t)[4];
-		operator array_t ()
-			{ return m_data; }
+		operator array_t () { return data; }
 		typedef const float (&const_array_t)[4];
-		operator const_array_t () const
-			{ return m_data; }
+		operator const_array_t () const { return data; }
 
-		// Subscript operators - built-in subscripts are ambiguous without these
-		float & operator [] (int i)
-			{ return m_data[i]; }
-		const float & operator [] (int i) const
-			{ return m_data[i]; }
-
-		// Convert to a matrix
-		float3x3 toFloat3x3() const
-		{
-			return makefloat3x3(
-							1 - 2*(y*y + z*z), 2*(x*y + z*w), 2*(x*z - y*w),
-							2*(x*y - z*w), 1 - 2*(x*x + z*z), 2*(y*z + x*w),
-							2*(x*z + y*w), 2*(y*z - x*w), 1 - 2*(x*x + y*y));
-		}
-
-		// Convert to an affine transform
-		affine3 toAffine() const
-		{
-			return makeaffine3(toFloat3x3(), makefloat3(0.0f));
-		}
-
-		// Conversion to bool is not allowed (otherwise would
-		// happen implicitly through array conversions)
+		// Disallow bool conversions (without this, they'd happen implicitly via the array conversions)
 		private: operator bool();
 	};
 
 #pragma warning(pop)
-
-	typedef const quat & quat_arg;
-
-
-
-	// Makers
-
-	inline quat makequatIdentity()
-	{
-		quat result = { 1, 0, 0, 0 };
-		return result;
-	}
-
-	inline quat makequat(float a)
-	{
-		quat result = { a, a, a, a };
-		return result;
-	}
-
-	inline quat makequat(const float * a)
-	{
-		quat result = { a[0], a[1], a[2], a[3] };
-		return result;
-	}
-
-	inline quat makequat(float w, float x, float y, float z)
-	{
-		quat result = { w, x, y, z };
-		return result;
-	}
-
-	template <typename T>
-	inline quat makequat(float w, vector<T, 3> const & xyz)
-	{
-		quat result = { w, xyz.x, xyz.y, xyz.z };
-		return result;
-	}
 
 
 
 	// Overloaded math operators
 
 #define DEFINE_UNARY_OPERATOR(op) \
-			inline quat operator op (quat_arg a) \
+			inline quat operator op (quat a) \
 			{ \
 				quat result; \
 				for (int i = 0; i < 4; ++i) \
@@ -101,29 +78,29 @@ namespace util
 
 #define DEFINE_BINARY_SCALAR_OPERATORS(op) \
 			/* Scalar-quat op */ \
-			inline quat operator op (float a, quat_arg b) \
+			inline quat operator op (float a, quat b) \
 			{ \
 				quat result; \
 				for (int i = 0; i < 4; ++i) \
-					result.m_data[i] = a op b.m_data[i]; \
+					result.data[i] = a op b.data[i]; \
 				return result; \
 			} \
 			/* Quat-scalar op */ \
-			inline quat operator op (quat_arg a, float b) \
+			inline quat operator op (quat a, float b) \
 			{ \
 				quat result; \
 				for (int i = 0; i < 4; ++i) \
-					result.m_data[i] = a.m_data[i] op b; \
+					result.data[i] = a.data[i] op b; \
 				return result; \
 			}
 
 #define DEFINE_BINARY_OPERATORS(op) \
 			/* Quat-quat op */ \
-			inline quat operator op (quat_arg a, quat_arg b) \
+			inline quat operator op (quat a, quat b) \
 			{ \
 				quat result; \
 				for (int i = 0; i < 4; ++i) \
-					result.m_data[i] = a.m_data[i] op b.m_data[i]; \
+					result.data[i] = a.data[i] op b.data[i]; \
 				return result; \
 			} \
 			DEFINE_BINARY_SCALAR_OPERATORS(op)
@@ -133,23 +110,23 @@ namespace util
 			inline quat & operator op (quat & a, float b) \
 			{ \
 				for (int i = 0; i < 4; ++i) \
-					a.m_data[i] op b; \
+					a.data[i] op b; \
 				return a; \
 			}
 
 #define DEFINE_INPLACE_OPERATORS(op) \
 			/* Quat-quat op */ \
-			inline quat & operator op (quat & a, quat_arg b) \
+			inline quat & operator op (quat & a, quat b) \
 			{ \
 				for (int i = 0; i < 4; ++i) \
-					a.m_data[i] op b.m_data[i]; \
+					a.data[i] op b.data[i]; \
 				return a; \
 			} \
 			DEFINE_INPLACE_SCALAR_OPERATOR(op)
 
 #define DEFINE_RELATIONAL_OPERATORS(op) \
 			/* Quat-quat op */ \
-			inline bool4 operator op (quat_arg a, quat_arg b) \
+			inline bool4 operator op (quat a, quat b) \
 			{ \
 				bool4 result; \
 				for (int i = 0; i < 4; ++i) \
@@ -157,7 +134,7 @@ namespace util
 				return result; \
 			} \
 			/* Scalar-vector op */ \
-			inline bool4 operator op (float a, quat_arg b) \
+			inline bool4 operator op (float a, quat b) \
 			{ \
 				bool4 result; \
 				for (int i = 0; i < 4; ++i) \
@@ -165,7 +142,7 @@ namespace util
 				return result; \
 			} \
 			/* Vector-scalar op */ \
-			inline bool4 operator op (quat_arg a, float b) \
+			inline bool4 operator op (quat a, float b) \
 			{ \
 				bool4 result; \
 				for (int i = 0; i < 4; ++i) \
@@ -197,17 +174,17 @@ namespace util
 #undef DEFINE_RELATIONAL_OPERATORS
 
 	// Quaternion multiplication
-
-	inline quat operator * (quat_arg a, quat_arg b)
+	inline quat operator * (quat a, quat b)
 	{
-		return makequat(
-				a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z,
-				a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
-				a.w*b.y + a.y*b.w + a.z*b.x - a.x*b.z,
-				a.w*b.z + a.z*b.w + a.x*b.y - a.y*b.x);
+		return
+		{
+			a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z,
+			a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
+			a.w*b.y + a.y*b.w + a.z*b.x - a.x*b.z,
+			a.w*b.z + a.z*b.w + a.x*b.y - a.y*b.x,
+		};
 	}
-
-	inline quat & operator *= (quat & a, quat_arg b)
+	inline quat & operator *= (quat & a, quat b)
 	{
 		a = a*b;
 		return a;
@@ -217,28 +194,48 @@ namespace util
 
 	// Other math functions
 
-	inline float dot(quat_arg a, quat_arg b)
+	// Convert to a matrix
+	inline float3x3 quatToMatrix(quat a)
+	{
+		return
+		{
+			1 - 2*(a.y*a.y + a.z*a.z), 2*(a.x*a.y + a.z*a.w), 2*(a.x*a.z - a.y*a.w),
+			2*(a.x*a.y - a.z*a.w), 1 - 2*(a.x*a.x + a.z*a.z), 2*(a.y*a.z + a.x*a.w),
+			2*(a.x*a.z + a.y*a.w), 2*(a.y*a.z - a.x*a.w), 1 - 2*(a.x*a.x + a.y*a.y),
+		};
+	}
+
+#if LATER
+	// Convert to an affine transform
+	inline affine3 quatToAffine(quat a)
+	{
+		return affine3(quatToMatrix(a), float3(0.0f));
+	}
+#endif
+
+	inline float dot(quat a, quat b)
 		{ return a.w*b.w + a.x*b.x + a.y*b.y + a.z*b.z; }
 
-	inline float lengthSquared(quat_arg a)
+	inline float lengthSquared(quat a)
 		{ return dot(a, a); }
 
-	inline float length(quat_arg a)
+	inline float length(quat a)
 		{ return sqrt(lengthSquared(a)); }
 
-	inline quat normalize(quat_arg a)
+	inline quat normalize(quat a)
 		{ return a / length(a); }
 
-	inline quat conjugate(quat_arg a)
-		{ return makequat(a.w, -a.x, -a.y, -a.z); }
+	inline quat conjugate(quat a)
+		{ return { a.w, -a.x, -a.y, -a.z }; }
 
-	inline quat pow(quat_arg a, int b)
+	inline quat pow(quat a, int b)
 	{
 		if (b <= 0)
-			return makequatIdentity();
+			return quat(identity);
 		if (b == 1)
 			return a;
-		quat oddpart = makequatIdentity(), evenpart = a;
+		quat oddpart(identity);
+		quat evenpart = a;
 		while (b > 1)
 		{
 			if (b % 2 == 1)
@@ -250,13 +247,13 @@ namespace util
 		return oddpart * evenpart;
 	}
 
-	inline quat inverse(quat_arg a)
+	inline quat inverse(quat a)
 		{ return conjugate(a) / lengthSquared(a); }
 
 	// Apply a normalized quat as a rotation to a vector or point
 
 	template <typename T>
-	vector<T, 3> applyQuat(quat_arg a, vector<T, 3> const & b)
+	vector<T, 3> applyQuat(quat a, vector<T, 3> b)
 	{
 		quat v = { 0, b.x, b.y, b.z };
 		quat resultQ = a * v * conjugate(a);
@@ -264,32 +261,32 @@ namespace util
 		return result;
 	}
 
+#if LATER
 	template <typename T>
-	point<T, 3> applyQuat(quat_arg a, point<T, 3> const & b)
+	point<T, 3> applyQuat(quat a, point<T, 3> b)
 	{
 		quat v = { 0, b.x, b.y, b.z };
 		quat resultQ = a * v * conjugate(a);
 		point<T, 3> result = { resultQ.x, resultQ.y, resultQ.z };
 		return result;
 	}
+#endif
 
-	inline bool4 isnear(quat_arg a, quat_arg b, float eps = util::epsilon)
+	inline bool4 isnear(quat a, quat b, float eps = util::epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = isnear(a[i], b[i], eps);
 		return result;
 	}
-
-	inline bool4 isnear(quat_arg a, float b, float eps = util::epsilon)
+	inline bool4 isnear(quat a, float b, float eps = util::epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = isnear(a[i], b, eps);
 		return result;
 	}
-
-	inline bool4 isnear(float a, quat_arg b, float eps = util::epsilon)
+	inline bool4 isnear(float a, quat b, float eps = util::epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
@@ -297,7 +294,7 @@ namespace util
 		return result;
 	}
 
-	inline bool4 isfinite(quat_arg a)
+	inline bool4 isfinite(quat a)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
@@ -305,27 +302,52 @@ namespace util
 		return result;
 	}
 
-	inline quat select(bool4_arg cond, quat_arg a, quat_arg b)
+	inline quat select(bool4 cond, quat a, quat b)
 	{
 		quat result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = cond[i] ? a[i] : b[i];
 		return result;
 	}
+	inline quat select(bool4 cond, float a, quat b)
+	{
+		quat result;
+		for (int i = 0; i < 4; ++i)
+			result[i] = cond[i] ? a : b[i];
+		return result;
+	}
+	inline quat select(bool4 cond, quat a, float b)
+	{
+		quat result;
+		for (int i = 0; i < 4; ++i)
+			result[i] = cond[i] ? a[i] : b;
+		return result;
+	}
 
-	inline quat min(quat_arg a, quat_arg b)
+	inline quat min(quat a, quat b)
+		{ return select(a < b, a, b); }
+	inline quat min(float a, quat b)
+		{ return select(a < b, a, b); }
+	inline quat min(quat a, float b)
 		{ return select(a < b, a, b); }
 
-	inline quat max(quat_arg a, quat_arg b)
+	inline quat max(quat a, quat b)
+		{ return select(a < b, b, a); }
+	inline quat max(float a, quat b)
+		{ return select(a < b, b, a); }
+	inline quat max(quat a, float b)
 		{ return select(a < b, b, a); }
 
-	inline quat abs(quat_arg a)
+	inline quat abs(quat a)
 		{ return select(a < float(0), -a, a); }
 
-	inline quat saturate(quat_arg value)
-		{ return clamp(value, makequat(0.0f), makequat(1.0f)); }
+	inline quat clamp(quat value, float lower, float upper)
+		{ return min(max(value, lower), upper); }
 
-	inline float minComponent(quat_arg a)
+	inline quat saturate(quat value)
+		{ return clamp(value, 0.0f, 1.0f); }
+
+	inline float minComponent(quat a)
 	{
 		float result = a[0];
 		for (int i = 1; i < 4; ++i)
@@ -333,7 +355,7 @@ namespace util
 		return result;
 	}
 
-	inline float maxComponent(quat_arg a)
+	inline float maxComponent(quat a)
 	{
 		float result = a[0];
 		for (int i = 1; i < 4; ++i)
@@ -341,10 +363,12 @@ namespace util
 		return result;
 	}
 
-	quat rotationQuat(float3_arg axis, float radians);
-	quat rotationQuat(float3_arg euler);
-	quat slerp(quat_arg a, quat_arg b, float u);
+	quat rotationQuat(float3 axis, float radians);
+	quat rotationQuat(float3 euler);
+	quat slerp(quat a, quat b, float u);
 
-	inline affine3 makeaffine3(quat_arg rotation, float3_arg translation)
+#if LATER
+	inline affine3 makeaffine3(quat rotation, float3 translation)
 		{ return makeaffine3(rotation.toFloat3x3(), translation); }
+#endif
 }

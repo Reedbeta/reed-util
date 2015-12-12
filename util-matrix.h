@@ -41,7 +41,7 @@ namespace util
 				data[i] = a;
 		}
 		template <typename U>
-		explicit matrix(U * p)
+		explicit matrix(const U * p)
 		{
 			for (int i = 0; i < rows*cols; ++i)
 				data[i] = T(p[i]);
@@ -76,10 +76,8 @@ namespace util
 		typedef const T (&const_array_t)[rows*cols];
 		operator const_array_t () const { return data; }
 
-		// Disallow bool conversions, with a relevant error message;
-		// (without this, they'd happen implicitly via the array conversions)
-		operator bool()
-			{ static_assert(false, "Can't convert matrix to bool. Make sure to use any() or all() on conditionals!"); }
+		// Disallow bool conversions (without this, they'd happen implicitly via the array conversions)
+		private: operator bool();
 	};
 
 	// Free function "constructors" for building matrices out of passed-in row and column vectors
