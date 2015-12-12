@@ -4,16 +4,16 @@ namespace util
 {
 	// Color space conversions
 
-	hsv RGBtoHSV(rgb_arg c)
+	float3 RGBtoHSV(rgb c)
 	{
 		float minComp = minComponent(c);
 		float maxComp = maxComponent(c);
 		float delta = maxComp - minComp;
 
 		if (maxComp == 0.0f)
-			return makehsv(0.0f);
+			return float3(0.0f);
 
-		hsv result = { 0, delta / maxComp, maxComp };
+		float3 result = { 0, delta / maxComp, maxComp };
 
 		if (delta == 0.0f)
 			return result;
@@ -32,10 +32,10 @@ namespace util
 		return result;
 	}
 
-	rgb HSVtoRGB(hsv_arg c)
+	rgb HSVtoRGB(float3 c)
 	{
 		if (c.y == 0.0f)
-			return makergb(c.z);
+			return rgb(c.z);
 
 		float h = modPositive(c.x, 360.0f) / 60.0f;
 		int i = int(floor(h));
@@ -47,22 +47,22 @@ namespace util
 
 		switch (i)
 		{
-		case 0: return makergb(c.z, t, p);
-		case 1: return makergb(q, c.z, p);
-		case 2: return makergb(p, c.z, t);
-		case 3: return makergb(p, q, c.z);
-		case 4: return makergb(t, p, c.z);
-		case 5: return makergb(c.z, p, q);
+		case 0: return { c.z, t, p };
+		case 1: return { q, c.z, p };
+		case 2: return { p, c.z, t };
+		case 3: return { p, q, c.z };
+		case 4: return { t, p, c.z };
+		case 5: return { c.z, p, q };
 		default:
-			return makergb(0.0f);
+			return rgb(0.0f);
 		}
 	}
 
 	// White point for CIELAB conversion (in XYZ color space),
 	// chosen to make RGB (1, 1, 1) come out to CIELAB (100, 0, 0).
-	static const float3 xyzWhitePoint = { 0.9505f, 1.0f, 1.0887f };
+	static const float xyzWhitePoint[] = { 0.9505f, 1.0f, 1.0887f };
 
-	cielab RGBtoCIELAB(rgb_arg c)
+	float3 RGBtoCIELAB(rgb c)
 	{
 		// Convert RGB to XYZ color space
 		static const float3x3 RGBtoXYZ =
@@ -74,28 +74,31 @@ namespace util
 		float3 xyz = c * RGBtoXYZ;
 
 		// Convert to CIELAB space
-		xyz /= xyzWhitePoint;
+		xyz /= float3(xyzWhitePoint);
 		float3 warp = select(
 						xyz > 0.00885645f,
 						pow(xyz, 1.0f/3.0f),
 						7.787037f * xyz + 0.137931f);
-		return makecielab(
-					116.0f * warp.y - 16.0f,
-					500.0f * (warp.x - warp.y),
-					200.0f * (warp.y - warp.z));
+		return
+		{
+			116.0f * warp.y - 16.0f,
+			500.0f * (warp.x - warp.y),
+			200.0f * (warp.y - warp.z),
+		};
 	}
 
-	rgb CIELABtoRGB(cielab_arg c)
+	rgb CIELABtoRGB(float3 c)
 	{
 		// Convert CIELAB to XYZ
 		float warpY = (c.x + 16.0f) / 116.0f;
 		float warpX = warpY + c.y / 500.0f;
 		float warpZ = warpY - c.z / 200.0f;
 		float3 warp = { warpX, warpY, warpZ };
-		float3 xyz = xyzWhitePoint * select(
-										warp > 0.206897f,
-										warp * warp * warp,
-										(warp - 0.137931f) / 7.787037f);
+		float3 xyz = select(
+						warp > 0.206897f,
+						warp * warp * warp,
+						(warp - 0.137931f) / 7.787037f);
+		xyz *= float3(xyzWhitePoint);
 
 		// Convert XYZ to RGB color space
 		static const float3x3 XYZtoRGB =

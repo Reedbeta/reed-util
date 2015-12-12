@@ -2,98 +2,76 @@
 
 namespace util
 {
-	// Create typedefs of float vectors to represent common color spaces.
+	// Create typedefs of float vectors to represent RGB/RGBA values.
 	// These are intentionally *not* type-safe, to reduce friction.
-	// Note: alpha is always linear, even in sRGB spaces.
+	typedef float3 rgb;
+	typedef float4 rgba;
 
-#define DEFINE_COLOR_SPACE(name) \
-			typedef float3 name; \
-			typedef float3_arg name##_arg; \
-			typedef float4 name##a; \
-			typedef float4_arg name##a_arg; \
-			inline name make##name(float x, float y, float z) \
-				{ name v = { x, y, z }; return v; } \
-			inline name make##name(float a) \
-				{ name v = { a, a, a }; return v; } \
-			inline name make##name(const float * a) \
-				{ name v = { a[0], a[1], a[2] }; return v; } \
-			inline name##a make##name##a(float x, float y, float z, float w) \
-				{ name##a v = { x, y, z, w }; return v; } \
-			inline name##a make##name##a(name##_arg xyz, float w) \
-				{ name##a v = { xyz.x, xyz.y, xyz.z, w }; return v; } \
-			inline name##a make##name##a(float a) \
-				{ name##a v = { a, a, a, a }; return v; } \
-			inline name##a make##name##a(const float * a) \
-				{ name##a v = { a[0], a[1], a[2], a[3] }; return v; }
-
-	DEFINE_COLOR_SPACE(rgb);		// Linear RGB space
-	DEFINE_COLOR_SPACE(srgb);		// sRGB space
-	DEFINE_COLOR_SPACE(hsv);		// HSV based on linear RGB space
-	DEFINE_COLOR_SPACE(shsv);		// HSV based on sRGB space
-	DEFINE_COLOR_SPACE(ycocg);		// YCoCg based on linear RGB space
-	DEFINE_COLOR_SPACE(sycocg);		// YCoCg based on sRGB space
-	DEFINE_COLOR_SPACE(cielab);		// CIELAB space
-
-#undef DEFINE_COLOR_SPACE
+	// Typedefs for gamma-encoded color values, using the sRGB curve.
+	// Note: alpha is still linear.
+	typedef float3 srgb;
+	typedef float4 srgba;
 
 
 
 	// Rec. 709 luma coefficients for linear RGB space
-	static const rgb lumaCoefficients = { 0.2126f, 0.7152f, 0.0722f };
-	inline float luminance(rgb_arg c)
-		{ return dot(c, lumaCoefficients); }
-	inline float luminance(rgba_arg c)
-		{ return dot(c.rgb, lumaCoefficients); }
+	static const float lumaCoefficients[] = { 0.2126f, 0.7152f, 0.0722f };
+	inline float luminance(rgb c)
+		{ return dot(c, float3(lumaCoefficients)); }
+	inline float luminance(rgba c)
+		{ return dot(c.rgb, float3(lumaCoefficients)); }
 
 	// Composition operator for linear RGB space (premultiplied alpha)
-	inline rgba over_premul(rgba_arg a, rgba_arg b)
-		{ return makergba(a.rgb + (1.0f-a.a) * b.rgb, 1.0f - ((1.0f-a.a) * (1.0f-b.a))); }
+	inline rgb blendOver(rgba a, rgb b)
+		{ return a.rgb + (1.0f - a.a) * b; }
+	inline rgba blendOver(rgba a, rgba b)
+		{ return rgba(a.rgb + (1.0f - a.a) * b.rgb, a.a + b.a - a.a * b.a); }
 
-	// Composition operator for linear RGB space (non-premultiplied alpha)
-	inline rgba over_nonpremul(rgba_arg a, rgba_arg b)
-		{ return makergba(lerp(b.rgb, a.rgb, a.a), 1.0f - (1.0f-a.a) * (1.0f-b.a)); }
-	inline rgb over_nonpremul(rgba_arg a, rgb_arg b)
-		{ return lerp(b, a.rgb, a.a); }
+	// Convert between non-premultiplied and premultipled alpha
+	inline rgba premultiplyAlpha(rgba a)
+		{ return rgba(a.rgb * a.a, a.a); }
+	inline rgba unPremultiplyAlpha(rgba a)
+		{ return rgba(a.rgb / a.a, a.a); }
 
 
 
 	// SRGB/linear color space conversions
-	inline float toLinear(float c)
-		{ return (c <= 0.04045f) ? c/12.92f : ::pow((c + 0.055f)/1.055f, 2.4f); }
-	inline float toSRGB(float c)
-		{ return (c <= 0.0031308f) ? c*12.92f : 1.055f*::pow(c, 1.0f/2.4f) - 0.055f; }
-	inline rgb toLinear(srgb_arg c)
-		{ return select(c <= 0.04045f, c/12.92f, pow((c + 0.055f)/1.055f, 2.4f)); }
-	inline srgb toSRGB(rgb_arg c)
-		{ return select(c <= 0.0031308f, c*12.92f, 1.055f*pow(c, 1.0f/2.4f) - 0.055f); }
-	inline rgba toLinear(srgba_arg c)
-		{ return makergba(toLinear(c.rgb), c.a); }
-	inline srgba toSRGB(rgba_arg c)
-		{ return makergba(toSRGB(c.rgb), c.a); }
+	inline float SRGBtoLinear(float c)
+		{ return (c <= 0.04045f) ? c / 12.92f : ::pow((c + 0.055f) / 1.055f, 2.4f); }
+	inline float linearToSRGB(float c)
+		{ return (c <= 0.0031308f) ? c * 12.92f : 1.055f*::pow(c, 1.0f/2.4f) - 0.055f; }
+	inline rgb SRGBtoLinear(srgb c)
+		{ return select(c <= 0.04045f, c / 12.92f, pow((c + 0.055f) / 1.055f, 2.4f)); }
+	inline srgb linearToSRGB(rgb c)
+		{ return select(c <= 0.0031308f, c * 12.92f, 1.055f*pow(c, 1.0f/2.4f) - 0.055f); }
+	inline rgba SRGBtoLinear(srgba c)
+		{ return rgba(SRGBtoLinear(c.rgb), c.a); }
+	inline srgba linearToSRGB(rgba c)
+		{ return rgba(linearToSRGB(c.rgb), c.a); }
 
 	// RGB/HSV conversions
-	hsv RGBtoHSV(rgb_arg c);
-	rgb HSVtoRGB(hsv_arg c);
-	inline hsva RGBtoHSV(rgba_arg c)
-		{ return makehsva(RGBtoHSV(c.rgb), c.a); }
-	inline rgba HSVtoRGB(hsva_arg c)
-		{ return makergba(HSVtoRGB(c.xyz), c.a); }
+	float3 RGBtoHSV(rgb c);
+	rgb HSVtoRGB(float3 c);
+	inline float4 RGBAtoHSVA(rgba c)
+		{ return float4(RGBtoHSV(c.rgb), c.a); }
+	inline rgba HSVAtoRGBA(float4 c)
+		{ return rgba(HSVtoRGB(c.xyz), c.a); }
 
 	// RGB/YCoCg conversions
-	inline ycocg RGBtoYCoCg(rgb_arg c)
-		{ return makeycocg(0.25f*(c.r+2.0f*c.g+c.b), c.r-c.b, c.g - 0.5f*(c.r+c.b)); }
-	inline rgb YCoCgtoRGB(ycocg_arg c)
-		{ return makergb(c.x+0.5f*(c.y-c.z), c.x+0.5f*c.z, c.x-0.5f*(c.y+c.z)); }
-	inline ycocga RGBtoYCoCg(rgba_arg c)
-		{ return makeycocga(RGBtoYCoCg(c.rgb), c.a); }
-	inline rgba YCoCgtoRGB(ycocga_arg c)
-		{ return makergba(YCoCgtoRGB(c.xyz), c.a); }
+	inline float3 RGBtoYCoCg(rgb c)
+		{ return { 0.25f * (c.r + 2.0f * c.g + c.b), c.r - c.b, c.g - 0.5f * (c.r + c.b) }; }
+	inline rgb YCoCgtoRGB(float3 c)
+		{ return { c.x + 0.5f * (c.y - c.z), c.x + 0.5f * c.z, c.x - 0.5f * (c.y + c.z) }; }
+	inline float4 RGBAtoYCoCgA(rgba c)
+		{ return float4(RGBtoYCoCg(c.rgb), c.a); }
+	inline rgba YCoCgAtoRGBA(float4 c)
+		{ return rgba(YCoCgtoRGB(c.xyz), c.a); }
 
 	// RGB/CIELAB conversions
-	cielab RGBtoCIELAB(rgb_arg c);
-	rgb CIELABtoRGB(cielab_arg c);
-	inline cielaba RGBtoCIELAB(rgba_arg c)
-		{ return makecielaba(RGBtoCIELAB(c.rgb), c.a); }
-	inline rgba CIELABtoRGB(cielaba_arg c)
-		{ return makergba(CIELABtoRGB(c.xyz), c.a); }
+	float3 RGBtoCIELAB(rgb c);
+	rgb CIELABtoRGB(float3 c);
+	inline float4 RGBAtoCIELABA(rgba c)
+		{ return float4(RGBtoCIELAB(c.rgb), c.a); }
+	inline rgba CIELABAtoRGBA(float4 c)
+		{ return rgba(CIELABtoRGB(c.xyz), c.a); }
 }

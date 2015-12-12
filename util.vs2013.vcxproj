@@ -32,9 +32,7 @@
     <ClCompile Include="util-affine.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="util-color.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="util-color.cpp" />
     <ClCompile Include="util-err.cpp" />
     <ClCompile Include="util-log.cpp" />
     <ClCompile Include="util-matrix.cpp" />

@@ -538,6 +538,7 @@ void testQuat()
 	q = lerp(q, q, 0.5f);
 	q = square(q);
 }
+#endif // LATER
 
 
 
@@ -549,26 +550,26 @@ void testColor()
 	rgba bar = { 1, 2, 3, 4 };
 	luminance(foo);
 	luminance(bar);
-	over_premul(bar, bar);
-	over_nonpremul(bar, bar);
-	over_nonpremul(bar, foo);
-	toLinear(foo);
-	toSRGB(foo);
+	blendOver(bar, foo);
+	blendOver(bar, bar);
+	premultiplyAlpha(bar);
+	unPremultiplyAlpha(bar);
+	SRGBtoLinear(foo);
+	linearToSRGB(foo);
 	RGBtoHSV(foo);
 	HSVtoRGB(foo);
 	RGBtoYCoCg(foo);
 	YCoCgtoRGB(foo);
 	RGBtoCIELAB(foo);
 	CIELABtoRGB(foo);
-	toLinear(bar);
-	toSRGB(bar);
-	RGBtoHSV(bar);
-	HSVtoRGB(bar);
-	RGBtoYCoCg(bar);
-	YCoCgtoRGB(bar);
-	RGBtoCIELAB(bar);
-	CIELABtoRGB(bar);
+	SRGBtoLinear(bar);
+	linearToSRGB(bar);
+	RGBAtoHSVA(bar);
+	HSVAtoRGBA(bar);
+	RGBAtoYCoCgA(bar);
+	YCoCgAtoRGBA(bar);
+	RGBAtoCIELABA(bar);
+	CIELABAtoRGBA(bar);
 }
-#endif // LATER
 
 #endif // DEBUG
