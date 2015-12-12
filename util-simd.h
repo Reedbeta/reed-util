@@ -591,54 +591,34 @@ namespace util
 
 
 
-	// Concrete SIMD vectors, matrices, points, and affines,
+	// Typedefs of SIMD vectors, matrices, points, and affines,
 	// for the most common types and dimensions
-
-#define DEFINE_CONCRETE_VECTORS(type, name) \
-			typedef vector<type, 2> name##2_simd; \
-			typedef vector<type, 3> name##3_simd; \
-			typedef vector<type, 4> name##4_simd; \
-			typedef vector<type, 2> const & name##2_simd__arg; \
-			typedef vector<type, 3> const & name##3_simd__arg; \
-			typedef vector<type, 4> const & name##4_simd__arg;
-
-	DEFINE_CONCRETE_VECTORS(__m128, float);
-	DEFINE_CONCRETE_VECTORS(__m128i, int);
-
-#undef DEFINE_CONCRETE_VECTORS
-
-#define DEFINE_CONCRETE_MATRICES(type, name) \
-			typedef matrix<type, 2, 2> name##2x2_simd; \
-			typedef matrix<type, 3, 3> name##3x3_simd; \
-			typedef matrix<type, 4, 4> name##4x4_simd; \
-			typedef matrix<type, 2, 2> const & name##2x2_simd__arg; \
-			typedef matrix<type, 3, 3> const & name##3x3_simd__arg; \
-			typedef matrix<type, 4, 4> const & name##4x4_simd__arg;
-
-	DEFINE_CONCRETE_MATRICES(__m128, float);
-	DEFINE_CONCRETE_MATRICES(__m128i, int);
-
-#undef DEFINE_CONCRETE_MATRICES
-
-#define DEFINE_CONCRETE_POINTS(type, name) \
-			typedef point<type, 2> name##2_simd; \
-			typedef point<type, 3> name##3_simd; \
-			typedef point<type, 2> const & name##2_simd__arg; \
-			typedef point<type, 3> const & name##3_simd__arg;
-
-	DEFINE_CONCRETE_POINTS(__m128, point);
-	DEFINE_CONCRETE_POINTS(__m128i, ipoint);
-
-#undef DEFINE_CONCRETE_POINTS
-
-#define DEFINE_CONCRETE_AFFINES(type, name) \
-			typedef affine<type, 2> name##2_simd; \
-			typedef affine<type, 3> name##3_simd; \
-			typedef affine<type, 2> const & name##2_simd__arg; \
-			typedef affine<type, 3> const & name##3_simd__arg;
-
-	DEFINE_CONCRETE_AFFINES(__m128, affine);
-	DEFINE_CONCRETE_AFFINES(__m128i, iaffine);
-
-#undef DEFINE_CONCRETE_AFFINES
+	typedef vector<__m128, 2> float2_simd;
+	typedef vector<__m128, 3> float3_simd;
+	typedef vector<__m128, 4> float4_simd;
+	typedef vector<__m128i, 2> int2_simd;
+	typedef vector<__m128i, 3> int3_simd;
+	typedef vector<__m128i, 4> int4_simd;
+	typedef matrix<__m128, 2, 2> float2x2_simd;
+	typedef matrix<__m128, 3, 3> float3x3_simd;
+	typedef matrix<__m128, 3, 4> float3x4_simd;
+	typedef matrix<__m128, 4, 3> float4x3_simd;
+	typedef matrix<__m128, 4, 4> float4x4_simd;
+	typedef matrix<__m128i, 2, 2> int2x2_simd;
+	typedef matrix<__m128i, 3, 3> int3x3_simd;
+	typedef matrix<__m128i, 3, 4> int3x4_simd;
+	typedef matrix<__m128i, 4, 3> int4x3_simd;
+	typedef matrix<__m128i, 4, 4> int4x4_simd;
+#if LATER
+	typedef point<__m128, 2> point2_simd;
+	typedef point<__m128, 3> point3_simd;
+	typedef point<__m128, 4> point4_simd;
+	typedef point<__m128i, 2> ipoint2_simd;
+	typedef point<__m128i, 3> ipoint3_simd;
+	typedef point<__m128i, 4> ipoint4_simd;
+	typedef affine<__m128, 2, 2> affine2x2_simd;
+	typedef affine<__m128, 3, 3> affine3x3_simd;
+	typedef affine<__m128i, 2, 2> iaffine2x2_simd;
+	typedef affine<__m128i, 3, 3> iaffine3x3_simd;
+#endif
 }

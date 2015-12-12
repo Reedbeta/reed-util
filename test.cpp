@@ -449,21 +449,26 @@ void testAffine()
 	makeaffine3(makeaffine<int, 4>(0));
 	makeaffine3(makefloat3x3(0.0f));
 }
+#endif // LATER
 
 
 
 void testSIMD()
 {
+	using namespace util;
+
 	__m128 simdA = {}, simdB = {};
 	simdA + simdB;
 	simdA += simdB;
-	vector<__m128, 4> simdVector;
+
+	float3_simd simdVector;
 	simdVector + simdVector;
-	simdVector + _mm_set_ps(47, 47, 47, 47);
+	simdVector + _mm_set_ps(47, 48, 49, 50);
 }
 
 
 
+#if LATER
 void testBox()
 {
 	using namespace util;

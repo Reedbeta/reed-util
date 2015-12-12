@@ -42,9 +42,7 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="util-rng.cpp" />
-    <ClCompile Include="util-simd.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="util-simd.cpp" />
     <ClCompile Include="util-basics.cpp" />
   </ItemGroup>
   <ItemGroup>
