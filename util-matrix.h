@@ -471,7 +471,6 @@ namespace util
 			result[i][i] = a;
 		return result;
 	}
-
 	template <typename T, int n>
 	matrix<T, n, n> diagonalMatrix(vector<T, n> a)
 	{
@@ -479,6 +478,11 @@ namespace util
 		for (int i = 0; i < n; ++i)
 			result[i][i] = a[i];
 		return result;
+	}
+	template <typename T, typename... Ts>
+	matrix<T, 1+sizeof...(Ts), 1+sizeof...(Ts)> diagonalMatrix(T first, Ts... rest)
+	{
+		return diagonalMatrix(vector<T, 1+sizeof...(Ts)>{first, rest...});
 	}
 
 	template <typename T, int rows, int cols>

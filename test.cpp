@@ -232,6 +232,7 @@ void testMatrices()
 	trace(foo5);
 	foo5 = diagonalMatrix<float, 5>(47.0f);
 	foo5 = diagonalMatrix(bar5);
+	foo5 = diagonalMatrix(1.0f, 2.0f, 3.0f, 4.0f, 5.0f);
 	foo5 = outerProduct(bar5, bar5);
 	isnear(foo5, foo5);
 	isnear(foo5, 47.0f);
