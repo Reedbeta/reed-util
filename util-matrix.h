@@ -502,7 +502,6 @@ namespace util
 			result.data[i] = isnear(a.data[i], b.data[i], epsilon);
 		return result;
 	}
-
 	template <typename T, int rows, int cols>
 	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, T b, float epsilon = util::epsilon)
 	{
@@ -511,7 +510,6 @@ namespace util
 			result.data[i] = isnear(a.data[i], b, epsilon);
 		return result;
 	}
-
 	template <typename T, int rows, int cols>
 	matrix<bool, rows, cols> isnear(T a, matrix<T, rows, cols> const & b, float epsilon = util::epsilon)
 	{
@@ -543,6 +541,7 @@ namespace util
 
 	// Utilities for bool matrices
 
+	// Any: checks if any of the values of a bool matrix is true, i.e. ORs them together.
 	template <int rows, int cols>
 	bool any(matrix<bool, rows, cols> const & a)
 	{
@@ -552,6 +551,7 @@ namespace util
 		return result;
 	}
 
+	// All: checks if all of the values of a bool matrix are true, i.e. ANDs them together.
 	template <int rows, int cols>
 	bool all(matrix<bool, rows, cols> const & a)
 	{
@@ -561,6 +561,7 @@ namespace util
 		return result;
 	}
 
+	// Select: ternary operator for matrices. Selects componentwise from a or b based on cond.
 	template <typename T, int rows, int cols>
 	matrix<T, rows, cols> select(matrix<bool, rows, cols> const & cond, matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b)
 	{
@@ -569,24 +570,54 @@ namespace util
 			result.data[i] = cond.data[i] ? a.data[i] : b.data[i];
 		return result;
 	}
+	template <typename T, int rows, int cols>
+	matrix<T, rows, cols> select(matrix<bool, rows, cols> const & cond, T a, matrix<T, rows, cols> const & b)
+	{
+		matrix<T, rows, cols> result;
+		for (int i = 0; i < rows*cols; ++i)
+			result.data[i] = cond.data[i] ? a : b.data[i];
+		return result;
+	}
+	template <typename T, int rows, int cols>
+	matrix<T, rows, cols> select(matrix<bool, rows, cols> const & cond, matrix<T, rows, cols> const & a, T b)
+	{
+		matrix<T, rows, cols> result;
+		for (int i = 0; i < rows*cols; ++i)
+			result.data[i] = cond.data[i] ? a.data[i] : b;
+		return result;
+	}
 
 	template <typename T, int rows, int cols>
 	matrix<T, rows, cols> min(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b)
+		{ return select(a < b, a, b); }
+	template <typename T, int rows, int cols>
+	matrix<T, rows, cols> min(T a, matrix<T, rows, cols> const & b)
+		{ return select(a < b, a, b); }
+	template <typename T, int rows, int cols>
+	matrix<T, rows, cols> min(matrix<T, rows, cols> const & a, T b)
 		{ return select(a < b, a, b); }
 
 	template <typename T, int rows, int cols>
 	matrix<T, rows, cols> max(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b)
 		{ return select(a < b, b, a); }
-
-	// !!!UNDONE: scalar-broadcasting versions of select, min, max, clamp, lerp
+	template <typename T, int rows, int cols>
+	matrix<T, rows, cols> max(T a, matrix<T, rows, cols> const & b)
+		{ return select(a < b, b, a); }
+	template <typename T, int rows, int cols>
+	matrix<T, rows, cols> max(matrix<T, rows, cols> const & a, T b)
+		{ return select(a < b, b, a); }
 
 	template <typename T, int rows, int cols>
 	matrix<T, rows, cols> abs(matrix<T, rows, cols> const & a)
 		{ return select(a < T(0), -a, a); }
 
 	template <typename T, int rows, int cols>
+	matrix<T, rows, cols> clamp(matrix<T, rows, cols> const & value, T lower, T upper)
+		{ return min(max(value, lower), upper); }
+
+	template <typename T, int rows, int cols>
 	matrix<T, rows, cols> saturate(matrix<T, rows, cols> const & value)
-		{ return clamp(value, matrix<T, rows, cols>(0), matrix<T, rows, cols>(1)); }
+		{ return clamp(value, T(0), T(1)); }
 
 	template <typename T, int rows, int cols>
 	T minComponent(matrix<T, rows, cols> const & a)

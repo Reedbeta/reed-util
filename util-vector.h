@@ -302,7 +302,6 @@ namespace util
 			result[i] = isnear(a[i], b[i], epsilon);
 		return result;
 	}
-
 	template <typename T, int n>
 	vector<bool, n> isnear(vector<T, n> a, T b, float epsilon = util::epsilon)
 	{
@@ -311,7 +310,6 @@ namespace util
 			result[i] = isnear(a[i], b, epsilon);
 		return result;
 	}
-
 	template <typename T, int n>
 	vector<bool, n> isnear(T a, vector<T, n> b, float epsilon = util::epsilon)
 	{
@@ -370,6 +368,7 @@ namespace util
 
 	// Utilities for bool vectors
 
+	// Any: checks if any of the values of a bool vector is true, i.e. ORs them together.
 	template <int n>
 	bool any(vector<bool, n> a)
 	{
@@ -379,6 +378,7 @@ namespace util
 		return result;
 	}
 
+	// All: checks if all of the values of a bool vector are true, i.e. ANDs them together.
 	template <int n>
 	bool all(vector<bool, n> a)
 	{
@@ -388,6 +388,7 @@ namespace util
 		return result;
 	}
 
+	// Select: ternary operator for vectors. Selects componentwise from a or b based on cond.
 	template <typename T, int n>
 	vector<T, n> select(vector<bool, n> cond, vector<T, n> a, vector<T, n> b)
 	{
@@ -396,24 +397,54 @@ namespace util
 			result[i] = cond[i] ? a[i] : b[i];
 		return result;
 	}
+	template <typename T, int n>
+	vector<T, n> select(vector<bool, n> cond, T a, vector<T, n> b)
+	{
+		vector<T, n> result;
+		for (int i = 0; i < n; ++i)
+			result[i] = cond[i] ? a : b[i];
+		return result;
+	}
+	template <typename T, int n>
+	vector<T, n> select(vector<bool, n> cond, vector<T, n> a, T b)
+	{
+		vector<T, n> result;
+		for (int i = 0; i < n; ++i)
+			result[i] = cond[i] ? a[i] : b;
+		return result;
+	}
 
 	template <typename T, int n>
 	vector<T, n> min(vector<T, n> a, vector<T, n> b)
+		{ return select(a < b, a, b); }
+	template <typename T, int n>
+	vector<T, n> min(T a, vector<T, n> b)
+		{ return select(a < b, a, b); }
+	template <typename T, int n>
+	vector<T, n> min(vector<T, n> a, T b)
 		{ return select(a < b, a, b); }
 
 	template <typename T, int n>
 	vector<T, n> max(vector<T, n> a, vector<T, n> b)
 		{ return select(a < b, b, a); }
-
-	// !!!UNDONE: scalar-broadcasting versions of select, min, max, clamp, lerp
+	template <typename T, int n>
+	vector<T, n> max(T a, vector<T, n> b)
+		{ return select(a < b, b, a); }
+	template <typename T, int n>
+	vector<T, n> max(vector<T, n> a, T b)
+		{ return select(a < b, b, a); }
 
 	template <typename T, int n>
 	vector<T, n> abs(vector<T, n> a)
 		{ return select(a < T(0), -a, a); }
 
 	template <typename T, int n>
+	vector<T, n> clamp(vector<T, n> value, T lower, T upper)
+		{ return min(max(value, lower), upper); }
+
+	template <typename T, int n>
 	vector<T, n> saturate(vector<T, n> value)
-		{ return clamp(value, vector<T, n>(0), vector<T, n>(1)); }
+		{ return clamp(value, T(0), T(1)); }
 
 	template <typename T, int n>
 	T minComponent(vector<T, n> a)
