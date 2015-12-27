@@ -52,9 +52,9 @@ namespace util
 	// RGB/HSV conversions
 	float3 RGBtoHSV(rgb c);
 	rgb HSVtoRGB(float3 c);
-	inline float4 RGBAtoHSVA(rgba c)
+	inline float4 RGBtoHSV(rgba c)
 		{ return float4(RGBtoHSV(c.rgb), c.a); }
-	inline rgba HSVAtoRGBA(float4 c)
+	inline rgba HSVtoRGB(float4 c)
 		{ return rgba(HSVtoRGB(c.xyz), c.a); }
 
 	// RGB/YCoCg conversions
@@ -62,16 +62,16 @@ namespace util
 		{ return { 0.25f * (c.r + 2.0f * c.g + c.b), c.r - c.b, c.g - 0.5f * (c.r + c.b) }; }
 	inline rgb YCoCgtoRGB(float3 c)
 		{ return { c.x + 0.5f * (c.y - c.z), c.x + 0.5f * c.z, c.x - 0.5f * (c.y + c.z) }; }
-	inline float4 RGBAtoYCoCgA(rgba c)
+	inline float4 RGBtoYCoCg(rgba c)
 		{ return float4(RGBtoYCoCg(c.rgb), c.a); }
-	inline rgba YCoCgAtoRGBA(float4 c)
+	inline rgba YCoCgtoRGB(float4 c)
 		{ return rgba(YCoCgtoRGB(c.xyz), c.a); }
 
 	// RGB/CIELAB conversions
 	float3 RGBtoCIELAB(rgb c);
 	rgb CIELABtoRGB(float3 c);
-	inline float4 RGBAtoCIELABA(rgba c)
+	inline float4 RGBtoCIELAB(rgba c)
 		{ return float4(RGBtoCIELAB(c.rgb), c.a); }
-	inline rgba CIELABAtoRGBA(float4 c)
+	inline rgba CIELABtoRGB(float4 c)
 		{ return rgba(CIELABtoRGB(c.xyz), c.a); }
 }

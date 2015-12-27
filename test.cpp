@@ -619,12 +619,12 @@ void testColor()
 	CIELABtoRGB(foo);
 	SRGBtoLinear(bar);
 	linearToSRGB(bar);
-	RGBAtoHSVA(bar);
-	HSVAtoRGBA(bar);
-	RGBAtoYCoCgA(bar);
-	YCoCgAtoRGBA(bar);
-	RGBAtoCIELABA(bar);
-	CIELABAtoRGBA(bar);
+	RGBtoHSV(bar);
+	HSVtoRGB(bar);
+	RGBtoYCoCg(bar);
+	YCoCgtoRGB(bar);
+	RGBtoCIELAB(bar);
+	CIELABtoRGB(bar);
 }
 
 #endif // DEBUG
