@@ -150,7 +150,7 @@ void testVectors()
 	foof3[2];
 	passPointer(foof3);
 	cross(foof3, foof3);
-	orthogonalTo(foof3);
+	orthogonalVector(foof3);
 	foof3 = foof4.xyz;
 	(void) float3(47.0f);
 	(void) float3(&foo5[0]);
@@ -163,7 +163,7 @@ void testVectors()
 	foof2.v;
 	foof2[1];
 	passPointer(foof2);
-	orthogonalTo(foof2);
+	orthogonalVector(foof2);
 	foof2 = foof3.xy;
 	(void) float2(47.0f);
 	(void) float2(&foo5[0]);

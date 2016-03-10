@@ -2,6 +2,111 @@
 
 namespace util
 {
+	// Affine transformation implementations
+
+	float2x2 rotationMatrix2D(float radians)
+	{
+		float sinTheta = sinf(radians);
+		float cosTheta = cosf(radians);
+		return
+		{
+			cosTheta, sinTheta, 0,
+			-sinTheta, cosTheta, 0,
+			0, 0, 1,
+		};
+	}
+
+	float3x3 rotationMatrix3D(float3 axis, float radians)
+	{
+		// Note: assumes axis is normalized
+		float sinTheta = sinf(radians);
+		float cosTheta = cosf(radians);
+
+		// Build matrix that does cross product by axis (on the right)
+		float3x3 crossProductMat =
+		{
+			0, axis.z, -axis.y,
+			-axis.z, 0, axis.x,
+			axis.y, -axis.x, 0,
+		};
+
+		// Matrix form of Rodrigues' rotation formula
+		return diagonalMatrix<float, 3>(cosTheta) +
+				crossProductMat * sinTheta +
+				outerProduct(axis, axis) * (1.0f - cosTheta);
+	}
+
+	float3x3 rotationMatrix3D(float3 euler)
+	{
+		float sinX = sinf(euler.x);
+		float cosX = cosf(euler.x);
+		float sinY = sinf(euler.y);
+		float cosY = cosf(euler.y);
+		float sinZ = sinf(euler.z);
+		float cosZ = cosf(euler.z);
+
+		float3x3 matX =
+		{
+			1,  0,    0,
+			0,  cosX, sinX,
+			0, -sinX, cosX,
+		};
+		float3x3 matY =
+		{
+			cosY, 0, -sinY,
+			0,    1,  0,
+			sinY, 0,  cosY,
+		};
+		float3x3 matZ =
+		{
+			 cosZ, sinZ, 0,
+			-sinZ, cosZ, 0,
+			 0,    0,    1,
+		};
+
+		return matX * matY * matZ;
+	}
+
+	float2x2 lookatMatrix2D(float2 look)
+	{
+		float2 lookNormalized = normalize(look);
+		return matrixFromRows(lookNormalized, orthogonalVector(lookNormalized));
+	}
+
+	float3x3 lookatXMatrix3D(float3 look)
+	{
+		float3 lookNormalized = normalize(look);
+		float3 left = orthogonalVector(lookNormalized);
+		float3 up = cross(lookNormalized, left);
+		return matrixFromRows(lookNormalized, left, up);
+	}
+
+	float3x3 lookatXMatrix3D(float3 look, float3 up)
+	{
+		float3 lookNormalized = normalize(look);
+		float3 left = normalize(cross(up, lookNormalized));
+		float3 trueUp = cross(lookNormalized, left);
+		return matrixFromRows(lookNormalized, left, trueUp);
+	}
+
+	float3x3 lookatZMatrix3D(float3 look)
+	{
+		float3 lookNormalized = normalize(look);
+		float3 left = orthogonalVector(lookNormalized);
+		float3 up = cross(lookNormalized, left);
+		return matrixFromRows(-left, up, -lookNormalized);
+	}
+
+	float3x3 lookatZMatrix3D(float3 look, float3 up)
+	{
+		float3 lookNormalized = normalize(look);
+		float3 left = normalize(cross(up, lookNormalized));
+		float3 trueUp = cross(lookNormalized, left);
+		return matrixFromRows(-left, trueUp, -lookNormalized);
+	}
+
+
+
 	// Projection matrix implementations
 
 	float4x4 orthoProjD3DStyle(float left, float right, float bottom, float top, float zNear, float zFar)

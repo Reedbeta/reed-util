@@ -648,8 +648,61 @@ namespace util
 
 
 
+	// Generate various simple 2D/3D transformations. Assumes row-vector math.
+
+	float2x2 rotationMatrix2D(float radians);
+	float3x3 rotationMatrix3D(float3 axis, float radians);
+	float3x3 rotationMatrix3D(float3 euler);
+
+	float2x2 lookatMatrix2D(float2 look);
+
+	// lookatXMatrix3D: rotate so X axis faces 'look' and Z axis faces 'up', if specified.
+	// lookatZMatrix3D: rotate so -Z axis faces 'look' and Y axis faces 'up', if specified.
+
+	float3x3 lookatXMatrix3D(float3 look);
+	float3x3 lookatXMatrix3D(float3 look, float3 up);
+	float3x3 lookatZMatrix3D(float3 look);
+	float3x3 lookatZMatrix3D(float3 look, float3 up);
+
+
+
+#if LATER
+	template <typename T, int n>
+	matrix<T, n+1, n+1> makeTranslation(vector<T, n> a)
+	{
+		matrix<T, n+1, n+1> result(identity);
+		for (int i = 0; i < n; ++i)
+			result[n][i] = a[i];
+		return result;
+	}
+
+	template <typename T, int n>
+	matrix<T, n+1, n+1> makeScaling(T a)
+	{
+		matrix<T, n+1, n+1> result(0);
+		for (int i = 0; i < n; ++i)
+			result[i][i] = T(a);
+		result[n][n] = T(1);
+		return result;
+	}
+
+	template <typename T, int n>
+	matrix<T, n+1, n+1> makeScaling(vector<T, n> a)
+	{
+		matrix<T, n+1, n+1> result(0);
+		for (int i = 0; i < n; ++i)
+			result[i][i] = a[i];
+		result[n][n] = T(1);
+		return result;
+	}
+#endif
+
+
+
 	// Generate standard projection matrices (row-vector math; right-handed view space).
-	// "D3D style" means z in [0, 1] after projection; "OGL style" means z in [-1, 1].
+	// "D3D" here means z in [0, 1] after projection; "OGL" means z in [-1, 1].
+	// zNear and zFar are positive distances to the near and far planes. (Since we use a right-handed
+	// view space, with +X right, +Y up, +Z out, this means the planes lie at z = -zNear and z = -zFar.)
 
 	float4x4 orthoProjD3DStyle(float left, float right, float bottom, float top, float zNear, float zFar);
 	float4x4 orthoProjOGLStyle(float left, float right, float bottom, float top, float zNear, float zFar);
