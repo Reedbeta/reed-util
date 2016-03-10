@@ -7,9 +7,6 @@
     <ClCompile Include="test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="util-affine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="util-color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -37,9 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="half\half.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="util-affine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="util-box.h">

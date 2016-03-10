@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="half\half.h" />
-    <ClInclude Include="util-affine.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="util-box.h" />
     <ClInclude Include="util-color.h" />
@@ -29,9 +28,6 @@
   <ItemGroup>
     <ClCompile Include="half\half.cpp" />
     <ClCompile Include="test.cpp" />
-    <ClCompile Include="util-affine.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="util-color.cpp" />
     <ClCompile Include="util-err.cpp" />
     <ClCompile Include="util-log.cpp" />
