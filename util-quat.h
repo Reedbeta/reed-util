@@ -195,7 +195,7 @@ namespace util
 	// Other math functions
 
 	// Convert to a matrix
-	inline float3x3 quatToMatrix(quat a)
+	inline float3x3 rotationMatrix3D(quat a)
 	{
 		return
 		{
@@ -209,7 +209,7 @@ namespace util
 	// Convert to an affine transform
 	inline affine3 quatToAffine(quat a)
 	{
-		return affine3(quatToMatrix(a), float3(0.0f));
+		return affine3(rotationMatrix3D(a), float3(0.0f));
 	}
 #endif
 
