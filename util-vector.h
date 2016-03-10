@@ -360,6 +360,13 @@ namespace util
 			return { T(0), -a.z, a.y };
 	}
 
+	template <typename T, int n>
+	vector<T, n> slerp(vector<T, n> a, vector<T, n> b, float u)
+	{
+		float theta = acosf(dot(a, b));
+		return (a * sinf((1.0f - u) * theta) + b * sinf(u * theta)) / sinf(theta);
+	}
+
 
 
 	// Utilities for bool vectors

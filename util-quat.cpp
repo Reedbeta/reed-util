@@ -4,7 +4,7 @@ namespace util
 {
 	// Quaternion implementations
 
-	quat rotationQuat(float3 axis, float radians)
+	quat quatFromAxisAngle(float3 axis, float radians)
 	{
 		// Note: assumes axis is normalized
 		float sinHalfTheta = sinf(0.5f * radians);
@@ -13,7 +13,7 @@ namespace util
 		return quat(cosHalfTheta, axis * sinHalfTheta);
 	}
 
-	quat rotationQuat(float3 euler)
+	quat quatFromEuler(float3 euler)
 	{
 		float sinHalfX = sinf(0.5f * euler.x);
 		float cosHalfX = cosf(0.5f * euler.x);
@@ -30,9 +30,20 @@ namespace util
 		return quatZ * quatY * quatX;
 	}
 
-	quat slerp(quat a, quat b, float u)
+	quat quatFromRotationMatrix(float3x3 const & a)
 	{
-		float theta = acosf(dot(a, b));
-		return (a * sinf((1.0f - u) * theta) + b * sinf(u * theta)) / sinf(theta);
+		// Implementation from: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/christian.htm
+		// !!!UNDONE: haven't tested that this actually works and matches rotationMatrixFromQuat
+		quat result =
+		{
+			0.5f * sqrtf(max(0.0f, 1.0f + a[0][0] + a[1][1] + a[2][2])),
+			0.5f * sqrtf(max(0.0f, 1.0f + a[0][0] - a[1][1] - a[2][2])),
+			0.5f * sqrtf(max(0.0f, 1.0f - a[0][0] + a[1][1] - a[2][2])),
+			0.5f * sqrtf(max(0.0f, 1.0f - a[0][0] - a[1][1] + a[2][2])),
+		};
+		result.x = copysignf(result.x, a[1][2] - a[2][1]); 
+		result.y = copysignf(result.y, a[2][0] - a[0][2]); 
+		result.z = copysignf(result.z, a[0][1] - a[1][0]);
+		return result;
 	}
 }

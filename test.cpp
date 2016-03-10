@@ -352,123 +352,6 @@ void testMatrices()
 
 
 
-#if LATER
-void testAffine()
-{
-	using namespace util;
-
-	point<float, 5> foo5 = { 1, 2, 3, 4, 5 };
-	vector<float, 5> bar5 = { 6, 7, 8, 9, 10 };
-	foo5.m_data[4];
-	foo5[4];
-	passPointer(foo5);
-	makepoint<int, 4>(&foo5[0]);
-	makepoint<int, 5>(&foo5[0]);
-	makepoint<int, 6>(&foo5[0]);
-	makepoint<int, 4>(foo5);
-	makepoint<int, 5>(foo5);
-	makepoint<int, 6>(foo5);
-	makepoint<float, 5>(bar5);
-	makevector<float, 5>(foo5);
-	foo5 + bar5;
-	foo5 - bar5;
-	foo5 - foo5;
-	foo5 += bar5;
-	foo5 -= bar5;
-	foo5 == foo5;
-	foo5 == 47.0f;
-	foo5 != foo5;
-	foo5 != 47.0f;
-	foo5 < foo5;
-	foo5 < 47.0f;
-	foo5 > foo5;
-	foo5 > 47.0f;
-	foo5 <= foo5;
-	foo5 <= 47.0f;
-	foo5 >= foo5;
-	foo5 >= 47.0f;
-	distance(foo5, foo5);
-	distanceSquared(foo5, foo5);
-	dot(foo5, bar5);
-	dot(bar5, foo5);
-	isnear(foo5, foo5);
-	isnear(foo5, 47.0f);
-	isnear(47.0f, foo5);
-	isfinite(foo5);
-	round(foo5);
-	any(foo5 < 47.0f);
-	all(foo5 > 47.0f);
-	select(foo5 < 47.0f, foo5, foo5);
-	min(foo5, foo5);
-	max(foo5, foo5);
-	minComponent(foo5);
-	maxComponent(foo5);
-	lerp(foo5, foo5, 0.5f);
-
-	point3 foo3 = { 1, 2, 3 };
-	foo3.z;
-	foo3.b;
-	foo3[2];
-	passPointer(foo3);
-	makepoint3(0.0f);
-	makeipoint3(&foo3[0]);
-	makepoint3(makepoint<int, 4>(0));
-	makepoint3(bar5);
-	makefloat3(foo3);
-
-	point2 foo2 = { 1, 2 };
-	foo2.y;
-	foo2.v;
-	foo2[1];
-	passPointer(foo2);
-	foo2 = foo3.xy;
-	makepoint2(0.0f);
-	makeipoint2(&foo3[0]);
-	makepoint2(makepoint<int, 4>(0));
-	makepoint2(bar5);
-	makefloat2(foo2);
-
-	affine<float, 5> aff5 = { 1, 2, 3, 4, 5 };
-	makeaffine<float, 5>(0.0f);
-	makeaffine<float, 4>(aff5);
-	makeaffine<float, 5>(aff5);
-	makeaffine<float, 6>(aff5);
-	makeaffine<int, 4>(aff5);
-	makeaffine<int, 5>(aff5);
-	makeaffine<int, 6>(aff5);
-	makeaffine(aff5.m_linear);
-	aff5 == aff5;
-	aff5 != aff5;
-	aff5 * aff5;
-	aff5 *= aff5;
-	foo5 * aff5;
-	bar5 * aff5;
-	foo5 *= aff5;
-	bar5 *= aff5;
-	aff5 = transpose(aff5);
-	aff5 = pow(aff5, 5);
-	aff5 = inverse(aff5);
-	isnear(aff5, aff5);
-	isfinite(aff5);
-	round(aff5);
-	aff5 = square(aff5);
-	aff5 = translation(bar5);
-	aff5 = scaling<float, 5>(47.0f);
-	aff5 = scaling(bar5);
-	matrix<float, 6, 6> mat6 = affineToHomogeneous(aff5);
-	aff5 = homogeneousToAffine(mat6);
-
-	makeaffine2(0.0f);
-	makeaffine2(makeaffine<int, 4>(0));
-	makeaffine2(makefloat2x2(0.0f));
-	makeaffine3(0.0f);
-	makeaffine3(makeaffine<int, 4>(0));
-	makeaffine3(makefloat3x3(0.0f));
-}
-#endif // LATER
-
-
-
 void testSIMD()
 {
 	using namespace util;
@@ -490,7 +373,7 @@ void testBox()
 	using namespace util;
 
 	makeboxEmpty<float, 5>();
-	static const point<float, 5> points[] =
+	static const vector<float, 5> points[] =
 	{
 		{ 1, 2, 3, 4, 5 }, { 6, 7, 8, 9, 10 }, { 11, 12, 13, 14, 15 },
 	};
@@ -541,12 +424,10 @@ void testQuat()
 	using namespace util;
 
 	float3 foo = { 1, 2, 3 };
-	//point3 bar = { 1, 2, 3 };
 	quat q = { 1, 2, 3, 4 };
 	passPointer(q);
 	//if (q) passPointer(q);	// Should give error about conversion to bool
 	foo = applyQuat(q, foo);
-	//bar = applyQuat(q, bar);
 	q + q;
 	q + 47.0f;
 	47.0f + q;

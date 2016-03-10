@@ -195,7 +195,7 @@ namespace util
 	// Other math functions
 
 	// Convert to a matrix
-	inline float3x3 rotationMatrix3D(quat a)
+	inline float3x3 rotationMatrixFromQuat(quat a)
 	{
 		return
 		{
@@ -205,13 +205,8 @@ namespace util
 		};
 	}
 
-#if LATER
-	// Convert to an affine transform
-	inline affine3 quatToAffine(quat a)
-	{
-		return affine3(rotationMatrix3D(a), float3(0.0f));
-	}
-#endif
+	inline float4x4 affineMatrix(quat q, float3 translationPart)
+		{ return affineMatrix(rotationMatrixFromQuat(q), translationPart); }
 
 	inline float dot(quat a, quat b)
 		{ return a.w*b.w + a.x*b.x + a.y*b.y + a.z*b.z; }
@@ -250,27 +245,19 @@ namespace util
 	inline quat inverse(quat a)
 		{ return conjugate(a) / lengthSquared(a); }
 
-	// Apply a normalized quat as a rotation to a vector or point
-
-	template <typename T>
-	vector<T, 3> applyQuat(quat a, vector<T, 3> b)
+	// Apply a normalized quat as a rotation to a vector
+	inline float3 applyQuat(quat a, float3 b)
 	{
 		quat v = { 0, b.x, b.y, b.z };
 		quat resultQ = a * v * conjugate(a);
-		vector<T, 3> result = { resultQ.x, resultQ.y, resultQ.z };
-		return result;
+		return float3(resultQ.x, resultQ.y, resultQ.z);
 	}
 
-#if LATER
-	template <typename T>
-	point<T, 3> applyQuat(quat a, point<T, 3> b)
+	inline quat slerp(quat a, quat b, float u)
 	{
-		quat v = { 0, b.x, b.y, b.z };
-		quat resultQ = a * v * conjugate(a);
-		point<T, 3> result = { resultQ.x, resultQ.y, resultQ.z };
-		return result;
+		float theta = acosf(dot(a, b));
+		return (a * sinf((1.0f - u) * theta) + b * sinf(u * theta)) / sinf(theta);
 	}
-#endif
 
 	inline bool4 isnear(quat a, quat b, float eps = util::epsilon)
 	{
@@ -363,12 +350,7 @@ namespace util
 		return result;
 	}
 
-	quat rotationQuat(float3 axis, float radians);
-	quat rotationQuat(float3 euler);
-	quat slerp(quat a, quat b, float u);
-
-#if LATER
-	inline affine3 makeaffine3(quat rotation, float3 translation)
-		{ return makeaffine3(rotation.toFloat3x3(), translation); }
-#endif
+	quat quatFromAxisAngle(float3 axis, float radians);
+	quat quatFromEuler(float3 euler);
+	quat quatFromRotationMatrix(float3x3 const & a);
 }
