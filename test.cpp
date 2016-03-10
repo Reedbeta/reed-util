@@ -367,32 +367,32 @@ void testSIMD()
 
 
 
-#if LATER
 void testBox()
 {
 	using namespace util;
 
-	makeboxEmpty<float, 5>();
+	box<float, 5>(empty);
 	static const vector<float, 5> points[] =
 	{
 		{ 1, 2, 3, 4, 5 }, { 6, 7, 8, 9, 10 }, { 11, 12, 13, 14, 15 },
 	};
-	makebox(points[0], points[1]);
-	makebox(dim(points), points);
+	box<float, 5>(points[0], points[1]);
+	boxFromPoints(dim(points), points);
 
 	box<float, 5> foo5 = { 1, 2, 3, 4, 5 };
 	vector<float, 5> bar5 = { 1, 2, 3, 4, 5 };
-	point<float, 5> baz5 = { 1, 2, 3, 4, 5 };
-	affine<float, 5> aff5 = { 1, 2, 3, 4, 5 };
+	matrix<float, 5, 5> aff5 = { 1, 2, 3, 4, 5 };
+	matrix<float, 6, 6> aff6 = { 1, 2, 3, 4, 5 };
+#if LATER
 	foo5.isempty();
-	foo5.contains(baz5);
+	foo5.contains(bar5);
 	foo5.contains(foo5);
 	foo5.intersects(foo5);
-	foo5.clamp(baz5);
+	foo5.clamp(bar5);
 	foo5.center();
 	foo5.diagonal();
 	foo5.numCorners();
-	baz5 = foo5.getCorner(0);
+	bar5 = foo5.getCorner(0);
 	point<float, 5> corners[32];
 	ASSERT_ERR(dim(corners) == foo5.numCorners());
 	foo5.getCorners(corners);
@@ -400,22 +400,25 @@ void testBox()
 	foo5.getExtentsAlongAxis(bar5, dotMin, dotMax);
 	foo5.dotMin(bar5);
 	foo5.dotMax(bar5);
+#endif
 	foo5 == foo5;
 	foo5 != foo5;
+#if LATER
 	foo5 = boxUnion(foo5, foo5);
 	foo5 = boxIntersection(foo5, foo5);
 	foo5 = boxTranslate(foo5, bar5);
 	foo5 = boxGrow(foo5, bar5);
 	foo5 = boxTransform(foo5, aff5);
-	distance(foo5, baz5);
-	distance(baz5, foo5);
-	distanceSquared(foo5, baz5);
-	distanceSquared(baz5, foo5);
+	foo5 = boxTransform(foo5, aff6);
+	distance(foo5, bar5);
+	distance(bar5, foo5);
+	distanceSquared(foo5, bar5);
+	distanceSquared(bar5, foo5);
 	isnear(foo5, foo5);
 	isfinite(foo5);
 	round(foo5);
-}
 #endif // LATER
+}
 
 
 
