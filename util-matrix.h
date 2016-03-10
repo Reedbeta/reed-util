@@ -328,7 +328,7 @@ namespace util
 	}
 
 	template <typename T, int n>
-	matrix<T, n, n> inverse(matrix<T, n, n> const & m)
+	bool invertMatrix(matrix<T, n, n> const & m, matrix<T, n, n> * pResultOut, float epsilon = util::epsilon)
 	{
 		// Calculate inverse using Gaussian elimination
 
@@ -343,8 +343,10 @@ namespace util
 			for (int i = j+1; i < n; ++i)
 				if (abs(a[i][j]) > abs(a[pivot][j]))
 					pivot = i;
+
+			// If we couldn't find a "sufficiently nonzero" element, the matrix is singular.
 			if (abs(a[pivot][j]) < epsilon)
-				return matrix<T, n, n>(NaN);
+				return false;
 
 			// Interchange rows to put pivot element on the diagonal,
 			// if it is not already there
@@ -366,7 +368,7 @@ namespace util
 			// Subtract this row from others to make the rest of column j zero
 			for (int i = 0; i < n; ++i)
 			{
-				if ((i != j) && (abs(a[i][j]) > epsilon))		// skip rows already zero
+				if ((i != j) && (abs(a[i][j]) > epsilon))		// Skip rows with zero already in this column
 				{
 					T scale = -a[i][j];
 					a[i] += a[j] * scale;
@@ -377,20 +379,27 @@ namespace util
 	
 		// At this point, a should have been transformed to the identity matrix,
 		// and b should have been transformed into the inverse of the original a.
-		return b;
+		if (pResultOut)
+			*pResultOut = b;
+		return true;
 	}
 
 	// Inverse specialization for 2x2
 	template <typename T>
-	matrix<T, 2, 2> inverse(matrix<T, 2, 2> const & a)
+	bool invertMatrix(matrix<T, 2, 2> const & a, matrix<T, 2, 2> * pResultOut, float epsilon = util::epsilon)
 	{
-		return matrix<T, 2, 2>{ a[1][1], -a[0][1], -a[1][0], a[0][0] } / determinant(a);
+		T det = (a[0][0]*a[1][1] - a[0][1]*a[1][0]);
+		if (abs(det) < epsilon)
+			return false;
+		if (pResultOut)
+			*pResultOut = matrix<T, 2, 2>{ a[1][1], -a[0][1], -a[1][0], a[0][0] } / det;
+		return true;
 	}
 
 	// !!!UNDONE: inverse specialization for 3x3? worth it?
 
 	template <typename T, int n>
-	T determinant(matrix<T, n, n> const & m)
+	T determinant(matrix<T, n, n> const & m, float epsilon = util::epsilon)
 	{
 		// Calculate determinant using Gaussian elimination
 
@@ -405,6 +414,8 @@ namespace util
 			for (int i = j+1; i < n; ++i)
 				if (abs(a[i][j]) > abs(a[pivot][j]))
 					pivot = i;
+
+			// If we couldn't find a "sufficiently nonzero" element, the matrix is singular and the determinant is zero.
 			if (abs(a[pivot][j]) < epsilon)
 				return T(0);
 
@@ -428,7 +439,7 @@ namespace util
 			// Subtract this row from others to make the rest of column j zero
 			for (int i = 0; i < n; ++i)
 			{
-				if ((i != j) && (abs(a[i][j]) > epsilon))		// skip rows already zero
+				if ((i != j) && (abs(a[i][j]) > epsilon))		// Skip rows with zero already in this column
 				{
 					T scale = -a[i][j];
 					a[i] += a[j] * scale;
@@ -443,7 +454,7 @@ namespace util
 
 	// Determinant specialization for 2x2
 	template <typename T>
-	T determinant(matrix<T, 2, 2> const & a)
+	T determinant(matrix<T, 2, 2> const & a, float /*epsilon*/ = util::epsilon)
 	{
 		return (a[0][0]*a[1][1] - a[0][1]*a[1][0]);
 	}
