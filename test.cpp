@@ -344,6 +344,10 @@ void testMatrices()
 	setTranslation(&foo4x3, float2(4, 7));
 	bar4 = xfmPoint(bar4, foo5);
 	float2 bar2 = xfmVector(bar3, foo4x3);
+
+	tryInvertAffine(foo5, &foo5);
+	foo5 = inverseAffine(foo5);
+	foo5 = inverseRigid(foo5);
 }
 
 

@@ -700,7 +700,7 @@ namespace util
 	template <typename T, int rows, int cols>
 	matrix<T, rows+1, cols+1> affineMatrix(matrix<T, rows, cols> const & linearPart, vector<T, cols> translationPart)
 	{
-		matrix<T, rows+1, cols+1> result(linearPart);	// Extends the matrix with zero-filling
+		matrix<T, rows+1, cols+1> result(linearPart);	// Extend the matrix with zero-filling
 		for (int i = 0; i < cols; ++i)
 			result[rows][i] = translationPart[i];
 		result[rows][cols] = T(1);
@@ -746,7 +746,37 @@ namespace util
 		return result;
 	}
 
-	// !!!UNDONE: affine inverse and transpose
+	// Inversion routines that assume a matrix is in affine form (but don't check for that).
+	// tryInvertAffine and inverseAffine do a full inverse on the upper-left submatrix,
+	// while inverseRigid just transposes the upper-left submatrix (suitable for rigid body transforms).
+
+	template <typename T, int n>
+	bool tryInvertAffine(matrix<T, n, n> const & a, matrix<T, n, n> * pResultOut, float epsilon = util::epsilon)
+	{
+		matrix<T, n-1, n-1> linearPart(a);	// Extract the upper-left submatrix
+		matrix<T, n-1, n-1> linearPartInverse;
+		if (!tryInvertMatrix(linearPart, &linearPartInverse, epsilon))
+			return false;
+		if (pResultOut)
+			*pResultOut = affineMatrix(linearPartInverse, -translationPart(a) * linearPartInverse);
+		return true;
+	}
+
+	template <typename T, int n>
+	matrix<T, n, n> inverseAffine(matrix<T, n, n> const & a)
+	{
+		matrix<T, n-1, n-1> linearPart(a);	// Extract the upper-left submatrix
+		matrix<T, n-1, n-1> linearPartInverse = inverse(linearPart);
+		return affineMatrix(linearPartInverse, -translationPart(a) * linearPartInverse);
+	}
+
+	template <typename T, int n>
+	matrix<T, n, n> inverseRigid(matrix<T, n, n> const & a)
+	{
+		matrix<T, n-1, n-1> linearPart(a);	// Extract the upper-left submatrix
+		matrix<T, n-1, n-1> linearPartTranspose = transpose(linearPart);
+		return affineMatrix(linearPartTranspose, -translationPart(a) * linearPartTranspose);
+	}
 
 
 
