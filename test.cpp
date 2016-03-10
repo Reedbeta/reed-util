@@ -235,7 +235,8 @@ void testMatrices()
 	bar5 *= foo5;
 	foo5 = transpose(foo5);
 	foo5 = pow(foo5, 5);
-	invertMatrix(foo5, &foo5);
+	tryInvertMatrix(foo5, &foo5);
+	inverse(foo5);
 	determinant(foo5);
 	trace(foo5);
 	foo5 = diagonalMatrix<float, 5>(47.0f);

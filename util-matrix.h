@@ -328,7 +328,7 @@ namespace util
 	}
 
 	template <typename T, int n>
-	bool invertMatrix(matrix<T, n, n> const & m, matrix<T, n, n> * pResultOut, float epsilon = util::epsilon)
+	bool tryInvertMatrix(matrix<T, n, n> const & m, matrix<T, n, n> * pResultOut, float epsilon = util::epsilon)
 	{
 		// Calculate inverse using Gaussian elimination
 
@@ -386,7 +386,7 @@ namespace util
 
 	// Inverse specialization for 2x2
 	template <typename T>
-	bool invertMatrix(matrix<T, 2, 2> const & a, matrix<T, 2, 2> * pResultOut, float epsilon = util::epsilon)
+	bool tryInvertMatrix(matrix<T, 2, 2> const & a, matrix<T, 2, 2> * pResultOut, float epsilon = util::epsilon)
 	{
 		T det = (a[0][0]*a[1][1] - a[0][1]*a[1][0]);
 		if (abs(det) < epsilon)
@@ -394,6 +394,25 @@ namespace util
 		if (pResultOut)
 			*pResultOut = matrix<T, 2, 2>{ a[1][1], -a[0][1], -a[1][0], a[0][0] } / det;
 		return true;
+	}
+
+	// !!!UNDONE: inverse specialization for 3x3? worth it?
+
+	// Inverse routine that doesn't check for singularity, assumes You Know What You're Doing(TM)
+	template <typename T, int n>
+	matrix<T, n, n> inverse(matrix<T, n, n> const & a)
+	{
+		matrix<T, n, n> result;
+		(void) tryInvertMatrix(a, &result);
+		return result;
+	}
+
+	// Inverse specialization for 2x2
+	template <typename T>
+	matrix<T, 2, 2> inverse(matrix<T, 2, 2> const & a)
+	{
+		T det = (a[0][0]*a[1][1] - a[0][1]*a[1][0]);
+		return matrix<T, 2, 2>{ a[1][1], -a[0][1], -a[1][0], a[0][0] } / det;
 	}
 
 	// !!!UNDONE: inverse specialization for 3x3? worth it?
@@ -651,8 +670,8 @@ namespace util
 	// Generate various simple 2D/3D transformations. Assumes row-vector math.
 
 	float2x2 rotationMatrix2D(float radians);
-	float3x3 rotationMatrix3D(float3 axis, float radians);
-	float3x3 rotationMatrix3D(float3 euler);
+	float3x3 rotationMatrixAxisAngle3D(float3 axis, float radians);
+	float3x3 rotationMatrixEuler3D(float3 euler);
 
 	float2x2 lookatMatrix2D(float2 look);
 

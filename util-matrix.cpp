@@ -16,27 +16,27 @@ namespace util
 		};
 	}
 
-	float3x3 rotationMatrix3D(float3 axis, float radians)
+	float3x3 rotationMatrixAxisAngle3D(float3 axis, float radians)
 	{
-		// Note: assumes axis is normalized
+		float3 axisNormalized = normalize(axis);
 		float sinTheta = sinf(radians);
 		float cosTheta = cosf(radians);
 
 		// Build matrix that does cross product by axis (on the right)
 		float3x3 crossProductMat =
 		{
-			0, axis.z, -axis.y,
-			-axis.z, 0, axis.x,
-			axis.y, -axis.x, 0,
+			0, axisNormalized.z, -axisNormalized.y,
+			-axisNormalized.z, 0, axisNormalized.x,
+			axisNormalized.y, -axisNormalized.x, 0,
 		};
 
 		// Matrix form of Rodrigues' rotation formula
 		return diagonalMatrix<float, 3>(cosTheta) +
 				crossProductMat * sinTheta +
-				outerProduct(axis, axis) * (1.0f - cosTheta);
+				outerProduct(axisNormalized, axisNormalized) * (1.0f - cosTheta);
 	}
 
-	float3x3 rotationMatrix3D(float3 euler)
+	float3x3 rotationMatrixEuler3D(float3 euler)
 	{
 		float sinX = sinf(euler.x);
 		float cosX = cosf(euler.x);
