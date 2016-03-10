@@ -333,6 +333,16 @@ void testMatrices()
 	(void) float2x2(&ifoo5[0][0]);
 	(void) float2x2(foo5);
 	(void) float2x2(ifoo5);
+
+	foo5 = translationMatrix(bar4);
+	foo5 = affineMatrix(foo11, bar4);
+	foo4x3 = affineMatrix(matrix<float, 3, 2>(0), float2(0));
+	translationPart(foo5);
+	translationPart(foo4x3);
+	setTranslation(&foo5, bar4);
+	setTranslation(&foo4x3, float2(4, 7));
+	bar4 = xfmPoint(bar4, foo5);
+	float2 bar2 = xfmVector(bar3, foo4x3);
 }
 
 

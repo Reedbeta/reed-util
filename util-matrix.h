@@ -666,9 +666,11 @@ namespace util
 
 
 
-#if LATER
+	// Routines for working with affine transformations in homogeneous form,
+	// i.e. as a matrix with an extra row and column.
+
 	template <typename T, int n>
-	matrix<T, n+1, n+1> makeTranslation(vector<T, n> a)
+	matrix<T, n+1, n+1> translationMatrix(vector<T, n> a)
 	{
 		matrix<T, n+1, n+1> result(identity);
 		for (int i = 0; i < n; ++i)
@@ -676,26 +678,56 @@ namespace util
 		return result;
 	}
 
-	template <typename T, int n>
-	matrix<T, n+1, n+1> makeScaling(T a)
+	template <typename T, int rows, int cols>
+	matrix<T, rows+1, cols+1> affineMatrix(matrix<T, rows, cols> const & linearPart, vector<T, cols> translationPart)
 	{
-		matrix<T, n+1, n+1> result(0);
-		for (int i = 0; i < n; ++i)
-			result[i][i] = T(a);
-		result[n][n] = T(1);
+		matrix<T, rows+1, cols+1> result(linearPart);	// Extends the matrix with zero-filling
+		for (int i = 0; i < cols; ++i)
+			result[rows][i] = translationPart[i];
+		result[rows][cols] = T(1);
 		return result;
 	}
 
-	template <typename T, int n>
-	matrix<T, n+1, n+1> makeScaling(vector<T, n> a)
+	template <typename T, int rows, int cols>
+	vector<T, cols-1> translationPart(matrix<T, rows, cols> const & a)
 	{
-		matrix<T, n+1, n+1> result(0);
-		for (int i = 0; i < n; ++i)
-			result[i][i] = a[i];
-		result[n][n] = T(1);
+		return vector<T, cols-1>(a[rows-1]);
+	}
+
+	template <typename T, int rows, int cols>
+	void setTranslation(matrix<T, rows, cols> * pMatrix, vector<T, cols-1> translationPart)
+	{
+		for (int i = 0; i < cols-1; ++i)
+			(*pMatrix)[rows-1][i] = translationPart[i];
+	}
+
+	template <typename T, int rows, int cols>
+	vector<T, cols-1> xfmPoint(vector<T, rows-1> a, matrix<T, rows, cols> const & b)
+	{
+		vector<T, cols-1> result = {};
+		// Linear part
+		for (int i = 0; i < rows-1; ++i)
+			for (int j = 0; j < cols-1; ++j)
+					result[j] += a[i] * b[i][j];
+		// Translation part
+		for (int j = 0; j < cols-1; ++j)
+			result[j] += b[rows-1][j];
 		return result;
 	}
-#endif
+
+	template <typename T, int rows, int cols>
+	vector<T, cols-1> xfmVector(vector<T, rows-1> a, matrix<T, rows, cols> const & b)
+	{
+		vector<T, cols-1> result = {};
+		// Linear part
+		for (int i = 0; i < rows-1; ++i)
+			for (int j = 0; j < cols-1; ++j)
+					result[j] += a[i] * b[i][j];
+		// No translation for vectors!
+		return result;
+	}
+
+	// !!!UNDONE: affine inverse and transpose
 
 
 
