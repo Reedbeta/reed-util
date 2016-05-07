@@ -6,7 +6,6 @@ namespace util
 	// Thomas Wang's integer hash, as reported by Bob Jenkins
 	inline uint wangHash(uint x)
 	{
-		// Thomas Wang's integer hash, as reported by Bob Jenkins
 		x = (x ^ 61) ^ (x >> 16);
 		x *= 9;
 		x = x ^ (x >> 4);
