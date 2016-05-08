@@ -254,7 +254,7 @@ namespace util
 	template <typename T, int rows, int inner, int cols>
 	matrix<T, rows, cols> operator * (matrix<T, rows, inner> const & a, matrix<T, inner, cols> const & b)
 	{
-		matrix<T, rows, cols> result = {};
+		matrix<T, rows, cols> result(T(0));
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < cols; ++j)
 				for (int k = 0; k < inner; ++k)
@@ -274,7 +274,7 @@ namespace util
 	template <typename T, int rows, int cols>
 	vector<T, rows> operator * (matrix<T, rows, cols> const & a, vector<T, cols> b)
 	{
-		vector<T, rows> result = {};
+		vector<T, rows> result(T(0));
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < cols; ++j)
 					result[i] += a[i][j] * b[j];
@@ -284,7 +284,7 @@ namespace util
 	template <typename T, int rows, int cols>
 	vector<T, cols> operator * (vector<T, rows> a, matrix<T, rows, cols> const & b)
 	{
-		vector<T, cols> result = {};
+		vector<T, cols> result (T(0));
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; j < cols; ++j)
 					result[j] += a[i] * b[i][j];
@@ -499,7 +499,7 @@ namespace util
 	template <typename T, int n>
 	matrix<T, n, n> diagonalMatrix(T a)
 	{
-		matrix<T, n, n> result = {};
+		matrix<T, n, n> result(T(0));
 		for (int i = 0; i < n; ++i)
 			result[i][i] = a;
 		return result;
@@ -507,7 +507,7 @@ namespace util
 	template <typename T, int n>
 	matrix<T, n, n> diagonalMatrix(vector<T, n> a)
 	{
-		matrix<T, n, n> result = {};
+		matrix<T, n, n> result(T(0));
 		for (int i = 0; i < n; ++i)
 			result[i][i] = a[i];
 		return result;
@@ -719,6 +719,14 @@ namespace util
 	}
 
 	template <typename T, int rows, int cols>
+	void setLinearPart(matrix<T, rows, cols> * pMatrix, matrix<T, rows-1, cols-1> linearPart)
+	{
+		for (int i = 0; i < rows-1; ++i)
+			for (int j = 0; j < cols-1; ++j)
+				(*pMatrix)[i][j] = linearPart[i][j];
+	}
+
+	template <typename T, int rows, int cols>
 	void setTranslation(matrix<T, rows, cols> * pMatrix, vector<T, cols-1> translationPart)
 	{
 		for (int i = 0; i < cols-1; ++i)
@@ -728,7 +736,7 @@ namespace util
 	template <typename T, int rows, int cols>
 	vector<T, cols-1> xfmPoint(vector<T, rows-1> a, matrix<T, rows, cols> const & b)
 	{
-		vector<T, cols-1> result = {};
+		vector<T, cols-1> result(T(0));
 		// Linear part
 		for (int i = 0; i < rows-1; ++i)
 			for (int j = 0; j < cols-1; ++j)
@@ -742,7 +750,7 @@ namespace util
 	template <typename T, int rows, int cols>
 	vector<T, cols-1> xfmVector(vector<T, rows-1> a, matrix<T, rows, cols> const & b)
 	{
-		vector<T, cols-1> result = {};
+		vector<T, cols-1> result(T(0));
 		// Linear part
 		for (int i = 0; i < rows-1; ++i)
 			for (int j = 0; j < cols-1; ++j)

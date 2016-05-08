@@ -356,7 +356,7 @@ void testSIMD()
 {
 	using namespace util;
 
-	__m128 simdA = {}, simdB = {};
+	__m128 simdA = { 1.0f, 2.0f, 3.0f, 4.0f, }, simdB = { 5.0f, 6.0f, 7.0f, 8.0f, };
 	simdA + simdB;
 	simdA += simdB;
 
