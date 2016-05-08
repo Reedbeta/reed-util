@@ -115,6 +115,11 @@ namespace util
 	typedef matrix<bool, 4, 3> bool4x3;
 	typedef matrix<bool, 4, 4> bool4x4;
 
+	// Additional typedefs for matrices intended to store affine transformations (using homogeneous coordinates).
+	// These are just regular matrices, but these types serve as a useful annotation.
+	typedef float3x3 affine2;
+	typedef float4x4 affine3;
+
 
 
 	// Overloaded math operators
