@@ -557,37 +557,40 @@ namespace util
 
 
 	
-	// Convert memory layouts to and from SIMD-friendly (AOSOA) layout
+	// Convert memory layouts to and from SIMD-friendly AOSOA layout
 
-	// convertToSIMD takes a layout like this:
+	// convertToAOSOA takes a layout like this:
 	//   xyz...xyz...xyz...xyz...
 	// and makes it look like this:
 	//   xxxxyyyyzzzz...xxxxyyyyzzzz...
-	// In other words it converts an array of float3 to an array of float3_simd.
-	// Components (xyz) are assumed to be 32 bits each (float or int).
-    // Both input and output layouts can have an arbitrary stride, but the
-	// components of one vector are assumed to be tightly packed.
+	// In other words, it groups vectors in chunks, and stores each chunk in SOA layout.
+	// Components (xyz) are always assumed to be 32 bits each (float or int).
+    // Both input and output layouts can have an arbitrary stride, but the components of each
+	// individual vector are assumed to be tightly packed.
 	// numComponents is the count of components per vector (e.g. 3 for xyz, 4 for xyzw).
-	// numVectors is the count of vectors (each xyz or xyzw).  If not a multiple of 4,
-	// the last item in the output array will be only partially filled.
+	// numVectors is the count of vectors (each xyz or xyzw).  If this is not a multiple of the,
+	// chunk size, the last chunk in the output array will be zero-padded to fill it out.
+	// vectorsPerChunk is the number of vectors per chunk. Usually 4 for SSE, 8 for AVX.
 
-	void convertToSIMD(
-			int numComponents,
-			int numVectors,
-			const void * pInput,
-			int inputStrideBytes,
-			void * pOutput,
-			int outputStrideBytes);
+	void convertToAOSOA(
+		int numComponents,
+		int numVectors,
+		const void * pInput,
+		int inputStrideBytes,
+		void * pOutput,
+		int outputStrideBytes,
+		int vectorsPerChunk = 4);
 
-	// convertFromSIMD does the inverse of convertToSIMD.
+	// convertFromAOSOA does the inverse of convertToAOSOA.
 
-	void convertFromSIMD(
-			int numComponents,
-			int numVectors,
-			const void * pInput,
-			int inputStrideBytes,
-			void * pOutput,
-			int outputStrideBytes);
+	void convertFromAOSOA(
+		int numComponents,
+		int numVectors,
+		const void * pInput,
+		int inputStrideBytes,
+		void * pOutput,
+		int outputStrideBytes,
+		int vectorsPerChunk = 4);
 
 
 
@@ -609,16 +612,4 @@ namespace util
 	typedef matrix<__m128i, 3, 4> int3x4_simd;
 	typedef matrix<__m128i, 4, 3> int4x3_simd;
 	typedef matrix<__m128i, 4, 4> int4x4_simd;
-#if LATER
-	typedef point<__m128, 2> point2_simd;
-	typedef point<__m128, 3> point3_simd;
-	typedef point<__m128, 4> point4_simd;
-	typedef point<__m128i, 2> ipoint2_simd;
-	typedef point<__m128i, 3> ipoint3_simd;
-	typedef point<__m128i, 4> ipoint4_simd;
-	typedef affine<__m128, 2, 2> affine2x2_simd;
-	typedef affine<__m128, 3, 3> affine3x3_simd;
-	typedef affine<__m128i, 2, 2> iaffine2x2_simd;
-	typedef affine<__m128i, 3, 3> iaffine3x3_simd;
-#endif
 }

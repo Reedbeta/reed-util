@@ -118,10 +118,10 @@ namespace util
 	inline int roundDown(int i, int multiple) { return (i / multiple) * multiple; }
 	inline int roundUp(int i, int multiple) { return ((i + (multiple - 1)) / multiple) * multiple; }
 
-	// Advance a pointer by a given number of bytes, regardless of pointer's type
+	// Offset a pointer by a given number of bytes, regardless of pointer's type
 	// (note: number of bytes can be negative)
 	template <typename T>
-	inline T * advanceBytes(T * ptr, int bytes)
+	inline T * offsetPtr(T * ptr, int bytes)
 		{ return (T *)((byte *)ptr + bytes); }
 
 	// Print an error message to stderr and immediately exit with code 1
