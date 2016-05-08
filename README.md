@@ -17,7 +17,7 @@ Basics:
 * Generic `swap`, `min`, `max`, `clamp`, `saturate`, `lerp`, `square`
 * Float utilities: `isnear` (comparisons with epsilon), `isfinite`, `exp2f`, `log2f`
 * Integer utilities: `round`, `modPositive`, various power-of-2-related utilities
-* `advanceBytes()`—do byte arithmetic on a pointer of any type
+* `offset()`—do byte arithmetic on a pointer of any type
 * `exit("error message", ...)`—printf a message to stderr, and exit with a nonzero code
 * `LoadFile()`—just slurp an entire file into memory
 * `tokenize()`—in-place destructive tokenization, à la `strtok` but stateless
@@ -28,13 +28,14 @@ Basics:
 * Asserts, checks, errors, and warnings—with log messages, callbacks, and debugbreaks
 
 Math, based on design principles from [On Vector Math Libraries](http://www.reedbeta.com/blog/2013/12/28/on-vector-math-libraries/):
-* Vectors and matrices
-* Affine math (points and affine transforms)
-* Rectangles and bounding boxes
-* SIMD math using AoSoA (not well tested)
-* Half-float from OpenEXR
+* Vectors and matrices in any number of dimensions
+* Construction of common transformations
+* Functionality for working with affine transformations stored as homogeneous matrices
+* Boxes in any number of dimensions
 * Quaternions
 * Color space conversions
+* SIMD math using AOSOA (not well tested)
+* Half-float from OpenEXR
 
 Random number generation, from [Quick and Easy GPU Random Numbers in D3D11](http://www.reedbeta.com/blog/2013/01/12/quick-and-easy-gpu-random-numbers-in-d3d11/) (although these are on the CPU):
 * Xorshift PRNG (simple, fast 32-bit PRNG)
@@ -43,7 +44,7 @@ Random number generation, from [Quick and Easy GPU Random Numbers in D3D11](http
 Todo list (in no particular order):
 * Error context stack
 * Allow choice of whether to break per individual error/warning/assert
-* Range structs (one-dimensional boxes)
+* Range structs (one-dimensional boxes)?
 * Ray/line/plane structs
 * Primitive intersection tests (e.g. box vs ray, box vs frustum, etc.)
 * Primitive clipping (e.g. line vs box, triangle vs box, etc.)
