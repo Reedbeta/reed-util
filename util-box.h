@@ -20,6 +20,16 @@ namespace util
 		explicit box(T a): mins(a), maxs(a) {}
 		template <typename U>
 		explicit box(const U * p): mins(p), maxs(p + n) {}
+		box(std::initializer_list<vector<T, n>> initList)
+		{
+			auto iter = initList.begin();
+			if (initList.size() >= 1)
+				mins = *iter;
+			if (initList.size() >= 2)
+				maxs = *(++iter);
+			else
+				maxs = *iter;
+		}
 		box(std::initializer_list<T> initList)
 		{
 			int m = min(n, int(initList.size()));
@@ -44,88 +54,7 @@ namespace util
 		}
 		template <typename U, int nOther>
 		explicit box(box<U, nOther> b): mins(b.mins), maxs(b.maxs) {}
-
-#if LATER
-		bool isempty() const
-			{ return any(mins > maxs); }
-
-		bool contains(point<T, n> a) const
-			{ return !isempty() && all(mins <= a) && all(a <= maxs); }
-
-		bool contains(box<T, n> a) const
-			{ return a.isempty() || (!isempty() && all(mins <= a.mins) && all(a.maxs <= maxs)); }
-
-		bool intersects(box<T, n> a) const
-			{ return !isempty() && !a.isempty() && all(a.mins <= maxs) && all(mins <= a.maxs); }
-
-		point<T, n> clamp(point<T, n> a) const
-			{ return util::clamp(a, mins, maxs); }
-
-		point<T, n> center() const
-			{ return mins + (maxs - mins) / T(2); }
-
-		vector<T, n> diagonal() const
-			{ return maxs - mins; }
-
-		int numCorners() const
-			{ return (1 << n); }
-
-		point<T, n> getCorner(int iCorner) const
-		{
-			point<T, n> result;
-			for (int j = 0; j < n; ++j)
-				result[j] = (iCorner & (1 << j)) ? maxs[j] : mins[j];
-			return result;
-		}
-
-		void getCorners(point<T, n> * cornersOut) const
-		{
-			ASSERT_ERR(cornersOut);
-			for (int i = 0, nc = numCorners(); i < nc; ++i)
-				cornersOut[i] = getCorner(i);
-		}
-
-		void getExtentsAlongAxis(vector<T, n> a, T & outMin, T & outMax) const
-		{
-			T dotCenter = dot(center(), a);
-			T dotDiagonal = dot(diagonal(), abs(a));
-			outMin = dotCenter - dotDiagonal;
-			outMax = dotCenter + dotDiagonal;
-		}
-
-		T dotMin(vector<T, n> a) const
-		{
-			T dotMin, dotMax;
-			getExtentsAlongAxis(a, dotMin, dotMax);
-			return dotMin;
-		}
-
-		T dotMax(vector<T, n> a) const
-		{
-			T dotMin, dotMax;
-			getExtentsAlongAxis(a, dotMin, dotMax);
-			return dotMax;
-		}
-#endif // LATER
 	};
-
-	// Free function "constructor" for fitting a box around an array of points
-	template <typename T, int n>
-	box<T, n> boxFromPoints(int numPoints, vector<T, n> const * aPoints)
-	{
-		if (numPoints == 0)
-			return box<T, n>(empty);
-
-		ASSERT_ERR(aPoints);
-
-		box<T, n> result = { aPoints[0], aPoints[0] };
-		for (int i = 1; i < numPoints; ++i)
-		{
-			result.mins = min(result.mins, aPoints[i]);
-			result.maxs = max(result.maxs, aPoints[i]);
-		}
-		return result;
-	}
 
 	// Typedefs for the most common types and dimensions
 	typedef box<float, 2> box2;
@@ -154,60 +83,146 @@ namespace util
 
 
 
-#if LATER
 	// Other math functions
 
 	template <typename T, int n>
-	box<T, n> boxUnion(box<T, n> a, point<T, n> b)
+	bool isempty(box<T, n> a)
 	{
-		if (a.isempty()) return makebox(b, b);
-		return makebox(min(a.mins, b), max(a.maxs, b));
+		return any(a.mins > a.maxs);
 	}
 
 	template <typename T, int n>
-	box<T, n> boxUnion(box<T, n> a, box<T, n> b)
+	bool contains(box<T, n> a, vector<T, n> b)
 	{
-		if (a.isempty()) return b;
-		if (b.isempty()) return a;
-		return makebox(min(a.mins, b.mins), max(a.maxs, b.maxs));
+		return !isempty(a) && all(a.mins <= b) && all(b <= a.maxs);
+	}
+
+	template <typename T, int n>
+	bool contains(box<T, n> a, box<T, n> b)
+	{
+		return isempty(b) || (!isempty(a) && all((a.mins <= b.mins) & (b.maxs <= a.maxs)));
+	}
+
+	template <typename T, int n>
+	bool overlaps(box<T, n> a, box<T, n> b)
+	{
+		return !isempty(a) && !isempty(b) && all((b.mins <= a.maxs) & (a.mins <= b.maxs));
+	}
+
+	template <typename T, int n>
+	vector<T, n> clamp(vector<T, n> a, box<T, n> b)
+	{
+		return util::clamp(a, b.mins, b.maxs);
+	}
+
+	template <typename T, int n>
+	vector<T, n> boxCorner(box<T, n> a, int i)
+	{
+		vector<T, n> result;
+		for (int j = 0; j < n; ++j)
+			result[j] = (i & (1 << j)) ? a.maxs[j] : a.mins[j];
+		return result;
+	}
+
+	template <typename T, int n>
+	void boxMakeCorners(box<T, n> a, vector<T, n> * cornersOut)
+	{
+		ASSERT_ERR(cornersOut);
+		for (int i = 0, numCorners = (1 << n); i < numCorners; ++i)
+			cornersOut[i] = boxCorner(a, i);
+	}
+
+	template <typename T, int n>
+	void boxProjectOnAxis(box<T, n> a, vector<T, n> b, T & outMin, T & outMax)
+	{
+		T dotCenter = dot((a.mins + a.maxs) / T(2), b);
+		T dotDiagonal = dot(a.maxs - a.mins, abs(b));
+		outMin = dotCenter - dotDiagonal;
+		outMax = dotCenter + dotDiagonal;
+	}
+
+	template <typename T, int n>
+	box<T, n> boxAround(int numPoints, vector<T, n> const * aPoints)
+	{
+		if (numPoints == 0)
+			return box<T, n>(empty);
+
+		ASSERT_ERR(aPoints);
+
+		box<T, n> result = { aPoints[0], aPoints[0] };
+		for (int i = 1; i < numPoints; ++i)
+		{
+			result.mins = min(result.mins, aPoints[i]);
+			result.maxs = max(result.maxs, aPoints[i]);
+		}
+		return result;
+	}
+
+	template <typename T, int n>
+	box<T, n> boxAround(box<T, n> a, vector<T, n> b)
+	{
+		if (isempty(a)) return { b, b };
+		return { min(a.mins, b), max(a.maxs, b) };
+	}
+
+	template <typename T, int n>
+	box<T, n> boxAround(box<T, n> a, box<T, n> b)
+	{
+		if (isempty(a)) return b;
+		if (isempty(b)) return a;
+		return { min(a.mins, b.mins), max(a.maxs, b.maxs) };
 	}
 
 	template <typename T, int n>
 	box<T, n> boxIntersection(box<T, n> a, box<T, n> b)
 	{
-		if (a.isempty()) return a;
-		if (b.isempty()) return b;
-		return makebox(max(a.mins, b.mins), min(a.maxs, b.maxs));
+		if (isempty(a)) return a;
+		if (isempty(b)) return b;
+		return { max(a.mins, b.mins), min(a.maxs, b.maxs) };
 	}
 
 	template <typename T, int n>
 	box<T, n> boxTranslate(box<T, n> a, vector<T, n> b)
 	{
-		return makebox(a.mins + b, a.maxs + b);
+		return { a.mins + b, a.maxs + b };
 	}
 
 	template <typename T, int n>
-	box<T, n> boxGrow(box<T, n> a, vector<T, n> b)
+	box<T, n> boxExpandAllSides(box<T, n> a, vector<T, n> b)
 	{
-		return makebox(a.mins - b, a.maxs + b);
+		return { a.mins - b, a.maxs + b };
 	}
 
 	template <typename T, int n>
-	box<T, n> boxGrow(box<T, n> a, T b)
+	box<T, n> boxExpandAllSides(box<T, n> a, T b)
 	{
-		return makebox(a.mins - b, a.maxs + b);
+		return { a.mins - b, a.maxs + b };
 	}
 
-	template <typename T, int n>
-	box<T, n> boxTransform(box<T, n> a, affine<T, n> aff)
+	// Apply a linear transformation to a box, and fit another box around it
+	template <typename T, int rows, int cols>
+	box<T, cols> xfmBox(box<T, rows> a, matrix<T, rows, cols> const & b)
 	{
-		point<T, n> corner = a.getCorner(0);
-		corner *= aff;
-		box<T, n> result = { corner, corner };
-		for (int i = 1, nc = a.numCorners(); i < nc; ++i)
+		vector<T, cols> corner = boxCorner(a, 0) * b;
+		box<T, cols> result = { corner, corner };
+		for (int i = 1, numCorners = (1 << rows); i < numCorners; ++i)
 		{
-			corner = a.getCorner(i);
-			corner *= aff;
+			corner = boxCorner(a, i) * b;
+			result.mins = min(result.mins, corner);
+			result.maxs = max(result.maxs, corner);
+		}
+		return result;
+	}
+
+	// Apply an affine transformation to a box, and fit another box around it
+	template <typename T, int rows, int cols>
+	box<T, cols-1> xfmBox(box<T, rows-1> a, matrix<T, rows, cols> const & b)
+	{
+		vector<T, cols-1> corner = xfmPoint(boxCorner(a, 0), b);
+		box<T, cols-1> result = { corner, corner };
+		for (int i = 1, numCorners = (1 << (rows-1)); i < numCorners; ++i)
+		{
+			corner = xfmPoint(boxCorner(a, i), b);
 			result.mins = min(result.mins, corner);
 			result.maxs = max(result.maxs, corner);
 		}
@@ -215,50 +230,14 @@ namespace util
 	}
 
 	template <typename T, int n>
-	T distance(box<T, n> a, point<T, n> b)
-	{
-		return distance(a.clamp(b), b);
-	}
-
-	template <typename T, int n>
-	T distance(point<T, n> a, box<T, n> b)
-	{
-		return distance(a, b.clamp(a));
-	}
-
-	template <typename T, int n>
-	T distanceSquared(box<T, n> a, point<T, n> b)
-	{
-		return distanceSquared(a.clamp(b), b);
-	}
-
-	template <typename T, int n>
-	T distanceSquared(point<T, n> a, box<T, n> b)
-	{
-		return distanceSquared(a, b.clamp(a));
-	}
-
-	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
-	// returns a single result rather than a componentwise result
-	template <typename T, int n>
-	bool isnear(box<T, n> a, box<T, n> b, float epsilon = util::epsilon)
-	{
-		return all(isnear(a.mins, b.mins, epsilon)) &&
-			   all(isnear(a.maxs, b.maxs, epsilon));
-	}
-
-	// !!! this doesn't match the behavior of isfinite() for vectors and matrices -
-	// returns a single result rather than a componentwise result
-	template <typename T, int n>
 	bool isfinite(box<T, n> a)
 	{
-		return all(isfinite(a.mins)) && all(isfinite(a.maxs));
+		return all(isfinite(a.mins) & isfinite(a.maxs));
 	}
 
 	template <typename T, int n>
 	box<int, n> round(box<T, n> a)
 	{
-		return makebox(round(a.mins), round(a.maxs));
+		return { round(a.mins), round(a.maxs) };
 	}
-#endif // LATER
 }
