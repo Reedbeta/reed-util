@@ -23,7 +23,7 @@ namespace util
 		// Constructors
 		array(): data(nullptr), size(0) {}
 		array(T * data_, size_t size_): data(data_), size(size_) {}
-		array(std::initializer_list<T> initList): data(&(*initList.begin())), size(initList.size()) {}
+		template <typename U> array(std::initializer_list<U> initList): data(&(*initList.begin())), size(initList.size()) {}
 		template <typename U> array(array<U> a): data(a.data), size(a.size) {}
 		template <typename U, size_t N> array(U(& a)[N]): data(a), size(N) {}
 
@@ -49,7 +49,7 @@ namespace util
 		size_t	capacity;
 
 		// Constructors
-		fixedarray(): array<T>(), capacity(0) {}
+		fixedarray(): capacity(0) {}
 		fixedarray(T * data_, size_t size_, size_t capacity_): array<T>{data_, size_}, capacity(capacity_) {}
 
 		// Methods for adding and removing data
@@ -76,14 +76,13 @@ namespace util
 				data[size+i] = T(a.data[i]);
 			size += a.size;
 		}
-		template <typename U, typename... Us>
-		void appendSeveral(U first, Us... rest)
+		template <typename U>
+		void appendSeveral(U * data_, size_t size_)
 		{
-			T items[] = { first, rest... };
-			ASSERT_ERR(size + dim(items) < capacity);
-			for (size_t i = 0; i < dim(items); ++i)
-				data[size+i] = items[i];
-			size += dim(items);
+			ASSERT_ERR(size + size_ < capacity);
+			for (size_t i = 0; i < size_; ++i)
+				data[size+i] = T(data_[i]);
+			size += size_;
 		}
 		void removeSwap(size_t i)
 		{
@@ -92,12 +91,87 @@ namespace util
 				swap(data[i], data[size - 1]);
 			--size;
 		}
+		void clear() { size = 0; }
+	};
+
+	// "Dynamic" array: owns storage and reallocs it to grow
+	template <typename T>
+	struct dynarray : public fixedarray<T>
+	{
+		// Constructors
+		dynarray() {}
+		explicit dynarray(size_t capacityInitial) { ensureCapacity(capacityInitial); }
+		dynarray(T * data_, size_t size_) { appendSeveral(data_, size_); }
+		template <typename U> dynarray(std::initializer_list<U> initList) { appendSeveral(&(*initList.begin()), initList.size()); }
+		template <typename U> explicit dynarray(array<U> a) { appendSeveral(a); }
+		template <typename U, size_t N> explicit dynarray(U(& a)[N]) { appendSeveral(a, N); }
+
+		// Copy, move, destruct
+		template <typename U> dynarray(dynarray<U> const & a) { appendSeveral(a); }
+		template <typename U> dynarray(dynarray<U> && a): fixedarray<T>(a) { a.data = nullptr; a.size = 0; a.capacity = 0; }
+		~dynarray() { reset(); }
+
+		// Methods for managing memory allocation
+		void ensureCapacity(size_t capacityNeeded)
+		{
+			if (capacityNeeded < capacity)
+				return;
+
+			static const size_t capacityStarter = 8;
+			size_t capacityNew = max(capacityNeeded, max(2 * capacity, capacityStarter));
+
+			T * dataOld = data;
+			T * dataNew = new T[capacityNew];
+			memcpy(dataNew, dataOld, size * sizeof(T));
+			data = dataNew;
+			capacity = capacityNew;
+			delete [] dataOld;
+		}
+		void reset()
+		{
+			delete [] data;
+			data = nullptr;
+			size = 0;
+			capacity = 0;
+		}
+
+		// Methods for adding and removing data
+		template <typename U>
+		void append(U u)
+		{
+			ensureCapacity(size + 1);
+			data[size] = T(u);
+			++size;
+		}
+		T * appendNew()
+		{
+			ensureCapacity(size + 1);
+			T * result = &data[size];
+			++size;
+			return result;
+		}
+		template <typename U>
+		void appendSeveral(array<U> a)
+		{
+			ensureCapacity(size + a.size);
+			for (size_t i = 0; i < a.size; ++i)
+				data[size+i] = T(a.data[i]);
+			size += a.size;
+		}
+		template <typename U>
+		void appendSeveral(U * data_, size_t size_)
+		{
+			ensureCapacity(size + size_);
+			for (size_t i = 0; i < size_; ++i)
+				data[size+i] = T(data_[i]);
+			size += size_;
+		}
 	};
 
 	// NYI:
 	//   * sorting and searching
 	//   * map, reduce, filter
 	//   * multidim arrays
-	//   * configurable owned storage
+	//   * configurable owned storage (with custom allocator support?)
 	//   * constructor-safety
 }

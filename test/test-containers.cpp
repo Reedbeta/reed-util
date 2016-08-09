@@ -29,6 +29,24 @@ void TestContainers()
 	fa5.append(15U);	// converts to int
 	*fa5.appendNew() = 16;
 	fa5.appendSeveral(a3);
-	fa5.appendSeveral(17, 18, 19);
+	fa5.appendSeveral(fa5);
 	fa5.removeSwap(1);
+	fa5.clear();
+
+	dynarray<int> da1;
+	dynarray<int> da2 = { a6.data, a6.size };
+	dynarray<int> da3 = { 20, 21, 22, 23, 24 };
+	dynarray<int> da4(a3);
+	dynarray<int> da5(C_array);
+	dynarray<int> da6(da3);
+	dynarray<int> da7 = std::move(da6);
+	da5.append(14);
+	da5.append(15U);	// converts to int
+	*da5.appendNew() = 16;
+	da5.appendSeveral(a3);
+	da5.appendSeveral(fa5);
+	da5.appendSeveral(da3);
+	da5.removeSwap(1);
+	da5.clear();
+	da5.reset();
 }
