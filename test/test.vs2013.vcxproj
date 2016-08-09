@@ -95,6 +95,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="test-containers.cpp" />
     <ClCompile Include="test-math.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>

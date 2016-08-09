@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="half\half.h" />
+    <ClInclude Include="util-containers.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="util-box.h" />
     <ClInclude Include="util-color.h" />
