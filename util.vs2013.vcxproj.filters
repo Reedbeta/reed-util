@@ -4,9 +4,6 @@
     <ClCompile Include="half\half.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="util-color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

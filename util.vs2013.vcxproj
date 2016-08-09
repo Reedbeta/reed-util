@@ -27,7 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="half\half.cpp" />
-    <ClCompile Include="test.cpp" />
     <ClCompile Include="util-color.cpp" />
     <ClCompile Include="util-err.cpp" />
     <ClCompile Include="util-log.cpp" />
