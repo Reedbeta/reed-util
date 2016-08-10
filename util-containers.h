@@ -2,6 +2,7 @@
 #include "util-basics.h"
 #include "util-err.h"
 #include <initializer_list>
+#include <type_traits>
 
 namespace util
 {
@@ -46,6 +47,8 @@ namespace util
 	template <typename T>
 	struct fixedarray : public array<T>
 	{
+		static const bool trivial = std::is_trivial<T>::value;
+
 		size_t	capacity;
 
 		// Constructors
