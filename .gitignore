@@ -1,4 +1,4 @@
 # Visual Studio files
 *.user
-*.suo
+.vs/
 x64/
