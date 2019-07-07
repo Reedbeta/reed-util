@@ -125,6 +125,9 @@ namespace util
 	typedef vector<int, 2> int2;
 	typedef vector<int, 3> int3;
 	typedef vector<int, 4> int4;
+	typedef vector<uint, 2> uint2;
+	typedef vector<uint, 3> uint3;
+	typedef vector<uint, 4> uint4;
 	typedef vector<bool, 2> bool2;
 	typedef vector<bool, 3> bool3;
 	typedef vector<bool, 4> bool4;
